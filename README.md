@@ -4,5 +4,5 @@ Because I want to message people on WhatsApp without having to create a new cont
 
 It's also nice to see if they're on Telegram or iMessage, although iMessage is basically dead to me now.
 
-# Created with [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte
+# Created with [create-svelte](https://github.com/sveltejs/kit/tree/master/packages/create-svelte)
 
