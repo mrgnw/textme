@@ -1,13 +1,13 @@
 <script>
 	// todo: read clipboard on mount
+	import { onMount } from 'svelte';
 
-	function norm(s, country_code = '1') {
-		// remove leading zeros from s
-		// remove any non-digit, non-plus characters
+	let value = '';
+
+	function norm(phone, country_code = '1') {
 		country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
-		// remove leading zeros from s
-		const phone_digits = s.replace(/^0+/, '').replace(/[^0-9+]/g, '');
-		let last10 = phone_digits.slice(-10);
+		phone = phone.replace(/^0+/, '').replace(/[^0-9+]/g, '');
+		let last10 = phone.slice(-10);
 		// if last10 is 8 digits, add 11 to the front
 		if (last10.length === 8) {
 			last10 = `11${last10}`;
@@ -16,11 +16,8 @@
 			return '';
 		}
 
-		// get everything in the orignal string that isn't in the last10
-		const prefix = phone_digits.slice(0, -10);
-
-		// strip + from prefix
-		const strippedPrefix = prefix.replace(/^\+/, '');
+		const prefix = phone.slice(0, -10).replace(/^\+/, '');
+		const strippedPrefix = prefix;
 
 		let result = '';
 
@@ -37,7 +34,7 @@
 		country_code = code;
 	}
 
-	let value = '';
+	// let value = '';
 	let normed = '';
 	let country_code = '54';
 
@@ -52,15 +49,13 @@
 	<span on:click={() => setCountryCode('55')}>🇧🇷</span>
 </div>
 <input bind:value={country_code} placeholder="country code" size="3" />
-<input bind:value type="tel" placeholder="11 2222 3333" size="12"/>
+<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
 
 <div class="wrappa">
-	<div class={ready ? 'flags' : 'not-ready'}>
+	<div class={ready ? 'apps' : 'not-ready'}>
 		<ul>
 			<li>
-				<a href="sms:+{normed}">
-					<img src="/sms.svg" height="24px" alt="Telegram" /></a>
-				
+				<a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
 			</li>
 			<li>
 				<a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
@@ -80,11 +75,12 @@
 	.wrappa {
 		min-height: 2em;
 	}
-	.flags {
+	.flags, .apps {
 		display: flex;
 		flex-direction: row;
 		cursor: pointer;
 		font-size: 2em;
+    margin: 0 0.2em ;
 	}
 	.not-ready {
 		display: none;
@@ -103,5 +99,8 @@
 		list-style: none;
 		padding: 0;
 		margin: 0;
+	}
+	.apps li {
+		margin: 0 0.1em;
 	}
 </style>
