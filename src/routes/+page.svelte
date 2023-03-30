@@ -2,6 +2,24 @@
 	// todo: read clipboard on mount
 	import { onMount } from 'svelte';
 
+	let contentWidth = 145;
+	let contentHeight = 105;
+	let scale = 3;
+
+	const updateScale = () => {
+		const viewportWidth = window.innerWidth;
+		const viewportHeight = window.innerHeight;
+		const widthScale = viewportWidth / contentWidth;
+		const heightScale = viewportHeight / contentHeight;
+		scale = Math.min(widthScale, heightScale);
+	};
+
+	// Update the scale whenever the window is resized
+	onMount(() => {
+		updateScale();
+		window.addEventListener('resize', updateScale);
+	});
+
 	let value = '';
 
 	function norm(phone, country_code = '1') {
@@ -42,45 +60,71 @@
 	$: ready = normed.length > 0;
 </script>
 
-<div class="flags">
-	<span on:click={() => setCountryCode('1')}>🇺🇸</span>
-	<span on:click={() => setCountryCode('52')}>🇲🇽</span>
-	<span on:click={() => setCountryCode('54')}>🇦🇷</span>
-	<span on:click={() => setCountryCode('55')}>🇧🇷</span>
-</div>
-<input bind:value={country_code} placeholder="country code" size="3" />
-<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
+<div class="container">
+	<div class="content" style="transform: scale({scale}); transform-origin: top left;">
+		<div class="flags">
+			<span on:click={() => setCountryCode('1')}>🇺🇸</span>
+			<span on:click={() => setCountryCode('52')}>🇲🇽</span>
+			<span on:click={() => setCountryCode('54')}>🇦🇷</span>
+			<span on:click={() => setCountryCode('55')}>🇧🇷</span>
+		</div>
 
-<div class="wrappa">
-	<div class={ready ? 'apps' : 'not-ready'}>
-		<ul>
-			<li>
-				<a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
-			</li>
-			<li>
-				<a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
-					<img src="/telegram.svg" height="24px" alt="Telegram" /></a
-				>
-			</li>
-			<li>
-				<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer">
-					<img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
-				</a>
-			</li>
-		</ul>
+    <div class="inputs-container" style="text-align: center;">
+      <input bind:value={country_code} placeholder="country code" size="3" />
+      <input bind:value type="tel" placeholder="11 2222 3333" size="12" />
+    </div>
+    
+
+		<div class="wrappa">
+      <div class={ready ? 'apps' : 'not-ready'}>
+        <ul style="display: flex; justify-content: center;">
+          <li style="margin-right: 16px;">
+            <a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
+          </li>
+          <li style="margin-right: 16px;">
+            <a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
+              <img src="/telegram.svg" height="24px" alt="Telegram" /></a
+            >
+          </li>
+          <li>
+            <a href="https://wa.me/{normed}" target="_blank" rel="noreferrer">
+              <img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
 	</div>
 </div>
 
 <style>
+  .inputs-container{
+    width:140px;
+  }
+	.container {
+		display: flex;
+		justify-content: center;
+	}
+  .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
 	.wrappa {
 		min-height: 2em;
 	}
-	.flags, .apps {
+	.flags,
+	.apps {
+		font-size: 3em;
 		display: flex;
 		flex-direction: row;
 		cursor: pointer;
 		font-size: 2em;
-    margin: 0 0.2em ;
+		margin: 0 0.2em;
 	}
 	.not-ready {
 		display: none;
