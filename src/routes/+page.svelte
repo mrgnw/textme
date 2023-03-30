@@ -2,7 +2,7 @@
 	// todo: read clipboard on mount
 	import { onMount } from 'svelte';
 
-	let contentWidth = 145;
+	let contentWidth = 200;
 	let contentHeight = 105;
 	let scale = 3;
 
@@ -19,6 +19,22 @@
 		updateScale();
 		window.addEventListener('resize', updateScale);
 	});
+
+  onMount(async () => {
+    if (navigator.clipboard === undefined) {
+      console.error('Clipboard API not supported');
+      return;
+    }
+    
+    try {
+      const text = await navigator.clipboard.readText();
+      let xx = norm(text);
+      console.log(xx);
+      ready = true;
+    } catch (err) {
+      console.error('Failed to read clipboard contents: ', err);
+    }
+  });
 
 	let value = '';
 
@@ -69,50 +85,49 @@
 			<span on:click={() => setCountryCode('55')}>🇧🇷</span>
 		</div>
 
-    <div class="inputs-container" style="text-align: center;">
-      <input bind:value={country_code} placeholder="country code" size="3" />
-      <input bind:value type="tel" placeholder="11 2222 3333" size="12" />
-    </div>
-    
+		<div class="inputs-container" style="text-align: center;">
+			<input bind:value={country_code} placeholder="country code" size="3" />
+			<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
+		</div>
 
 		<div class="wrappa">
-      <div class={ready ? 'apps' : 'not-ready'}>
-        <ul style="display: flex; justify-content: center;">
-          <li style="margin-right: 16px;">
-            <a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
-          </li>
-          <li style="margin-right: 16px;">
-            <a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
-              <img src="/telegram.svg" height="24px" alt="Telegram" /></a
-            >
-          </li>
-          <li>
-            <a href="https://wa.me/{normed}" target="_blank" rel="noreferrer">
-              <img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+			<div class={ready ? 'apps' : 'not-ready'}>
+				<ul style="display: flex; justify-content: center;">
+					<li style="margin-right: 16px;">
+						<a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
+					</li>
+					<li style="margin-right: 16px;">
+						<a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
+							<img src="/telegram.svg" height="24px" alt="Telegram" /></a
+						>
+					</li>
+					<li>
+						<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer">
+							<img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 
 <style>
-  .inputs-container{
-    width:140px;
-  }
+	.inputs-container {
+		width: 140px;
+	}
 	.container {
 		display: flex;
 		justify-content: center;
 	}
-  .content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-  }
+	.content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+	}
 
 	.wrappa {
 		min-height: 2em;
