@@ -1,16 +1,6 @@
 <script>
 	// todo: read clipboard on mount
-	import { onMount } from 'svelte'
-  export let geo_ip_data = null
-
-  async function getGeolocation() {
-    const response = await fetch("https://ipapi.co/json/");
-    const reponse_data = await response.json();
-		geo_ip_data = reponse_data;
-    setCountryCode(geo_ip_data.country_calling_code)
-  }
-
-  getGeolocation();
+	import { onMount } from 'svelte';
 
 	let contentWidth = 200;
 	let contentHeight = 105;
@@ -74,15 +64,13 @@
 		console.debug(result);
 		return result;
 	}
-	async function setCountryCode(code) {
-    // only get numbers from the code
-    code = code.replace(/^0+/, '').replace(/[^0-9]/g, '');
+	function setCountryCode(code) {
 		country_code = code;
 	}
 
 	// let value = '';
 	let normed = '';
-	let country_code = '1';
+	let country_code = '54';
 
 	$: normed = norm(value, country_code);
 	$: ready = normed.length > 0;
@@ -123,10 +111,6 @@
 		</div>
 	</div>
 </div>
-
-{#if geo_ip_data}
-<pre>{JSON.stringify(geo_ip_data, null, 2)}</pre>
-{/if}}
 
 <style>
 	.inputs-container {
