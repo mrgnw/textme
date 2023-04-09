@@ -1,13 +1,5 @@
 <script>
-	// todo: read clipboard on mount
 	import { onMount } from 'svelte';
-  // get ip country from cloudflare headers
-  // https://support.cloudflare.com/hc/en-us/articles/200168236-How-does-Cloudflare-handle-HTTP-Request-headers-
-  let cf_ipcountry;
-  export function load({ request }) {
-    console.debug(request.headers);
-    cf_ipcountry = request.headers['cf-ipcountry'];
-  }
   export let data;
 
 	let contentWidth = 200;
@@ -84,11 +76,9 @@
 	$: ready = normed.length > 0;
 </script>
 
-<h1>Your geolocation data:</h1>
-<ul>
-  <li>Country code: {cf_ipcountry}</li>
-</ul>
+
 <div class="container">
+  
 	<div class="content" style="transform: scale({scale}); transform-origin: top left;">
 		<!-- <div class="flags">
 			<span on:click={() => setCountryCode('1')}>🇺🇸</span>
@@ -96,7 +86,7 @@
 			<span on:click={() => setCountryCode('54')}>🇦🇷</span>
 			<span on:click={() => setCountryCode('55')}>🇧🇷</span>
 		</div> -->
-
+    <h1>{data.ip_country}</h1>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
 			<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
