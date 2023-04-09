@@ -6,6 +6,10 @@
 
   export let data;
 
+	// get n from url params
+	import { page } from '$app/stores'
+	let value = $page.url.searchParams.get('n') || '';
+
 	let contentWidth = 138;
 	let contentHeight = 105;
 
@@ -28,7 +32,8 @@
 		updateScale();
 		window.addEventListener('resize', updateScale);
 	});
-	let value = '';
+
+	
 
 	function norm(phone, country_code = '1') {
 		country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
