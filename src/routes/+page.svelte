@@ -1,17 +1,26 @@
 <script>
 	import { onMount } from 'svelte';
+	import { scale } from 'svelte/transition';
+	import { tweened } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
+
   export let data;
 
-	let contentWidth = 200;
+	let contentWidth = 138;
 	let contentHeight = 105;
-	let scale = 3;
+
+	const contentScale = tweened(1, {
+		duration: 500,
+		easing: cubicOut,
+	});
 
 	const updateScale = () => {
 		const viewportWidth = window.innerWidth;
 		const viewportHeight = window.innerHeight;
 		const widthScale = viewportWidth / contentWidth;
 		const heightScale = viewportHeight / contentHeight;
-		scale = Math.min(widthScale, heightScale);
+		const newScale = Math.min(widthScale, heightScale);
+		contentScale.set(newScale);
 	};
 
 	// Update the scale whenever the window is resized
@@ -19,23 +28,6 @@
 		updateScale();
 		window.addEventListener('resize', updateScale);
 	});
-
-  onMount(async () => {
-    if (navigator.clipboard === undefined) {
-      console.error('Clipboard API not supported');
-      return;
-    }
-    
-    try {
-      const text = await navigator.clipboard.readText();
-      let xx = norm(text);
-      console.log(xx);
-      ready = true;
-    } catch (err) {
-      console.error('Failed to read clipboard contents: ', err);
-    }
-  });
-
 	let value = '';
 
 	function norm(phone, country_code = '1') {
@@ -61,12 +53,8 @@
 		} else {
 			result = `+${country_code}${last10}`;
 		}
-		console.debug(result);
 		return result;
 	}
-	// function setCountryCode(code) {
-	// 	country_code = code;
-	// }
 
 	// let value = '';
 	let normed = '';
@@ -80,17 +68,13 @@
 
 <div class="container">
   
-	<div class="content" style="transform: scale({scale}); transform-origin: top left;">
-		<!-- <div class="flags">
-			<span on:click={() => setCountryCode('1')}>🇺🇸</span>
-			<span on:click={() => setCountryCode('52')}>🇲🇽</span>
-			<span on:click={() => setCountryCode('54')}>🇦🇷</span>
-			<span on:click={() => setCountryCode('55')}>🇧🇷</span>
-		</div> -->
-    <h1>{data.country_phone}</h1>
+	<div class="content" 
+	in:scale="{{ duration: $contentScale }}"
+	style="transform-origin: top left; transform: scale({$contentScale})"
+	>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
-			<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
+			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12"/>
 		</div>
 
 		<div class="wrappa">
@@ -116,6 +100,9 @@
 </div>
 
 <style>
+	:root {
+		overflow: hidden;
+	}
 	.inputs-container {
 		width: 140px;
 	}
@@ -129,13 +116,12 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		margin: auto;
+		margin-top: 2rem;
 	}
 
 	.wrappa {
 		min-height: 2em;
 	}
-	.flags,
 	.apps {
 		font-size: 3em;
 		display: flex;
@@ -157,7 +143,6 @@
 	}
 	ul {
 		display: flex;
-		/* flex-direction: row; */
 		list-style: none;
 		padding: 0;
 		margin: 0;
