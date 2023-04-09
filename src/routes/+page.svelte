@@ -64,13 +64,14 @@
 		console.debug(result);
 		return result;
 	}
-	function setCountryCode(code) {
-		country_code = code;
-	}
+	// function setCountryCode(code) {
+	// 	country_code = code;
+	// }
 
 	// let value = '';
 	let normed = '';
-	let country_code = '54';
+	// let country_code = '54';
+  let country_code = data.country_phone || '1';
 
 	$: normed = norm(value, country_code);
 	$: ready = normed.length > 0;
@@ -86,7 +87,7 @@
 			<span on:click={() => setCountryCode('54')}>🇦🇷</span>
 			<span on:click={() => setCountryCode('55')}>🇧🇷</span>
 		</div> -->
-    <h1>{data.ip_country}</h1>
+    <h1>{data.country_phone}</h1>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
 			<input bind:value type="tel" placeholder="11 2222 3333" size="12" />
