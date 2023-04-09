@@ -3,10 +3,10 @@
 	import { onMount } from 'svelte';
   // get ip country from cloudflare headers
   // https://support.cloudflare.com/hc/en-us/articles/200168236-How-does-Cloudflare-handle-HTTP-Request-headers-
-  export async function load({ request }) {
-    const country = request.headers['cf-ipcountry'];
-    const data = { country };
-    return { props: { data } };
+  let cf_ipcountry;
+  export function load({ request }) {
+    console.debug(request.headers);
+    cf_ipcountry = request.headers['cf-ipcountry'];
   }
   export let data;
 
@@ -83,9 +83,10 @@
 	$: normed = norm(value, country_code);
 	$: ready = normed.length > 0;
 </script>
+
 <h1>Your geolocation data:</h1>
 <ul>
-  <li>Country code: {data.country}</li>
+  <li>Country code: {cf_ipcountry}</li>
 </ul>
 <div class="container">
 	<div class="content" style="transform: scale({scale}); transform-origin: top left;">
