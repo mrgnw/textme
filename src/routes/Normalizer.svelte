@@ -6,7 +6,9 @@
 	import { cubicOut } from 'svelte/easing';
 
 	export let data;
-	export let value = $page.url.searchParams.get('n') || '';
+	export let value ='';
+	let normed = '';
+	let country_code = data.country_phone || '1';
 
 	let contentWidth = 138;
 	let contentHeight = 105;
@@ -59,10 +61,7 @@
 		return result;
 	}
 
-	// let value = '';
-	let normed = '';
-	// let country_code = '54';
-	let country_code = data.country_phone || '1';
+
 
 	$: normed = norm(value, country_code);
 	$: ready = normed.length > 0;
