@@ -34,7 +34,6 @@
 	});
 
 	
-
 	function norm(phone, country_code = '1') {
 		country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
 		phone = phone.replace(/^0+/, '').replace(/[^0-9+]/g, '');
