@@ -1,3 +1,4 @@
+import preprocess from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 import mdsvexConfig from './mdsvex.config.js';
 import adapter from '@sveltejs/adapter-auto';
@@ -13,7 +14,12 @@ const config = {
 		adapter: adapter()
 	},
 
-	preprocess: [mdsvex(mdsvexConfig)]
+	preprocess: [
+		mdsvex(mdsvexConfig),
+		preprocess({
+			postcss: true
+		})
+	]
 };
 
 export default config;
