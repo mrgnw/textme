@@ -18,6 +18,21 @@
 		easing: cubicOut,
 	});
 
+	const updateScale = () => {
+		const viewportWidth = window.innerWidth;
+		const viewportHeight = window.innerHeight;
+		const widthScale = viewportWidth / contentWidth;
+		const heightScale = viewportHeight / contentHeight;
+		const newScale = Math.min(widthScale, heightScale);
+		contentScale.set(newScale);
+	};
+
+	// Update the scale whenever the window is resized
+	onMount(() => {
+		updateScale();
+		window.addEventListener('resize', updateScale);
+	});
+
 	
 	function norm(phone, country_code = '1') {
 		country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
@@ -44,6 +59,8 @@
 		}
 		return result;
 	}
+
+
 
 	$: normed = norm(value, country_code);
 	$: ready = normed.length > 0;
