@@ -23,7 +23,11 @@
 		"svelte-check": "^3.0.1",
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0",
-		"mdsvex": "^0.10.6"
+		"mdsvex": "^0.10.6",
+		"postcss": "^8.4.14",
+		"postcss-load-config": "^4.0.1",
+		"svelte-preprocess": "^4.10.7",
+		"autoprefixer": "^10.4.7"
 	},
 	"type": "module"
 }
