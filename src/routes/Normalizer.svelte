@@ -8,7 +8,9 @@
 	export let data;
 	export let value ='';
 	let normed = '';
-	let country_code = data.country_phone || '1';
+	let country_code = data.phone || '1';
+	console.debug('data', data)
+	console.log(country_code)
 
 	let contentWidth = 138;
 	let contentHeight = 105;
