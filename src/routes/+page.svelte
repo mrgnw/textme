@@ -5,6 +5,6 @@
 	export let value = $page.url.searchParams.get('n') || ''
 </script>
 
-<Normalizer data value={value}>
+<Normalizer data={data} value={value}>
 
 </Normalizer>

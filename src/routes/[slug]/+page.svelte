@@ -6,6 +6,6 @@
 	export let value = $page.params.slug;
 </script>
 
-<Normalizer data value={value}>
+<Normalizer data={data} value={value}>
 
 </Normalizer>
