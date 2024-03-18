@@ -1,4 +1,4 @@
-# Normalize numbers into easy social links – SMS, Telegram, WhatsApp.
+# Easily generate links to message WhatsApp, SMS, Telegram
 
 Easily start new conversations in sms, Whatsapp, or Telegram using a generated link that uses the phone number to look up the user.
 
