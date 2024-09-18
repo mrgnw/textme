@@ -1,11 +1,12 @@
 <script>
-	
+
 	import { page } from '$app/stores';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 	import { normalize } from '$lib/normalize';
 	import * as Card from "$lib/components/ui/card";
 	import { MessageCircle, Send, Phone } from 'lucide-svelte';
+	import { Badge } from "$lib/components/ui/badge";
 
 	export let data;
 	export let value = '';
@@ -21,45 +22,43 @@
 	});
 
 	$: normed = normalize(value, country_code);
-	$: ready = normed.length > 0;
-
+	$: valid = isValidPhoneNumber(normed);
 	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
 	}
+	function isValidPhoneNumber(phone) {
+		const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+		return phoneRegex.test(phone);
+	}
 </script>
 
-<Card.Root>
+<Card.Root class="max-w-lg mx-auto">
 	<Card.Header>
-		<Card.Title>Normalizer</Card.Title>
-		<Card.Description>Enter your phone number to generate messaging links</Card.Description>
+		<Card.Title>Social message links</Card.Title>
+		<Card.Description>Enter a phone number to get links to send DM's on supported apps</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
 			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12" />
 		</div>
-		{normed}
-		<div class="wrappa">
+		<div class="flex justify-center items-center py-2">
+			<Badge variant={valid ? 'default' : 'outline'}>{normed}</Badge>
+		</div>
+		<div>
 			<div>
 				<ul style="display: flex; justify-content: center;">
 					<li style="margin-right: 16px;">
-						<a href="sms:+{normed}" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<MessageCircle size="24" />
-						</a>
+						<MessageCircle size="24" />
 					</li>
 					<li style="margin-right: 16px;">
-						<a href="https://t.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<Send size="24" />
-						</a>
+						<Send size="24" />
 					</li>
 					<li>
-						<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<Phone size="24" />
-						</a>
+						<Phone size="24" />
 					</li>
 				</ul>
 			</div>
 		</div>
 	</Card.Content>
 </Card.Root>
-
