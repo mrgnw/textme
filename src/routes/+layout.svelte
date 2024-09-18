@@ -1,6 +1,5 @@
-<script>
-	import '../app.postcss';
-	/** @type {import('./$types').LayoutData} */
-</script>
+<script>import "../app.css";
+import '../app.postcss';
+/** @type {import('./$types').LayoutData} */</script>
 
-<slot />
+<slot></slot>

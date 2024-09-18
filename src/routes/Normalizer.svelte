@@ -1,10 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { scale } from 'svelte/transition';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 	import { normalize } from '$lib/normalize';
+	import * as Card from "$lib/components/ui/card";
+	import { MessageCircle, Send, Phone } from 'lucide-svelte';
 
 	export let data;
 	export let value = '';
@@ -19,37 +20,20 @@
 		easing: cubicOut
 	});
 
-	const updateScale = () => {
-		const viewportWidth = window.innerWidth;
-		const viewportHeight = window.innerHeight;
-		const widthScale = viewportWidth / contentWidth;
-		const heightScale = viewportHeight / contentHeight;
-		const newScale = Math.min(widthScale, heightScale);
-		contentScale.set(newScale);
-	};
-
-	// Update the scale whenever the window is resized
-	onMount(() => {
-		updateScale();
-		window.addEventListener('resize', updateScale);
-	});
-
 	$: normed = normalize(value, country_code);
 	$: ready = normed.length > 0;
 
-	// function copy_number(){
-	// 	navigator.clipboard.writeText(normed);
-	// }
-	function focusInputField(){
+	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
 	}
 </script>
 
-<div class="base">
-<div class="container">
-	<div
-		class="content"
-	>
+<Card.Root>
+	<Card.Header>
+		<Card.Title>Normalizer</Card.Title>
+		<Card.Description>Enter your phone number to normalize it</Card.Description>
+	</Card.Header>
+	<Card.Content>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
 			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12" />
@@ -60,25 +44,25 @@
 				<ul style="display: flex; justify-content: center;">
 					<li style="margin-right: 16px;">
 						<a href="sms:+{normed}" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<img src="/sms.svg" height="24px" alt="Telegram" />
+							<MessageCircle size="24" />
 						</a>
 					</li>
 					<li style="margin-right: 16px;">
 						<a href="https://t.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<img src="/telegram.svg" height="24px" alt="Telegram" />
+							<Send size="24" />
 						</a>
 					</li>
 					<li>
 						<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
-							<img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
+							<Phone size="24" />
 						</a>
 					</li>
 				</ul>
 			</div>
 		</div>
-	</div>
-	</div>
-	</div>
+	</Card.Content>
+</Card.Root>
+
 <style>
 		:root {
 		overflow: hidden;

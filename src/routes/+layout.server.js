@@ -8,6 +8,8 @@ export const load = async ({ request }) => {
 	const accept_language = headers.get('accept_language');
 	const country = countries.find((c) => c.code === ip_country);
 	const country_phone = country ? country.phone : null;
+	console.log(ip_country);
+	console.log(country_phone);
 	
 	return {
 		ip_country,
