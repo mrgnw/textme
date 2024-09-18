@@ -57,18 +57,18 @@
 			<div>
 				<ul style="display: flex; justify-content: center;">
 					<li style="margin-right: 16px;">
-						<a href={smsLink}>
+						<a href={smsLink} target="_blank">
 							<MessageCircle size="24" />
 						</a>
 					</li>
 					<li style="margin-right: 16px;">
-						<a href={whatsappLink}>
-							<Send size="24" />
+						<a href={whatsappLink} target="_blank">
+							<Phone size="24" />
 						</a>
 					</li>
 					<li>
-						<a href={telegramLink}>
-							<Phone size="24" />
+						<a href={telegramLink} target="_blank">
+							<Send size="24" />
 						</a>
 					</li>
 				</ul>
