@@ -1,5 +1,7 @@
-<script>import "../app.css";
-import '../app.postcss';
-/** @type {import('./$types').LayoutData} */</script>
+<script>
+  export let data;
+</script>
 
 <slot></slot>
+
+<p>IP Country: {data.ip_country}</p>
