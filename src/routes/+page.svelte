@@ -6,6 +6,6 @@
 </script>
 <title># to t.me/wa.me</title>
 
-<Normalizer data={data} value={value}>
+<Normalizer data value={value}>
 
 </Normalizer>

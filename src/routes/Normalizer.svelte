@@ -1,21 +1,23 @@
 <script>
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores'
+	import { page } from '$app/stores';
 	import { scale } from 'svelte/transition';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
+	import Share from './Share.svelte';
+	import { normalize } from '$lib/normalize';
 
 	export let data;
-	export let value ='';
+	export let value = '';
 	let normed = '';
 	let country_code = data.country_phone || '1';
 
-	let contentWidth = 138;
+	let contentWidth = 160;
 	let contentHeight = 105;
 
 	const contentScale = tweened(1, {
 		duration: 500,
-		easing: cubicOut,
+		easing: cubicOut
 	});
 
 	const updateScale = () => {
@@ -33,64 +35,42 @@
 		window.addEventListener('resize', updateScale);
 	});
 
-	
-	function norm(phone, country_code = '1') {
-		country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
-		phone = phone.replace(/^0+/, '').replace(/[^0-9+]/g, '');
-		let last10 = phone.slice(-10);
-		// if last10 is 8 digits, add 11 to the front
-		if (last10.length === 8) {
-			last10 = `11${last10}`;
-		}
-		if (last10.length !== 10) {
-			return '';
-		}
-
-		const prefix = phone.slice(0, -10).replace(/^\+/, '');
-		const strippedPrefix = prefix;
-
-		let result = '';
-
-		// if strippedPrefix is digits, add country code
-		if (strippedPrefix.match(/^\d+$/)) {
-			result = `+${strippedPrefix}${last10}`;
-		} else {
-			result = `+${country_code}${last10}`;
-		}
-		return result;
-	}
-
-
-
-	$: normed = norm(value, country_code);
+	$: normed = normalize(value, country_code);
 	$: ready = normed.length > 0;
+
+	// function copy_number(){
+	// 	navigator.clipboard.writeText(normed);
+	// }
+	function focusInputField(){
+		document.querySelector('input[type="tel"]').focus();
+	}
 </script>
 
-
+<div class="base">
 <div class="container">
-	
-	<div class="content" 
-	in:scale="{{ duration: $contentScale }}"
-	style="transform-origin: top left; transform: scale({$contentScale})"
+	<div
+		class="content"
 	>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
-			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12"/>
+			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12" />
 		</div>
-
+		{normed}
 		<div class="wrappa">
-			<div class={ready ? 'apps' : 'not-ready'}>
+			<div>
 				<ul style="display: flex; justify-content: center;">
 					<li style="margin-right: 16px;">
-						<a href="sms:+{normed}"> <img src="/sms.svg" height="24px" alt="Telegram" /></a>
+						<a href="sms:+{normed}" style={ready ? '' : 'color: grey; pointer-events: none'}>
+							<img src="/sms.svg" height="24px" alt="Telegram" />
+						</a>
 					</li>
 					<li style="margin-right: 16px;">
-						<a href="https://t.me/{normed}" target="_blank" rel="noreferrer">
-							<img src="/telegram.svg" height="24px" alt="Telegram" /></a
-						>
+						<a href="https://t.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
+							<img src="/telegram.svg" height="24px" alt="Telegram" />
+						</a>
 					</li>
 					<li>
-						<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer">
+						<a href="https://wa.me/{normed}" target="_blank" rel="noreferrer" style={ready ? '' : 'color: grey; pointer-events: none'}>
 							<img src="/WhatsApp.svg" height="24px" alt="Fucking WhatsApp, god help us all" />
 						</a>
 					</li>
@@ -98,10 +78,10 @@
 			</div>
 		</div>
 	</div>
-</div>
-
+	</div>
+	</div>
 <style>
-	:root {
+		:root {
 		overflow: hidden;
 	}
 	.inputs-container {
@@ -132,7 +112,7 @@
 		margin: 0 0.2em;
 	}
 	.not-ready {
-		display: none;
+		/* display: none; */
 	}
 	span {
 		-webkit-touch-callout: none;
@@ -151,4 +131,16 @@
 	.apps li {
 		margin: 0 0.1em;
 	}
+
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+	.base {
+		height: 100%;
+		width: 100%;
+	}
+
 </style>
