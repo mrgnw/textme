@@ -42,7 +42,7 @@
 	}
 </script>
 
-<Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10">
+<Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
 	<Card.Header>
 		<Card.Title class="text-3xl sm:text-4xl lg:text-5xl">Social message links</Card.Title>
 		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">Enter a phone number to get direct message links on
