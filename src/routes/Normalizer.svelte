@@ -8,10 +8,14 @@
 	import { MessageCircle, Send, Phone } from 'lucide-svelte';
 	import { Badge } from "$lib/components/ui/badge";
 
-	export let data;
-	export let value = '';
-	let normed = '';
-	let country_code = data.country_phone || '1';
+	let { data, value = '' } = $props();
+	$effect(() => {
+		if (value == '') {
+			focusInputField();
+		}
+	});
+
+	let country_code = $state(data.country_phone || '1');
 
 	let contentWidth = 160;
 	let contentHeight = 105;
@@ -21,8 +25,12 @@
 		easing: cubicOut
 	});
 
-	$: normed = normalize(value, country_code);
-	$: valid = isValidPhoneNumber(normed);
+	let normed = $derived(normalize(value, country_code));
+	let smsLink = $derived(`sms:${normed}`);
+	let whatsappLink = $derived(`https://wa.me/${normed}`);
+	let telegramLink = $derived(`https://t.me/${normed}`);
+	let is_valid = $derived(isValidPhoneNumber(normed));
+
 	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
 	}
@@ -40,22 +48,28 @@
 	<Card.Content>
 		<div class="inputs-container" style="text-align: center;">
 			<input bind:value={country_code} placeholder="country code" size="3" />
-			<input bind:value autofocus type="tel" placeholder="11 2222 3333" size="12" />
+			<input bind:value={value} type="tel" placeholder="11 2222 3333" size="12" />
 		</div>
 		<div class="flex justify-center items-center py-2">
-			<Badge variant={valid ? 'default' : 'outline'}>{normed}</Badge>
+			<Badge variant={is_valid ? 'default' : 'outline' }>{normed}</Badge>
 		</div>
 		<div>
 			<div>
 				<ul style="display: flex; justify-content: center;">
 					<li style="margin-right: 16px;">
-						<MessageCircle size="24" />
+						<a href={smsLink}>
+							<MessageCircle size="24" />
+						</a>
 					</li>
 					<li style="margin-right: 16px;">
-						<Send size="24" />
+						<a href={whatsappLink}>
+							<Send size="24" />
+						</a>
 					</li>
 					<li>
-						<Phone size="24" />
+						<a href={telegramLink}>
+							<Phone size="24" />
+						</a>
 					</li>
 				</ul>
 			</div>

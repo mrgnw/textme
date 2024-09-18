@@ -16,23 +16,23 @@ function replaceDigitWords(phone) {
 	});
 }
 
-
 export function normalize(phone, country_code = '1') {
+	if (typeof phone !== 'string') {
+		phone = String(phone);
+	}
 	phone = replaceDigitWords(phone);
 	country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
 	phone = phone.replace(/^0+/, '').replace(/[^0-9+]/g, '');
 	let last10 = phone.slice(-10);
-	// if last10 is 8 digits, add 11 to the front
-	if (last10.length === 8) {
-		last10 = `11${last10}`;
-	}
+	// if (last10.length === 8) {
+	// 	last10 = `11${last10}`;
+	// }
 
 	const prefix = phone.slice(0, -10).replace(/^\+/, '');
 	const strippedPrefix = prefix;
 
 	let result = '';
 
-	// if strippedPrefix is digits, add country code
 	if (strippedPrefix.match(/^\d+$/)) {
 		result = `+${strippedPrefix}${last10}`;
 	} else {
