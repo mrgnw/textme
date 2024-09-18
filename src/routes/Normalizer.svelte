@@ -7,6 +7,7 @@
 	import * as Card from "$lib/components/ui/card";
 	import { MessageCircle, Send, Phone } from 'lucide-svelte';
 	import { Badge } from "$lib/components/ui/badge";
+	import { Input } from "$lib/components/ui/input";
 
 	let { data, value = '' } = $props();
 	$effect(() => {
@@ -25,6 +26,7 @@
 		easing: cubicOut
 	});
 
+	// todo: separate number and country code logic?
 	let normed = $derived(normalize(value, country_code));
 	let smsLink = $derived(`sms:${normed}`);
 	let whatsappLink = $derived(`https://wa.me/${normed}`);
@@ -40,35 +42,41 @@
 	}
 </script>
 
-<Card.Root class="max-w-lg mx-auto">
+<Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10">
 	<Card.Header>
-		<Card.Title>Social message links</Card.Title>
-		<Card.Description>Enter a phone number to get links to send DM's on supported apps</Card.Description>
+		<Card.Title class="text-3xl sm:text-4xl lg:text-5xl">Social message links</Card.Title>
+		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">Enter a phone number to get direct message links on
+			supported apps</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<div class="inputs-container" style="text-align: center;">
-			<input bind:value={country_code} placeholder="country code" size="3" />
-			<input bind:value={value} type="tel" placeholder="11 2222 3333" size="12" />
+		<div class="inputs-container text-center">
+			<Input bind:value={country_code} placeholder="country code" size="3"
+				class="text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4" />
+			<Input bind:value={value} type="tel" placeholder="11 2222 3333" size="12"
+				class="text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4" />
 		</div>
-		<div class="flex justify-center items-center py-2">
-			<Badge variant={is_valid ? 'default' : 'outline' }>{normed}</Badge>
+		<div class="flex justify-center items-center py-4">
+			<!-- TODO: separate country code visually from phone number with a space -->
+			<Badge variant={is_valid ? 'default' : 'outline' } class="text-lg sm:text-xl lg:text-2xl">
+				{normed}
+			</Badge>
 		</div>
 		<div>
 			<div>
-				<ul style="display: flex; justify-content: center;">
-					<li style="margin-right: 16px;">
+				<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
+					<li>
 						<a href={smsLink} target="_blank">
-							<MessageCircle size="24" />
+							<MessageCircle size="24" class="sm:size-20 lg:size-24" />
 						</a>
 					</li>
-					<li style="margin-right: 16px;">
+					<li>
 						<a href={whatsappLink} target="_blank">
-							<Phone size="24" />
+							<Phone size="24" class="sm:size-20 lg:size-24" />
 						</a>
 					</li>
 					<li>
 						<a href={telegramLink} target="_blank">
-							<Send size="24" />
+							<Send size="24" class="sm:size-20 lg:size-24" />
 						</a>
 					</li>
 				</ul>
