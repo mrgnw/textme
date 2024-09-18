@@ -4,7 +4,6 @@
 	import { scale } from 'svelte/transition';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
-	import Share from './Share.svelte';
 	import { normalize } from '$lib/normalize';
 
 	export let data;
