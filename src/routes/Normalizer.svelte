@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	
 	import { page } from '$app/stores';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
@@ -31,7 +31,7 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title>Normalizer</Card.Title>
-		<Card.Description>Enter your phone number to normalize it</Card.Description>
+		<Card.Description>Enter your phone number to generate messaging links</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="inputs-container" style="text-align: center;">
@@ -63,67 +63,3 @@
 	</Card.Content>
 </Card.Root>
 
-<style>
-		:root {
-		overflow: hidden;
-	}
-	.inputs-container {
-		width: 140px;
-	}
-	.container {
-		display: flex;
-		justify-content: center;
-	}
-	.content {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		margin-top: 2rem;
-	}
-
-	.wrappa {
-		min-height: 2em;
-	}
-	.apps {
-		font-size: 3em;
-		display: flex;
-		flex-direction: row;
-		cursor: pointer;
-		font-size: 2em;
-		margin: 0 0.2em;
-	}
-	.not-ready {
-		/* display: none; */
-	}
-	span {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
-	ul {
-		display: flex;
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	.apps li {
-		margin: 0 0.1em;
-	}
-
-	.container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100%;
-	}
-	.base {
-		height: 100%;
-		width: 100%;
-	}
-
-</style>
