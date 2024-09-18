@@ -37,6 +37,6 @@ export function normalize(phone, country_code = '1') {
 		result = `+${strippedPrefix}${last10}`;
 	} else {
 		result = `+${country_code}${last10}`;
-	}
+}
 	return result;
 }
