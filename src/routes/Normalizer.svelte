@@ -1,6 +1,5 @@
 <script>
 
-	import { page } from '$app/stores';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 	import { normalize } from '$lib/normalize';
@@ -17,14 +16,6 @@
 	});
 
 	let country_code = $state(data.country_phone || '1');
-
-	let contentWidth = 160;
-	let contentHeight = 105;
-
-	const contentScale = tweened(1, {
-		duration: 500,
-		easing: cubicOut
-	});
 
 	// todo: separate number and country code logic?
 	let normed = $derived(normalize(value, country_code));
