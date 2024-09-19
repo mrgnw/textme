@@ -15,7 +15,7 @@
 		}
 	});
 
-	let country_code = $state(data.country_phone || '1');
+	let country_code = $state(data.country_phone);
 
 	// todo: separate number and country code logic?
 	let normed = $derived(normalize(value, country_code));
