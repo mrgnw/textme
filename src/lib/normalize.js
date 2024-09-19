@@ -7,7 +7,7 @@ function replaceDigitWords(phone) {
 		'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
 		'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9',
 		'cero': '0', 'uno': '1', 'dos': '2', 'tres': '3', 'cuatro': '4',
-		'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9'
+		'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9',
 	};
 
 	return phone.replace(/([a-zA-Z]+)/g, word => {
@@ -37,6 +37,6 @@ export function normalize(phone, country_code = '1') {
 		result = `+${strippedPrefix}${last10}`;
 	} else {
 		result = `+${country_code}${last10}`;
-}
+	}
 	return result;
 }
