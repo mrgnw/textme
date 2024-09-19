@@ -14,7 +14,6 @@
 		"test:watch": "vitest --watch"
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "^1.30.4",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/svelte": "^5.2.1",
 		"jsdom": "^25.0.0",
@@ -29,6 +28,7 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-cloudflare": "^4.7.2",
+		"@sveltejs/kit": "^2.5.28",
 		"autoprefixer": "^10.4.20",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.441.0",
