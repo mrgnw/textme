@@ -29,7 +29,7 @@
 	function isValidPhoneNumber(phone) {
 		const phoneRegex = /^\+?[1-9]\d{1,14}$/;
 		return phoneRegex.test(phone);
-	}
+	}``
 </script>
 
 <Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
@@ -74,3 +74,5 @@
 		</div>
 	</Card.Content>
 </Card.Root>
+
+<pre><code>{JSON.stringify(data, null, 2)}</code></pre>

@@ -4,5 +4,6 @@
 
 <slot></slot>
 
-
-<pre><code>{JSON.stringify(data, null, 2)}</code></pre>
+<layout>
+	<pre><code>{JSON.stringify(data, null, 2)}</code></pre>
+</layout>
