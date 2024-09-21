@@ -1,8 +1,8 @@
 <script>
-  export let data;
+	let {data, children} = $props()
 </script>
 
-<slot></slot>
+{@render children()}
 
 <layout>
 	<pre><code>{JSON.stringify(data, null, 2)}</code></pre>
