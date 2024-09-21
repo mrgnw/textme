@@ -1,7 +1,5 @@
 <script>
 
-	import { tweened } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
 	import { normalize } from '$lib/normalize';
 	import * as Card from "$lib/components/ui/card";
 	import { MessageCircle, Send, Phone } from 'lucide-svelte';
@@ -9,6 +7,7 @@
 	import { Input } from "$lib/components/ui/input";
 
 	let { data, value = '' } = $props();
+
 	$effect(() => {
 		if (value == '') {
 			focusInputField();

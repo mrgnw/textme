@@ -4,4 +4,5 @@
 
 <slot></slot>
 
-<p>IP Country: {data.ip_country}</p>
+
+<pre><code>{JSON.stringify(data, null, 2)}</code></pre>
