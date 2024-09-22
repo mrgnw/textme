@@ -3,10 +3,14 @@
 	import Normalizer from "../Normalizer.svelte";
 	
 	let value = $state($page.params.slug);
+	let data = $state($page.data);
 	
 </script>
 
 <title># to t.me/wa.me</title>
 
-<Normalizer data={$page.data} value={value} />
+<Normalizer data value />
 
+<div>
+	<pre><code>slug {JSON.stringify(data, null, 2)}</code></pre>
+</div>

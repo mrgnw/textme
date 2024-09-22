@@ -6,7 +6,7 @@
 	import { Badge } from "$lib/components/ui/badge";
 	import { Input } from "$lib/components/ui/input";
 
-	let { data, value = '' } = $props();
+	let { data = {}, value = '' } = $props();
 
 	$effect(() => {
 		if (value == '') {
@@ -75,4 +75,4 @@
 	</Card.Content>
 </Card.Root>
 
-<pre><code>{JSON.stringify(data, null, 2)}</code></pre>
+<pre><code>norm {JSON.stringify(data, null, 2)}</code></pre>

@@ -1,12 +1,12 @@
-// export const prerender = false;
+import {countries} from '$lib/countries.js'
 
-import {countries} from './countries.js'
-
-export const load = async ({ request }) => {
+export function getCloudflareData(request) {
 	const { headers } = request;
 	const ip_country = headers.get('cf-ipcountry') || '';
 	const accept_language = headers.get('accept-language');
-	const country = ip_country ? countries.find((c) => c.code === ip_country.toUpperCase()) : null;
+	const country = ip_country
+		? countries.find((c) => c.code === ip_country.toUpperCase())
+		: null;
 	const country_phone = country ? country.phone : null;
 
 	return {
@@ -14,4 +14,4 @@ export const load = async ({ request }) => {
 		country_phone,
 		accept_language
 	};
-};
+}
