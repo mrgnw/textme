@@ -74,5 +74,3 @@
 		</div>
 	</Card.Content>
 </Card.Root>
-
-<pre><code>norm {JSON.stringify(data, null, 2)}</code></pre>
