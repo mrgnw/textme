@@ -1,9 +1,10 @@
 <script>
 	// import { page } from '$app/stores'
 	import Normalizer from "./Normalizer.svelte";
-	let {data, value} = $props();
+	let value = $state($page.params.slug);
+	let data = $state($page.data);
 	
 </script>
 <title># to t.me/wa.me</title>
 
-<Normalizer data value={value} />
+<Normalizer data value />
