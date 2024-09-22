@@ -8,3 +8,7 @@
 <title># to t.me/wa.me</title>
 
 <Normalizer data={data} value={value} />
+
+<div>
+	<pre><code>page {JSON.stringify(data, null, 2)}</code></pre>
+</div>
