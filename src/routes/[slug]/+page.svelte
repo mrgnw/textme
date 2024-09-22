@@ -9,7 +9,7 @@
 
 <title># to t.me/wa.me</title>
 
-<Normalizer data value />
+<Normalizer data={data} value={value} />
 
 <div>
 	<pre><code>slug {JSON.stringify(data, null, 2)}</code></pre>
