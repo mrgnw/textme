@@ -1,5 +1,4 @@
 <script>
-
 	import { normalize } from '$lib/normalize';
 	import * as Card from "$lib/components/ui/card";
 	import { MessageCircle, Send, Phone } from 'lucide-svelte';

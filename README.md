@@ -1,15 +1,38 @@
-# Easily generate links to message WhatsApp, SMS, Telegram
+# create-svelte
 
-Easily start new conversations in sms, Whatsapp, or Telegram using a generated link that uses the phone number to look up the user.
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
-In addition to creating message links for multiple services (WhatsApp, Telegram, SMS), it normalizes the number so you don't have to worry about spaces, dashes, etc.
+## Creating a project
 
-## Background
-In WhatsApp, there's no easy way to message someone new without giving WhatsApp full contacts access.
+If you're seeing this, you've probably already done this step. Congrats!
 
-Once you do give them full contacts access, starting a phone conversation with an unknown number via the search bar.
+```bash
+# create a new project in the current directory
+npm create svelte@latest
 
-Without full contacts access, the workaround is to use a WhatsApp URL like [wa.me/+https://wa.me/+1234567890](https://wa.me/+1234567890), which would redirect to the new chat screen for +1234567890.
+# create a new project in my-app
+npm create svelte@latest my-app
+```
 
-# Created with [create-svelte](https://github.com/sveltejs/kit/tree/master/packages/create-svelte)
+## Developing
 
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
