@@ -60,9 +60,12 @@
 		</div>
 		<div class="flex justify-center items-center py-4">
 			<!-- TODO: separate country code visually from phone number with a space -->
-			<Badge onclick={handleCopy} variant={is_valid ? 'default' : 'outline' }
-				class="cursor-pointer text-lg sm:text-xl lg:text-2xl">
-				{normed}
+			<Badge variant={is_valid ? 'default' : 'outline' }
+				class="text-lg sm:text-xl lg:text-2xl">
+				{normed} 
+				{#if is_valid}
+					<Copy onclick={handleCopy} class="ml-2 cursor-pointer"/>
+				{/if}
 			</Badge>
 		</div>
 		<div>
@@ -82,9 +85,6 @@
 						<a href={telegramLink} target="_blank">
 							<Send size="24" class="sm:size-20 lg:size-24" />
 						</a>
-					</li>
-					<li class:opacity-50={!is_valid} class:cursor-pointer={is_valid}>
-						<Copy onclick={handleCopy} class="sm:size-20 lg:size-24" />
 					</li>
 				</ul>
 			</div>
