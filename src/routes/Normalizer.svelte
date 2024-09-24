@@ -1,7 +1,7 @@
 <script>
 	import { normalize } from '$lib/normalize';
 	import * as Card from "$lib/components/ui/card";
-	import { MessageCircle, Send, Phone } from 'lucide-svelte';
+	import { Copy, MessageCircle, Send, Phone } from 'lucide-svelte';
 	import { Badge } from "$lib/components/ui/badge";
 	import { Input } from "$lib/components/ui/input";
 
@@ -29,6 +29,20 @@
 		const phoneRegex = /^\+?[1-9]\d{1,14}$/;
 		return phoneRegex.test(phone);
 	}
+
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text).then(() => {
+			console.log('Copied to clipboard');
+		}).catch(err => {
+			console.error('Failed to copy: ', err);
+		});
+	}
+
+	function handleCopy() {
+		if (is_valid) {
+			copyToClipboard(normed);
+		}
+	}
 </script>
 
 <Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
@@ -46,27 +60,31 @@
 		</div>
 		<div class="flex justify-center items-center py-4">
 			<!-- TODO: separate country code visually from phone number with a space -->
-			<Badge variant={is_valid ? 'default' : 'outline' } class="text-lg sm:text-xl lg:text-2xl">
+			<Badge onclick={handleCopy} variant={is_valid ? 'default' : 'outline' }
+				class="cursor-pointer text-lg sm:text-xl lg:text-2xl">
 				{normed}
 			</Badge>
 		</div>
 		<div>
 			<div>
 				<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
-					<li>
+					<li class:opacity-50={!is_valid} class:cursor-pointer={is_valid}>
 						<a href={smsLink} target="_blank">
 							<MessageCircle size="24" class="sm:size-20 lg:size-24" />
 						</a>
 					</li>
-					<li>
+					<li class:opacity-50={!is_valid} class:cursor-pointer={is_valid}>
 						<a href={whatsappLink} target="_blank">
 							<Phone size="24" class="sm:size-20 lg:size-24" />
 						</a>
 					</li>
-					<li>
+					<li class:opacity-50={!is_valid} class:cursor-pointer={is_valid}>
 						<a href={telegramLink} target="_blank">
 							<Send size="24" class="sm:size-20 lg:size-24" />
 						</a>
+					</li>
+					<li class:opacity-50={!is_valid} class:cursor-pointer={is_valid}>
+						<Copy onclick={handleCopy} class="sm:size-20 lg:size-24" />
 					</li>
 				</ul>
 			</div>
