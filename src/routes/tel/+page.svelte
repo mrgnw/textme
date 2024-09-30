@@ -7,8 +7,10 @@ import { TelInput, normalizedCountries } from 'svelte-tel-input';
 	TelInputOptions
 } from 'svelte-tel-input/types';
 
+export let data: { cloudflareData: { ip_country: string } };
+
 export let value: E164Number | null; // the number you should usually store & use
-export let country: CountryCode | null = null;
+export let country: CountryCode | null = (data.cloudflareData.ip_country as CountryCode) || null;
 export let valid: boolean;
 export let detailedValue: DetailedValue | null = null;
 export let options: TelInputOptions;
