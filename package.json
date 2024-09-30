@@ -22,6 +22,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-cloudflare": "^4.7.2",
 		"clsx": "^2.1.1",
 		"svelte": "^5.0.0-next.260",
 		"svelte-tel-input": "^3.5.1",
