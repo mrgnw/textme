@@ -31,7 +31,7 @@
 	
 	</script>
 	
-	<div class="flex">
+	<div class="flex max-w-md">
 	<select
 	class="form-select appearance-none block px-3 py-1.5 text-base
 		 font-normal bg-clip-padding bg-no-repeat cursor-pointer text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600 m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Defau ltselect example"
