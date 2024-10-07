@@ -7,16 +7,18 @@
   "background_color": "#ffffff",
   "theme_color": "#4299e1",
   "icons": {
-    "16": "static/textme.svg",
-    "48": "static/textme.svg",
-    "128": "static/textme.svg"
+    "16": "static/textme-16.png",
+    "48": "static/textme-48.png",
+    "128": "static/textme-128.png",
+		"256": "static/textme-256.png"
   },
   "action": {
     "default_icon": {
-      "16": "static/textme.svg",
-      "48": "static/textme.svg",
-      "128": "static/textme.svg"
+      "16": "static/textme-16.png",
+    "48": "static/textme-48.png",
+    "128": "static/textme-128.png",
+		"256": "static/textme-256.png"
     },
-    "default_title": "My Extension"
+    "default_title": "Textme.cc"
   }
 }
