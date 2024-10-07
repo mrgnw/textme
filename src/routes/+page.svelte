@@ -11,6 +11,8 @@
 	
 	import * as Card from "$lib/components/ui/card";
 	import { Badge } from "$lib/components/ui/badge";
+	
+	import { fly } from 'svelte/transition';
 
 	let cf_data = $state($page.data);
 	let country = $state(cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US");
@@ -19,21 +21,19 @@
 	let detailedValue = $state(null);
 
 	let showDebug = $state(false);
-	const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
-
-	let debugUnlock = konami;
-	let debugUnlockPos = $state(0);
+	const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+	let pos = $state(0);
 
 	$effect(() => {
 		const handleKeydown = (event) => {
-			if (event.key === debugUnlock[debugUnlockPos]) {
-				debugUnlockPos++;
-				if (debugUnlockPos === debugUnlock.length) {
+			if (event.key === konami[pos]) {
+				pos++;
+				if (pos === konami.length) {
 					showDebug = !showDebug;
-					debugUnlockPos = 0;
+					pos = 0;
 				}
 			} else {
-				debugUnlockPos = 0;
+				pos = 0;
 			}
 		};
 
@@ -50,6 +50,17 @@
 
 	function handleCopy(){
 		copyToClipboard(detailedValue.nationalNumber);
+	}
+
+	function debugTransition(node, { delay = 0, duration = 300 }) {
+		return {
+			delay,
+			duration,
+			css: (t, u) => `
+				opacity: ${t};
+				transform: scale(${1 - 0.1 * u}) translateY(${-10 * u}px);
+			`
+		};
 	}
 </script>
 
@@ -102,11 +113,13 @@
 </Card.Root>
 
 {#if showDebug}
-    <PhoneDebug bind:value bind:detailedValue bind:cf_data />
+	<div class="debug" transition:fly={{ x: -300, duration: 300 }}>
+		<PhoneDebug bind:value bind:detailedValue bind:cf_data />
+	</div>
 {/if}
 
 <style>
 	:global(.inputs-container input) {
 		@apply text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4;
-	}
+	}	
 </style>
