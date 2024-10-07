@@ -13,6 +13,8 @@
 	import { Badge } from "$lib/components/ui/badge";
 	
 	import { fly } from 'svelte/transition';
+	import { scale } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	let cf_data = $state($page.data);
 	let country = $state(cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US");
@@ -73,23 +75,6 @@
 		<div class="inputs-container text-center mb-6">
 			<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
 		</div>
-		<div class="flex justify-center items-center py-4">
-			<Badge 
-				variant={valid ? 'default' : 'outline'} 
-				class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
-			>
-				<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
-				{#if valid}
-				<button 
-					on:click={handleCopy} 
-					class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
-					aria-label="Copy number"
-				>
-					<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
-				</button>
-				{/if}
-			</Badge>
-		</div>
 		<div>
 			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
 				<li class={valid ? '' : 'text-gray-500'}>
@@ -108,6 +93,25 @@
 					</a>
 				</li>
 			</ul>
+		</div>
+		<div class="flex justify-center items-center py-4">
+			{#if valid}
+			<div transition:scale={{ duration: 300, start: 0.9 }}>
+				<Badge 
+					variant={valid ? 'default' : 'outline'} 
+					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
+				>
+					<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
+					<button 
+						on:click={handleCopy} 
+						class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+						aria-label="Copy number"
+					>
+						<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
+					</button>
+				</Badge>
+			</div>
+			{/if}
 		</div>
 	</Card.Content>
 </Card.Root>
