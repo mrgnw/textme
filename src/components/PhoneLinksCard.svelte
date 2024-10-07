@@ -14,6 +14,8 @@
 	
 	import { fly } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
+	
 
 	
 	let { initialValue = null } = $props();
@@ -79,33 +81,31 @@
 		</div>
 		<div>
 			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
-				<li>
+				<li id="sms" class={valid ? 'active' : 'inactive'}>
 					<a href={valid ? `sms:${value}` : '#'} target="_blank"
-						class:hover:text-blue-500={valid}
 						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
+						
 					>
 						<RiChat3Line width="4em" height="4em" />
 					</a>
 				</li>
-				<li>
-					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank"
-						class:hover:text-green-500={valid}
-						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
-					>
-						<RiWhatsappLine width="4em" height="4em" />
-					</a>
-				</li>
-				<li>
+				<li id="telegram" class={valid ? 'active' : 'inactive'}>
 					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank"
-						class:hover:text-blue-400={valid}
 						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
+						
 					>
 						<RiTelegramLine width="4em" height="4em" />
 					</a>
 				</li>
+				<li id="whatsapp" class={valid ? 'active' : 'inactive'}>
+					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank"
+						class:text-gray-300={!valid}
+						
+					>
+						<RiWhatsappLine width="4em" height="4em" />
+					</a>
+				</li>
+
 			</ul>
 		</div>
 		<div class="flex justify-center items-center py-4">
@@ -139,5 +139,48 @@
 <style>
 	:global(.inputs-container input) {
 		@apply text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4;
-	}	
+	}
+
+	li {
+		transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+	}
+	
+
+	li.active  {
+		animation: flash 0.5s ease-out;
+		opacity: 1;
+	}
+
+	@keyframes flash {
+		0% {
+			transform: scale(1);
+			filter: brightness(100%);
+		}
+		50% {
+			transform: scale(1.1);
+			filter: brightness(150%);
+		}
+		100% {
+			transform: scale(1);
+			filter: brightness(100%);
+		}
+	}
+
+	a.disabled {
+		pointer-events: none;
+		color: #ccc;
+	}
+
+	li#sms.active { color: #48bb78; }
+	li#telegram.active { color: #4299e1; } 
+	li#whatsapp.active { color: #48bb78; }
+	li.active:hover  { 
+		animation: flash 0.5s ease-out;
+		opacity: 1;
+	 }
+	
+	li.inactive {
+		/* opacity: 0.5; */
+		pointer-events: none;
+	}
 </style>
