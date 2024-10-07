@@ -8,7 +8,7 @@
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
 	import { CopyIcon } from "lucide-svelte";
-
+	
 	import * as Card from "$lib/components/ui/card";
 	import { Badge } from "$lib/components/ui/badge";
 
@@ -17,6 +17,32 @@
 	let valid = $state(false);
 	let value = $state(null);
 	let detailedValue = $state(null);
+
+	let showDebug = $state(false);
+	const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
+
+	let debugUnlock = konami;
+	let debugUnlockPos = $state(0);
+
+	$effect(() => {
+		const handleKeydown = (event) => {
+			if (event.key === debugUnlock[debugUnlockPos]) {
+				debugUnlockPos++;
+				if (debugUnlockPos === debugUnlock.length) {
+					showDebug = !showDebug;
+					debugUnlockPos = 0;
+				}
+			} else {
+				debugUnlockPos = 0;
+			}
+		};
+
+		window.addEventListener('keydown', handleKeydown);
+
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+	});
 
 	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
@@ -75,7 +101,9 @@
 	</Card.Content>
 </Card.Root>
 
-<PhoneDebug bind:value bind:detailedValue bind:cf_data />
+{#if showDebug}
+    <PhoneDebug bind:value bind:detailedValue bind:cf_data />
+{/if}
 
 <style>
 	:global(.inputs-container input) {
