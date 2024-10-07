@@ -1,7 +1,9 @@
 <script>
 	import { normalize } from '$lib/normalize';
 	import * as Card from "$lib/components/ui/card";
-	import { MessageCircle, Send, Phone } from 'lucide-svelte';
+	import RiChat3Line from '~icons/ri/chat-3-line'
+	import RiWhatsappLine from '~icons/ri/whatsapp-line'
+	import RiTelegramLine from '~icons/ri/telegram-line'
 	import { Badge } from "$lib/components/ui/badge";
 	import { Input } from "$lib/components/ui/input";
 
@@ -55,17 +57,17 @@
 				<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
 					<li>
 						<a href={smsLink} target="_blank">
-							<MessageCircle size="24" class="sm:size-20 lg:size-24" />
+							<RiChat3Line width="4em" height="4em"/>
 						</a>
 					</li>
 					<li>
 						<a href={whatsappLink} target="_blank">
-							<Phone size="24" class="sm:size-20 lg:size-24" />
+							<RiWhatsappLine width="4em" height="4em"/>
 						</a>
 					</li>
 					<li>
 						<a href={telegramLink} target="_blank">
-							<Send size="24" class="sm:size-20 lg:size-24" />
+							<RiTelegramLine width="4em" height="4em"/>
 						</a>
 					</li>
 				</ul>
