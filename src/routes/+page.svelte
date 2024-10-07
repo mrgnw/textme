@@ -1,12 +1,65 @@
 <script>
-	import { page } from '$app/stores'
-	import Normalizer from "./Normalizer.svelte";
+	import { page } from '$app/stores';
+	import PhoneInput from "$components/PhoneInput.svelte";
+	import PhoneDebug from "$components/PhoneDebug.svelte";
 
-	let value = $state($page.params.slug);
-	let data = $state($page.data);
-	
+	import RiChat3Line from "~icons/ri/chat-3-line";
+	import RiWhatsappLine from "~icons/ri/whatsapp-line";
+	import RiTelegramLine from "~icons/ri/telegram-line";
+	import * as Card from "$lib/components/ui/card";
+	import { Badge } from "$lib/components/ui/badge";
+
+	let cf_data = $state($page.data);
+	let country = $state(cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US");
+	let valid = $state(false);
+	let value = $state(null);
+	let detailedValue = $state(null);
+
+	function focusInputField() {
+		document.querySelector('input[type="tel"]').focus();
+	}
 </script>
 
-<title># to t.me/wa.me</title>
+<Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
+	<Card.Header>
+		<Card.Title class="text-3xl sm:text-4xl lg:text-5xl">Social message links</Card.Title>
+		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">Enter a phone number to get direct message links on supported apps</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		<div class="inputs-container text-center mb-6">
+			<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
+		</div>
+		<div class="flex justify-center items-center py-4">
+			<Badge variant={valid ? 'default' : 'outline'} class="text-lg sm:text-xl lg:text-2xl">
+				{detailedValue?.formatInternational || 'Enter a phone number'}
+			</Badge>
+		</div>
+		<div>
+			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
+				<li class={valid ? '' : 'text-gray-500'}>
+					<a href={valid ? `sms:${value}` : '#'} target="_blank" class={valid ? 'hover:text-blue-500' : 'cursor-not-allowed'}>
+						<RiChat3Line width="4em" height="4em" />
+					</a>
+				</li>
+				<li class={valid ? '' : 'text-gray-500'}>
+					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank" class={valid ? 'hover:text-green-500' : 'cursor-not-allowed'}>
+						<RiWhatsappLine width="4em" height="4em" />
+					</a>
+				</li>
+				<li class={valid ? '' : 'text-gray-500'}>
+					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank" class={valid ? 'hover:text-blue-400' : 'cursor-not-allowed'}>
+						<RiTelegramLine width="4em" height="4em" />
+					</a>
+				</li>
+			</ul>
+		</div>
+	</Card.Content>
+</Card.Root>
 
-<Normalizer data={data} value={value} />
+<PhoneDebug bind:value bind:detailedValue bind:cf_data />
+
+<style>
+	:global(.inputs-container input) {
+		@apply text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4;
+	}
+</style>
