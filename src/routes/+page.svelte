@@ -14,7 +14,6 @@
 	
 	import { fly } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
-	import { fade } from 'svelte/transition';
 
 	let cf_data = $state($page.data);
 	let country = $state(cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US");
