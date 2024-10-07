@@ -1,17 +1,26 @@
 <script>
+	import { page } from '$app/stores'
 	import PhoneInput from "$components/PhoneInput.svelte";
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
 	import RiPhoneLine from "~icons/ri/phone-line";
 
-	let country = $state("ES");
+	let cf_data = $state($page.data);
+	let country = $state(cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US");
 	let valid = $state(false);
 	let value = $state(null);
 	let detailedValue = $state(null);
 	let over_icon = $state(null);
+	
+	// let value = $state($page.params.slug);
+	
 	$effect(() => {
 		console.log(over_icon);
+	});
+
+	$effect(() => {
+		console.log(country_phone);
 	});
 </script>
 
@@ -60,7 +69,10 @@
 </div>
 
 <pre><code class={valid ? "valid" : "invalid"}>{valid}</code></pre>
+<pre><code>{JSON.stringify(cf_data, null, 2)}</code></pre>
 <pre><code>{JSON.stringify(detailedValue, null, 2)}</code></pre>
+
+
 
 <style>
 	.valid {
@@ -69,6 +81,6 @@
 	}
 
 	.invalid {
-		border: 1px solid red;
+		color: red;
 	}
 </style>
