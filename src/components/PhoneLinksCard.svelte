@@ -79,18 +79,30 @@
 		</div>
 		<div>
 			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
-				<li class={valid ? '' : 'text-gray-500'}>
-					<a href={valid ? `sms:${value}` : '#'} target="_blank" class={valid ? 'hover:text-blue-500' : 'cursor-not-allowed'}>
+				<li>
+					<a href={valid ? `sms:${value}` : '#'} target="_blank"
+						class:hover:text-blue-500={valid}
+						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
+					>
 						<RiChat3Line width="4em" height="4em" />
 					</a>
 				</li>
-				<li class={valid ? '' : 'text-gray-500'}>
-					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank" class={valid ? 'hover:text-green-500' : 'cursor-not-allowed'}>
+				<li>
+					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank"
+						class:hover:text-green-500={valid}
+						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
+					>
 						<RiWhatsappLine width="4em" height="4em" />
 					</a>
 				</li>
-				<li class={valid ? '' : 'text-gray-500'}>
-					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank" class={valid ? 'hover:text-blue-400' : 'cursor-not-allowed'}>
+				<li>
+					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank"
+						class:hover:text-blue-400={valid}
+						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
+					>
 						<RiTelegramLine width="4em" height="4em" />
 					</a>
 				</li>
