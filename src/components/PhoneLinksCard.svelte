@@ -12,7 +12,7 @@
 	import * as Card from "$lib/components/ui/card";
 	import { Badge } from "$lib/components/ui/badge";
 	
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
 
 	
@@ -23,11 +23,12 @@
 	let valid = $state(false);
 	let value = $state(initialValue);
 	let detailedValue = $state(null);
-
+	
+	let showCopyFeedback = $state(false);
 	let showDebug = $state(false);
 	const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 	let pos = $state(0);
-
+	
 	$effect(() => {
 		const handleKeydown = (event) => {
 			if (event.key === konami[pos]) {
@@ -40,9 +41,7 @@
 				pos = 0;
 			}
 		};
-
 		window.addEventListener('keydown', handleKeydown);
-
 		return () => {
 			window.removeEventListener('keydown', handleKeydown);
 		};
@@ -52,20 +51,14 @@
 		document.querySelector('input[type="tel"]').focus();
 	}
 
-	function handleCopy(){
-		copyToClipboard(detailedValue.nationalNumber);
-	}
+	function handleCopy() {
+    copyToClipboard(detailedValue.nationalNumber);
+    showCopyFeedback = true;
+    setTimeout(() => {
+        showCopyFeedback = false;
+    }, 2000);
+}
 
-	function debugTransition(node, { delay = 0, duration = 300 }) {
-		return {
-			delay,
-			duration,
-			css: (t, u) => `
-				opacity: ${t};
-				transform: scale(${1 - 0.1 * u}) translateY(${-10 * u}px);
-			`
-		};
-	}
 </script>
 
 <Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
@@ -104,13 +97,23 @@
 					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
 				>
 					<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
-					<button 
-						on:click={handleCopy} 
-						class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
-						aria-label="Copy number"
-					>
-						<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
-					</button>
+					{#if showCopyFeedback}
+						<span 
+							class="ml-2 text-blue-500 transition-opacity duration-300" 
+							transition:fade={{ duration: 150 }}
+						>
+							Copied!
+						</span>
+					{:else}
+						<button 
+							on:click={handleCopy} 
+							class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+							aria-label="Copy number"
+							transition:fade={{ duration: 150 }}
+						>
+							<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
+						</button>
+					{/if}
 				</Badge>
 			</div>
 			{/if}
