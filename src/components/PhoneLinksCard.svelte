@@ -100,6 +100,7 @@
 						href={valid ? `sms:${value}` : "#"}
 						target="_blank"
 						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
 					>
 						<RiChat3Line width="4em" height="4em" />
 					</a>
@@ -109,6 +110,7 @@
 						href={valid ? `https://t.me/${value}` : "#"}
 						target="_blank"
 						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
 					>
 						<RiTelegramLine width="4em" height="4em" />
 					</a>
@@ -118,6 +120,7 @@
 						href={valid ? `https://wa.me/${value}` : "#"}
 						target="_blank"
 						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
 					>
 						<RiWhatsappLine width="4em" height="4em" />
 					</a>
