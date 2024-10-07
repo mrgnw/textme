@@ -1,0 +1,22 @@
+{
+  "name": "Textme.cc",
+  "short_name": "Textme.cc",
+  "description": "Generate direct message links for apps from a phone number",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4299e1",
+  "icons": {
+    "16": "static/textme.svg",
+    "48": "static/textme.svg",
+    "128": "static/textme.svg"
+  },
+  "action": {
+    "default_icon": {
+      "16": "static/textme.svg",
+      "48": "static/textme.svg",
+      "128": "static/textme.svg"
+    },
+    "default_title": "My Extension"
+  }
+}
