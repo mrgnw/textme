@@ -1,46 +1,74 @@
-<script lang="ts">
-import { TelInput, normalizedCountries } from 'svelte-tel-input';
-	import type {
-	DetailedValue,
-	E164Number,
-	CountryCode,
-	TelInputOptions
-} from 'svelte-tel-input/types';
+<script>
+	import PhoneInput from "$components/PhoneInput.svelte";
+	import RiChat3Line from "~icons/ri/chat-3-line";
+	import RiWhatsappLine from "~icons/ri/whatsapp-line";
+	import RiTelegramLine from "~icons/ri/telegram-line";
+	import RiPhoneLine from "~icons/ri/phone-line";
 
-export let value: E164Number | null; // the number you should usually store & use
-export let country: CountryCode | null = null;
-export let valid: boolean;
-export let detailedValue: DetailedValue | null = null;
-export let options: TelInputOptions;
-
+	let country = $state("ES");
+	let valid = $state(false);
+	let value = $state(null);
+	let detailedValue = $state(null);
+	let over_icon = $state(null);
+	$effect(() => {
+		console.log(over_icon);
+	});
 </script>
 
-<div class="flex">
-<select
-class="form-select appearance-none block px-3 py-1.5 text-base
-	 font-normal bg-clip-padding bg-no-repeat cursor-pointer text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600 m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Defau ltselect example"
-name="Country"
-bind:value={country}
-	>
-	<option value={null} hidden={country !== null}>Please select</option>
-	{#each normalizedCountries as currentCountry (currentCountry.id)}
-<option
-value={currentCountry.iso2}
-selected={currentCountry.iso2 === country}
-aria-selected={currentCountry.iso2 === country}
-	>
-	{currentCountry.iso2} (+{currentCountry.dialCode})
-</option>
-{/each}
-	</select>
+<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
 
-<TelInput
-{options}
-bind:country
-bind:valid
-bind:value
-bind:detailedValue
-class="px-4 py-1 w-full bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900 focus:outline-none rounded-r-lg {valid 	? 'border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600'
-: 'border-2 border-red-600'}"
-	/>
+<div>
+	<div>
+		<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
+			{#if valid}
+				<li>
+					<a href={`sms:${value}`} target="_blank">
+						<RiChat3Line width="4em" height="4em" />
+					</a>
+				</li>
+				<!-- <li>
+				<a href={`tel:${value}`} target="_blank">
+					<RiPhoneLine width="4em" height="4em"/>
+				</a>
+			</li> -->
+				<li>
+					<a href={`https://wa.me/${value}`} target="_blank">
+						<RiWhatsappLine width="4em" height="4em" />
+					</a>
+				</li>
+				<li>
+					<a href={`https://t.me/${value}`} target="_blank">
+						<RiTelegramLine width="4em" height="4em" />
+					</a>
+				</li>
+			{:else}
+				<li class="text-gray-500">
+					<RiChat3Line width="4em" height="4em" />
+				</li>
+				<!-- <li class="text-gray-500">
+					<RiPhoneLine width="4em" height="4em"/>
+				</li> -->
+				<li class="text-gray-500">
+					<RiWhatsappLine width="4em" height="4em" />
+				</li>
+				<li class="text-gray-500">
+					<RiTelegramLine width="4em" height="4em" />
+				</li>
+			{/if}
+		</ul>
 	</div>
+</div>
+
+<pre><code class={valid ? "valid" : "invalid"}>{valid}</code></pre>
+<pre><code>{JSON.stringify(detailedValue, null, 2)}</code></pre>
+
+<style>
+	.valid {
+		color: rgb(1, 231, 135);
+		font-weight: bold;
+	}
+
+	.invalid {
+		border: 1px solid red;
+	}
+</style>
