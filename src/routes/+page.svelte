@@ -2,10 +2,13 @@
 	import { page } from '$app/stores';
 	import PhoneInput from "$components/PhoneInput.svelte";
 	import PhoneDebug from "$components/PhoneDebug.svelte";
-
+	import { copyToClipboard } from "$lib/utils";
+	
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
+	import { CopyIcon } from "lucide-svelte";
+
 	import * as Card from "$lib/components/ui/card";
 	import { Badge } from "$lib/components/ui/badge";
 
@@ -17,6 +20,10 @@
 
 	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
+	}
+
+	function handleCopy(){
+		copyToClipboard(detailedValue.nationalNumber);
 	}
 </script>
 
@@ -30,8 +37,20 @@
 			<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
 		</div>
 		<div class="flex justify-center items-center py-4">
-			<Badge variant={valid ? 'default' : 'outline'} class="text-lg sm:text-xl lg:text-2xl">
-				{detailedValue?.formatInternational || 'Enter a phone number'}
+			<Badge 
+				variant={valid ? 'default' : 'outline'} 
+				class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
+			>
+				<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
+				{#if valid}
+				<button 
+					on:click={handleCopy} 
+					class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+					aria-label="Copy number"
+				>
+					<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
+				</button>
+				{/if}
 			</Badge>
 		</div>
 		<div>

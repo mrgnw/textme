@@ -60,3 +60,11 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function copyToClipboard(text) {
+	navigator.clipboard.writeText(text).then(() => {
+		console.log('Copied:', text);
+	}).catch(err => {
+		console.error('Failed to copy: ', err);
+	});
+}
