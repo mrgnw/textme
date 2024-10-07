@@ -1,5 +1,5 @@
 // add function words-to-digits
-function replaceDigitWords(phone) {
+export function replaceDigitWords(phone) {
 	// takes english or spanish words like 'one' or 'uno' and converts to '1'
 	// example: SEIS-CERO-SIETEblah
 	// returns: 6-0-7blah

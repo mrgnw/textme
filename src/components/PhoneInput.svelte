@@ -6,12 +6,28 @@
 		CountryCode,
 		TelInputOptions
 	} from 'svelte-tel-input/types';
+	import { replaceDigitWords } from '$lib/normalize.js';
 	
 	export let value: E164Number | null; // the number you should usually store & use
 	export let country: CountryCode | null = null;
 	export let valid: boolean;
 	export let detailedValue: DetailedValue | null = null;
 	export let options: TelInputOptions;
+	
+	function handlePaste(event: ClipboardEvent) {
+		event.preventDefault();
+		const pastedText = event.clipboardData?.getData('text');
+		if (pastedText) {
+			const replacedText = replaceDigitWords(pastedText);
+			const input = event.target as HTMLInputElement;
+			const start = input.selectionStart || 0;
+			const end = input.selectionEnd || 0;
+			const newValue = input.value.slice(0, start) + replacedText + input.value.slice(end);
+			input.value = newValue;
+			input.setSelectionRange(start + replacedText.length, start + replacedText.length);
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+		}
+	}
 	
 	</script>
 	
@@ -40,8 +56,10 @@
 	bind:valid
 	bind:value
 	bind:detailedValue
-	class="px-4 py-1 w-full bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900 focus:outline-none rounded-r-lg {valid 	? 'border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600'
-	: 'border-2 border-red-600'}"
-		/>
-		</div>
-	
+	on:paste={handlePaste}
+	class="px-4 py-1 w-full bg-gray-50 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white text-gray-900 focus:outline-none rounded-r-lg {valid 
+		? 'border border-gray-300 border-l-gray-100 dark:border-l-gray-700 dark:border-gray-600'
+		: 'border-2 border-red-600'}"
+	/>
+	</div>
+
