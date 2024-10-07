@@ -73,7 +73,9 @@
 <Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
 	<Card.Header>
 		<Card.Title class="text-3xl sm:text-4xl lg:text-5xl">Social message links</Card.Title>
-		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">Enter a phone number to get direct message links on supported apps</Card.Description>
+		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">
+			Enter a phone number to get direct message links on supported apps
+		</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="inputs-container text-center mb-6">
@@ -81,50 +83,40 @@
 		</div>
 		<div>
 			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
-				<li id="sms" class={valid ? 'active' : 'inactive'}>
-					<a href={valid ? `sms:${value}` : '#'} target="_blank"
-						class:text-gray-300={!valid}
-						
-					>
+				<li id="sms" class:active={valid}>
+					<a href={valid ? `sms:${value}` : '#'} target="_blank" class:text-gray-300={!valid}>
 						<RiChat3Line width="4em" height="4em" />
 					</a>
 				</li>
-				<li id="telegram" class={valid ? 'active' : 'inactive'}>
-					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank"
-						class:text-gray-300={!valid}
-						
-					>
+				<li id="telegram" class:active={valid}>
+					<a href={valid ? `https://t.me/${value}` : '#'} target="_blank" class:text-gray-300={!valid}>
 						<RiTelegramLine width="4em" height="4em" />
 					</a>
 				</li>
-				<li id="whatsapp" class={valid ? 'active' : 'inactive'}>
-					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank"
-						class:text-gray-300={!valid}
-						
-					>
+				<li id="whatsapp" class:active={valid}>
+					<a href={valid ? `https://wa.me/${value}` : '#'} target="_blank" class:text-gray-300={!valid}>
 						<RiWhatsappLine width="4em" height="4em" />
 					</a>
 				</li>
-
 			</ul>
 		</div>
 		<div class="flex justify-center items-center py-4">
 			{#if valid}
-			<div transition:scale={{ duration: 300, start: 0.9 }}>
-				<Badge 
-					variant={valid ? 'default' : 'outline'} 
-					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
-				>
-					<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
-					<button 
-						on:click={handleCopy} 
-						class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
-						aria-label="Copy number"
+				<div transition:scale={{ duration: 300, start: 0.9 }}>
+					<Badge
+						variant={valid ? 'default' : 'outline'}
+						class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
 					>
-						<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
-					</button>
-				</Badge>
-			</div>
+						<span class="select-text">{detailedValue?.formatInternational || 'Enter a phone number'}</span>
+						<button
+							on:click={handleCopy}
+							class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+							aria-label="Copy number"
+						>
+							<CopyIcon size={20} class="transition-colors duration-200 ease-in-out hover:text-blue-500" />
+						</button>
+					</Badge>
+				</div>
 			{/if}
 		</div>
 	</Card.Content>
@@ -142,28 +134,18 @@
 	}
 
 	li {
-		transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+		transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
 	}
-	
 
-	li.active  {
-		animation: flash 0.5s ease-out;
+	li.active {
 		opacity: 1;
+		transform: scale(1);
+		filter: brightness(100%);
 	}
 
-	@keyframes flash {
-		0% {
-			transform: scale(1);
-			filter: brightness(100%);
-		}
-		50% {
-			transform: scale(1.1);
-			filter: brightness(150%);
-		}
-		100% {
-			transform: scale(1);
-			filter: brightness(100%);
-		}
+	li.active:hover {
+		transform: scale(1.1);
+		filter: brightness(150%);
 	}
 
 	a.disabled {
@@ -174,13 +156,9 @@
 	li#sms.active { color: #48bb78; }
 	li#telegram.active { color: #4299e1; } 
 	li#whatsapp.active { color: #48bb78; }
-	li.active:hover  { 
-		animation: flash 0.5s ease-out;
-		opacity: 1;
-	 }
-	
+
 	li.inactive {
-		/* opacity: 0.5; */
 		pointer-events: none;
+		opacity: 0.5;
 	}
 </style>
