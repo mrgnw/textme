@@ -8,11 +8,21 @@
 	} from "svelte-tel-input/types";
 	import { replaceDigitWords } from "$lib/normalize.js";
 
-	export let value: E164Number | null; // the number you should usually store & use
-	export let country: CountryCode | null = null;
-	export let valid: boolean;
-	export let detailedValue: DetailedValue | null = null;
-	export let options: TelInputOptions;
+	interface Props {
+		value: E164Number | null;
+		country?: CountryCode | null;
+		valid: boolean;
+		detailedValue?: DetailedValue | null;
+		options: TelInputOptions;
+	}
+
+	let {
+		value = $bindable(),
+		country = $bindable(null),
+		valid = $bindable(),
+		detailedValue = $bindable(null),
+		options
+	}: Props = $props();
 
 	function handlePaste(event: ClipboardEvent) {
 		event.preventDefault();

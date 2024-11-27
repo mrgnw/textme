@@ -139,7 +139,7 @@
 								"Enter a phone number"}</span
 						>
 						<button
-							on:click={handleCopy}
+							onclick={handleCopy}
 							class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
 							aria-label="Copy number"
 						>
