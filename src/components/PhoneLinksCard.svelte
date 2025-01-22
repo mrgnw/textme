@@ -7,6 +7,7 @@
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
+	import IonIosContactOutline from "~icons/ion/ios-contact-outline";
 	import { CopyIcon } from "lucide-svelte";
 
 	import * as Card from "$lib/components/ui/card";
@@ -39,6 +40,9 @@
 		"a",
 	];
 	let pos = $state(0);
+
+	let contactName = $state('');
+	let showNameInput = $state(false);
 
 	$effect(() => {
 		const handleKeydown = (event) => {
@@ -78,6 +82,35 @@
 			`,
 		};
 	}
+
+	function downloadVCard(name = 'Contact') {
+		if (!valid) return;
+		const cleanPhone = value.replace(/[^\d]/g, '');
+		const formattedPhone = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
+		
+		const vcard = [
+			'BEGIN:VCARD',
+			'VERSION:4.0',
+			`FN:${name}`,
+			`TEL;TYPE=cell;VALUE=uri:tel:${formattedPhone}`,
+			`IMPP;TYPE=whatsapp;PREF=1:whatsapp:${formattedPhone}`,
+			`IMPP;TYPE=telegram:tg:${formattedPhone}`,
+			'END:VCARD'
+		].join('\n');
+
+		const blob = new Blob([vcard], { type: 'text/vcard' });
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		const safeName = (name || 'contact').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+		a.download = `${safeName}.vcf`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(url);
+		showNameInput = false;
+		contactName = '';
+	}
 </script>
 
 <Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
@@ -90,7 +123,7 @@
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<div class="inputs-container text-center mb-6">
+		<div class="inputs-container text-center mb-6 flex justify-center">
 			<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
 		</div>
 		<div>
@@ -125,7 +158,40 @@
 						<RiWhatsappLine width="4em" height="4em" />
 					</a>
 				</li>
+				<li id="contact" class:active={valid}>
+					<button 
+						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
+						disabled={!valid}
+						onclick={() => {
+							if (!valid) return;
+							showNameInput = !showNameInput;
+							if (!showNameInput) {
+								contactName = '';
+							}
+						}}
+					>
+						<IonIosContactOutline width="4em" height="4em" />
+					</button>
+				</li>
 			</ul>
+			{#if showNameInput && valid}
+				<div class="flex justify-center items-center gap-2 mt-4" 
+					 transition:scale={{ duration: 300, start: 0.9 }}>
+					<input
+						type="text"
+						class="border p-2 rounded"
+						placeholder="Contact Name"
+						bind:value={contactName}
+					/>
+					<button
+						class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+						onclick={() => downloadVCard(contactName || 'Contact')}
+					>
+						Download
+					</button>
+				</div>
+			{/if}
 		</div>
 		<div class="flex justify-center items-center py-4">
 			{#if valid}
@@ -202,5 +268,13 @@
 	li.inactive {
 		pointer-events: none;
 		opacity: 0.5;
+	}
+
+	li#contact.active {
+		color: #9F6C4B;
+	}
+
+	:global(.fixed) {
+		z-index: 50;
 	}
 </style>
