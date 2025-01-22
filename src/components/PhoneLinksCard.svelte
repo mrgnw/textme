@@ -90,11 +90,11 @@
 		
 		const vcard = [
 			'BEGIN:VCARD',
-			'VERSION:4.0',
+			'VERSION:3.0',
 			`FN:${name}`,
-			`TEL;TYPE=cell;VALUE=uri:tel:${formattedPhone}`,
-			`IMPP;TYPE=whatsapp;PREF=1:whatsapp:${formattedPhone}`,
-			`IMPP;TYPE=telegram:tg:${formattedPhone}`,
+			`TEL;TYPE=CELL:${formattedPhone}`,
+			`X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/${formattedPhone}`,
+			`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${formattedPhone}`,
 			'END:VCARD'
 		].join('\n');
 
