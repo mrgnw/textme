@@ -155,40 +155,33 @@
 					<RiWhatsappLine width="4em" height="4em" />
 				</a>
 			</li>
-			<li id="contact" class:active={valid}>
-				<button 
-					class:text-gray-300={!valid}
-					class:cursor-not-allowed={!valid}
-					disabled={!valid}
-					onclick={() => {
-						if (!valid) return;
-						showNameInput = !showNameInput;
-						if (!showNameInput) {
-							contactName = '';
-						}
-					}}
-				>
-					<IonIosContactOutline width="4em" height="4em" />
-				</button>
-			</li>
 		</ul>
-		{#if showNameInput && valid}
-			<div class="flex justify-center items-center gap-2 mt-4" 
-				 transition:scale={{ duration: 300, start: 0.9 }}>
-				<input
-					type="text"
-					class="border p-2 rounded"
-					placeholder="Contact Name"
-					bind:value={contactName}
-				/>
-				<button
-					class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
-					onclick={() => downloadVCard(contactName || 'Contact')}
-				>
-					Download
-				</button>
+
+		<div class="mt-6 flex flex-col items-center">
+			<div class="contact-section">
+				<div class="flex items-center transition-transform duration-300 ease-in-out" 
+					 >
+					<button 
+						onclick={() => downloadVCard(contactName || 'Contact')}
+						id="contact"
+						class:active={valid}
+						class:text-gray-300={!valid}
+						class:cursor-not-allowed={!valid}
+						disabled={!valid}
+					>
+						<IonIosContactOutline width="4em" height="4em" />
+					</button>
+					{#if valid}
+						<input
+							type="text"
+							class="w-36 border-b border-t-0 border-x-0 p-2 bg-transparent focus:outline-none focus:border-b-2"
+							placeholder="Name"
+							bind:value={contactName}
+						/>
+					{/if}
+				</div>
 			</div>
-		{/if}
+		</div>
 	</div>
 	<div class="flex justify-center items-center py-4">
 		{#if valid}
@@ -255,7 +248,7 @@
 		color: #48bb78;
 	}
 
-	li#contact.active {
+	button#contact.active {
 		color: #9F6C4B;
 	}
 
