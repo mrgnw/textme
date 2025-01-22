@@ -3,15 +3,13 @@
 	import PhoneInput from "./PhoneInput.svelte";
 	import PhoneDebug from "./PhoneDebug.svelte";
 	import { copyToClipboard } from "$lib/utils";
+	import { Badge } from "$lib/components/ui/badge";
 
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
 	import IonIosContactOutline from "~icons/ion/ios-contact-outline";
 	import { CopyIcon } from "lucide-svelte";
-
-	import * as Card from "$lib/components/ui/card";
-	import { Badge } from "$lib/components/ui/badge";
 
 	import { fly } from "svelte/transition";
 	import { scale } from "svelte/transition";
@@ -20,7 +18,7 @@
 
 	let cf_data = $state($page.data);
 	let country = $state(
-		cf_data.ip_country ? cf_data.ip_country.toUpperCase() : "US",
+		$page.data.ip_country ? $page.data.ip_country.toUpperCase() : "US"
 	);
 	let valid = $state(false);
 	let value = $state(initialValue);
@@ -113,113 +111,110 @@
 	}
 </script>
 
-<Card.Root class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
-	<Card.Header>
-		<Card.Title class="text-3xl sm:text-4xl lg:text-5xl"
-			>Social message links</Card.Title
-		>
-		<Card.Description class="text-xl sm:text-2xl lg:text-3xl">
+<div class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8">
+	<div class="text-center mb-8">
+		<h1 class="text-3xl sm:text-4xl lg:text-5xl mb-4">Social message links</h1>
+		<p class="text-xl sm:text-2xl lg:text-3xl text-muted-foreground">
 			Enter a phone number to get direct message links on supported apps
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<div class="inputs-container text-center mb-6 flex justify-center">
-			<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
-		</div>
-		<div>
-			<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
-				<li id="sms" class:active={valid}>
-					<a
-						href={valid ? `sms:${value}` : "#"}
-						target="_blank"
-						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
-					>
-						<RiChat3Line width="4em" height="4em" />
-					</a>
-				</li>
-				<li id="telegram" class:active={valid}>
-					<a
-						href={valid ? `https://t.me/${value}` : "#"}
-						target="_blank"
-						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
-					>
-						<RiTelegramLine width="4em" height="4em" />
-					</a>
-				</li>
-				<li id="whatsapp" class:active={valid}>
-					<a
-						href={valid ? `https://wa.me/${value}` : "#"}
-						target="_blank"
-						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
-					>
-						<RiWhatsappLine width="4em" height="4em" />
-					</a>
-				</li>
-				<li id="contact" class:active={valid}>
-					<button 
-						class:text-gray-300={!valid}
-						class:cursor-not-allowed={!valid}
-						disabled={!valid}
-						onclick={() => {
-							if (!valid) return;
-							showNameInput = !showNameInput;
-							if (!showNameInput) {
-								contactName = '';
-							}
-						}}
-					>
-						<IonIosContactOutline width="4em" height="4em" />
-					</button>
-				</li>
-			</ul>
-			{#if showNameInput && valid}
-				<div class="flex justify-center items-center gap-2 mt-4" 
-					 transition:scale={{ duration: 300, start: 0.9 }}>
-					<input
-						type="text"
-						class="border p-2 rounded"
-						placeholder="Contact Name"
-						bind:value={contactName}
-					/>
+		</p>
+	</div>
+	
+	<div class="inputs-container text-center mb-6 flex justify-center">
+		<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
+	</div>
+	
+	<div>
+		<ul class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
+			<li id="sms" class:active={valid}>
+				<a
+					href={valid ? `sms:${value}` : "#"}
+					target="_blank"
+					class:text-gray-300={!valid}
+					class:cursor-not-allowed={!valid}
+				>
+					<RiChat3Line width="4em" height="4em" />
+				</a>
+			</li>
+			<li id="telegram" class:active={valid}>
+				<a
+					href={valid ? `https://t.me/${value}` : "#"}
+					target="_blank"
+					class:text-gray-300={!valid}
+					class:cursor-not-allowed={!valid}
+				>
+					<RiTelegramLine width="4em" height="4em" />
+				</a>
+			</li>
+			<li id="whatsapp" class:active={valid}>
+				<a
+					href={valid ? `https://wa.me/${value}` : "#"}
+					target="_blank"
+					class:text-gray-300={!valid}
+					class:cursor-not-allowed={!valid}
+				>
+					<RiWhatsappLine width="4em" height="4em" />
+				</a>
+			</li>
+			<li id="contact" class:active={valid}>
+				<button 
+					class:text-gray-300={!valid}
+					class:cursor-not-allowed={!valid}
+					disabled={!valid}
+					onclick={() => {
+						if (!valid) return;
+						showNameInput = !showNameInput;
+						if (!showNameInput) {
+							contactName = '';
+						}
+					}}
+				>
+					<IonIosContactOutline width="4em" height="4em" />
+				</button>
+			</li>
+		</ul>
+		{#if showNameInput && valid}
+			<div class="flex justify-center items-center gap-2 mt-4" 
+				 transition:scale={{ duration: 300, start: 0.9 }}>
+				<input
+					type="text"
+					class="border p-2 rounded"
+					placeholder="Contact Name"
+					bind:value={contactName}
+				/>
+				<button
+					class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+					onclick={() => downloadVCard(contactName || 'Contact')}
+				>
+					Download
+				</button>
+			</div>
+		{/if}
+	</div>
+	<div class="flex justify-center items-center py-4">
+		{#if valid}
+			<div transition:scale={{ duration: 300, start: 0.9 }}>
+				<Badge
+					variant={valid ? "default" : "outline"}
+					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
+				>
+					<span class="select-text">
+						{detailedValue?.formatInternational || "Enter a phone number"}
+					</span>
 					<button
-						class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
-						onclick={() => downloadVCard(contactName || 'Contact')}
+						onclick={handleCopy}
+						class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+						aria-label="Copy number"
 					>
-						Download
+						<CopyIcon
+							size={20}
+							class="transition-colors duration-200 ease-in-out hover:text-blue-500"
+						/>
 					</button>
-				</div>
-			{/if}
-		</div>
-		<div class="flex justify-center items-center py-4">
-			{#if valid}
-				<div transition:scale={{ duration: 300, start: 0.9 }}>
-					<Badge
-						variant={valid ? "default" : "outline"}
-						class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
-					>
-						<span class="select-text"
-							>{detailedValue?.formatInternational ||
-								"Enter a phone number"}</span
-						>
-						<button
-							onclick={handleCopy}
-							class="ml-2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
-							aria-label="Copy number"
-						>
-							<CopyIcon
-								size={20}
-								class="transition-colors duration-200 ease-in-out hover:text-blue-500"
-							/>
-						</button>
-					</Badge>
-				</div>
-			{/if}
-		</div>
-	</Card.Content>
-</Card.Root>
+				</Badge>
+			</div>
+		{/if}
+	</div>
+</div>
 
 {#if showDebug}
 	<div class="debug" transition:fly={{ x: -300, duration: 300 }}>
@@ -250,11 +245,6 @@
 		filter: brightness(150%);
 	}
 
-	a.disabled {
-		pointer-events: none;
-		color: #ccc;
-	}
-
 	li#sms.active {
 		color: #48bb78;
 	}
@@ -263,11 +253,6 @@
 	}
 	li#whatsapp.active {
 		color: #48bb78;
-	}
-
-	li.inactive {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	li#contact.active {
