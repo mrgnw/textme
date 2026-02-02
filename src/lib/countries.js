@@ -46,7 +46,6 @@ export const countries = [
 	{ code: 'VE', flag: '🇻🇪', phone: '58', name: 'Venezuela'},
 	{ code: 'VN', flag: '🇻🇳', phone: '84', name: 'Vietnam'},
 	{ code: 'ZA', flag: '🇿🇦', phone: '27', name: 'South Africa'},
-
 	{ code: 'AE', flag: '🇦🇪', phone: '971', name: 'United Arab Emirates'},
 	{ code: 'CR', flag: '🇨🇷', phone: '506', name: 'Costa Rica'},
 	{ code: 'CY', flag: '🇨🇾', phone: '357', name: 'Cyprus'},
@@ -141,7 +140,6 @@ export const countries = [
 	{ code: 'YE', flag: '🇾🇪', phone: '967', name: 'Yemen'},
 	{ code: 'ZM', flag: '🇿🇲', phone: '260', name: 'Zambia'},
 	{ code: 'ZW', flag: '🇿🇼', phone: '263', name: 'Zimbabwe' },
-
 	{ code: 'KN', flag: '🇰🇳', phone: '1869', name: 'Saint Kitts and Nevis'},
 	{ code: 'LC', flag: '🇱🇨', phone: '1758', name: 'Saint Lucia'},
 	{ code: 'TC', flag: '🇹🇨', phone: '1649', name: 'Turks & Caicos Islands'},

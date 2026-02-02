@@ -1,8 +1,9 @@
 <script>
 	import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
 	import PhoneInput from "./PhoneInput.svelte";
 	import PhoneDebug from "./PhoneDebug.svelte";
-	import { copyToClipboard } from "$lib/utils";
+	import { copyToClipboard, notifyDownload } from "$lib/utils";
 	import { Badge } from "$lib/components/ui/badge";
 
 	import RiChat3Line from "~icons/ri/chat-3-line";
@@ -62,6 +63,22 @@
 		};
 	});
 
+	// Navigation effect - clean and focused
+	let debounceTimer;
+	$effect(() => {
+		if (valid && value && value !== initialValue) {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(() => {
+				const cleanDigits = value.replace(/[^\d]/g, '');
+				if (cleanDigits) {
+					goto(`/${cleanDigits}`, { replaceState: true, noScroll: true });
+				}
+			}, 500);
+		}
+		
+		return () => clearTimeout(debounceTimer);
+	});
+
 	function focusInputField() {
 		document.querySelector('input[type="tel"]').focus();
 	}
@@ -106,6 +123,7 @@
 		a.click();
 		document.body.removeChild(a);
 		window.URL.revokeObjectURL(url);
+		notifyDownload(`${safeName}.vcf`);
 		showNameInput = false;
 		contactName = '';
 	}
@@ -120,7 +138,7 @@
 	</div>
 	
 	<div class="inputs-container text-center mb-6 flex justify-center">
-		<PhoneInput bind:country bind:valid bind:value bind:detailedValue />
+		<PhoneInput bind:country bind:valid bind:value bind:detailedValue options={{}} />
 	</div>
 	
 	<div>
@@ -174,7 +192,7 @@
 					{#if valid}
 						<input
 							type="text"
-							class="w-36 border-b border-t-0 border-x-0 p-2 bg-transparent focus:outline-none focus:border-b-2"
+							class="w-36 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
 							placeholder="Name"
 							bind:value={contactName}
 						/>
@@ -188,7 +206,7 @@
 			<div transition:scale={{ duration: 300, start: 0.9 }}>
 				<Badge
 					variant={valid ? "default" : "outline"}
-					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-colors duration-200 ease-in-out bg-black text-white hover:bg-black"
+					class="text-lg sm:text-xl lg:text-2xl flex items-center group transition-all duration-200 ease-in-out bg-foreground text-background hover:bg-foreground/90 rounded-2xl px-4 py-2 shadow-lg hover:shadow-xl"
 				>
 					<span class="select-text">
 						{detailedValue?.formatInternational || "Enter a phone number"}
@@ -222,9 +240,9 @@
 
 	li {
 		transition:
-			transform 0.3s ease-out,
-			opacity 0.3s ease-out,
-			filter 0.3s ease-out;
+			transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+			opacity 0.2s ease-out,
+			filter 0.2s ease-out;
 	}
 
 	li.active {
@@ -234,22 +252,35 @@
 	}
 
 	li.active:hover {
-		transform: scale(1.1);
-		filter: brightness(150%);
+		transform: scale(1.15);
+		filter: brightness(120%);
+	}
+
+	li.active:active {
+		transform: scale(0.95);
 	}
 
 	li#sms.active {
 		color: #48bb78;
 	}
 	li#telegram.active {
-		color: #4299e1;
+		color: #0088cc;
 	}
 	li#whatsapp.active {
-		color: #48bb78;
+		color: #25D366;
 	}
 
 	button#contact.active {
-		color: #9F6C4B;
+		color: hsl(16, 85%, 55%);
+		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	button#contact.active:hover {
+		transform: scale(1.15);
+	}
+
+	button#contact.active:active {
+		transform: scale(0.95);
 	}
 
 	:global(.fixed) {

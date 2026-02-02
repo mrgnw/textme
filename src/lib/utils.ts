@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import { toast } from "svelte-sonner";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -61,10 +62,14 @@ export const flyAndScale = (
 	};
 };
 
-export function copyToClipboard(text) {
+export function copyToClipboard(text: string) {
 	navigator.clipboard.writeText(text).then(() => {
-		console.log('Copied:', text);
-	}).catch(err => {
-		console.error('Failed to copy: ', err);
+		toast.success("Copied to clipboard");
+	}).catch(() => {
+		toast.error("Failed to copy");
 	});
+}
+
+export function notifyDownload(filename: string) {
+	toast.success(`Downloaded ${filename}`);
 }

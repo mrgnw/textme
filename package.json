@@ -24,8 +24,10 @@
 	"dependencies": {
 		"@iconify/json": "^2.2.256",
 		"@sveltejs/adapter-cloudflare": "^4.7.2",
+		"bits-ui": "^2.15.5",
 		"clsx": "^2.1.1",
 		"svelte": "^5.0.0",
+		"svelte-sonner": "^1.0.7",
 		"svelte-tel-input": "^3.5.1",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1",
