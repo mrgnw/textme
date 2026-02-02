@@ -9,8 +9,7 @@
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
-	import IonIosContactOutline from "~icons/ion/ios-contact-outline";
-	import { CopyIcon } from "lucide-svelte";
+	import { CopyIcon, ContactRound } from "lucide-svelte";
 
 	import { fly } from "svelte/transition";
 	import { scale } from "svelte/transition";
@@ -187,7 +186,7 @@
 						class:cursor-not-allowed={!valid}
 						disabled={!valid}
 					>
-						<IonIosContactOutline width="4em" height="4em" />
+						<ContactRound size={64} />
 					</button>
 					{#if valid}
 						<input
