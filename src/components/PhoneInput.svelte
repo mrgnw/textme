@@ -7,6 +7,7 @@
 		TelInputOptions,
 	} from "svelte-tel-input/types";
 	import { replaceDigitWords } from "$lib/normalize.js";
+	import { getFlag } from "$lib/countryFlags.js";
 	import CountrySelector from "./CountrySelector.svelte";
 
 	interface Props {
@@ -24,6 +25,10 @@
 		detailedValue = $bindable(null),
 		options
 	}: Props = $props();
+
+	let countryPickerOpen = $state(false);
+
+	let flag = $derived(country ? getFlag(country) : "🌐");
 
 	function handlePaste(event: ClipboardEvent) {
 		event.preventDefault();
@@ -45,18 +50,35 @@
 	}
 </script>
 
-<div class="flex max-w-md gap-2">
-	<CountrySelector bind:value={country} />
+<div class="relative w-full max-w-md">
+	<div class="phone-input-container relative rounded-2xl border-2 border-input bg-background
+				shadow-sm hover:shadow-md transition-all
+				focus-within:border-[hsl(var(--coral))]
+				focus-within:ring-2 focus-within:ring-[hsl(var(--coral))]/20
+				{valid ? '' : 'border-destructive focus-within:border-destructive focus-within:ring-destructive/20'}">
 
-	<TelInput
-		{options}
-		bind:country
-		bind:valid
-		bind:value
-		bind:detailedValue
-		on:paste={handlePaste}
-		class="px-4 py-2 w-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-xl {valid
-			? 'border border-input'
-			: 'border-2 border-destructive'}"
-	/>
+		<button
+			type="button"
+			class="absolute left-4 top-1/2 -translate-y-1/2 z-10
+				   text-2xl p-1 rounded-lg hover:bg-accent/50
+				   hover:scale-110 transition-all cursor-pointer"
+			onclick={() => countryPickerOpen = true}
+			aria-label="Change country"
+		>
+			{flag}
+		</button>
+
+		<TelInput
+			{options}
+			bind:country
+			bind:valid
+			bind:value
+			bind:detailedValue
+			on:paste={handlePaste}
+			class="w-full pl-16 pr-4 py-4 text-2xl sm:text-3xl
+				   bg-transparent focus:outline-none rounded-2xl"
+		/>
+	</div>
+
+	<CountrySelector bind:value={country} bind:open={countryPickerOpen} />
 </div>

@@ -6,10 +6,11 @@
 
 	interface Props {
 		value?: CountryCode | null;
+		open?: boolean;
 		class?: string;
 	}
 
-	let { value = $bindable(), class: className }: Props = $props();
+	let { value = $bindable(), open = $bindable(false), class: className }: Props = $props();
 
 	let isMobile = $state(false);
 
@@ -27,7 +28,7 @@
 </script>
 
 {#if isMobile}
-	<CountrySheet bind:value />
+	<CountrySheet bind:value bind:open />
 {:else}
-	<CountryCombobox bind:value class={className} />
+	<CountryCombobox bind:value bind:open class={className} />
 {/if}

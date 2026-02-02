@@ -234,10 +234,6 @@
 {/if}
 
 <style>
-	:global(.inputs-container input) {
-		@apply text-lg sm:text-xl lg:text-2xl p-2 sm:p-3 lg:p-4;
-	}
-
 	li {
 		transition:
 			transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
