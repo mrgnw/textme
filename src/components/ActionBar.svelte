@@ -3,9 +3,9 @@
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
-	import { ContactRound } from "lucide-svelte";
+	import { ContactRound, QrCode } from "lucide-svelte";
 
-	let { valid = false, value = '', contactName = $bindable(''), onDownloadContact } = $props();
+	let { valid = false, value = '', contactName = $bindable(''), showQr = $bindable(false), onDownloadContact } = $props();
 
 	let telegramUrl = $derived(valid ? `https://t.me/${value}` : '#');
 	let whatsappUrl = $derived(valid ? `https://wa.me/${value}` : '#');
@@ -46,6 +46,12 @@
 			onclick={onDownloadContact}
 			icon={ContactRound}
 			label="Contact"
+			disabled={!valid}
+		/>
+		<ActionButton
+			onclick={() => showQr = !showQr}
+			icon={QrCode}
+			label="QR"
 			disabled={!valid}
 		/>
 	</div>
@@ -133,5 +139,9 @@
 
 	:global(.action-bar .action-button:not(.disabled):nth-child(4)) {
 		color: hsl(16, 85%, 55%);
+	}
+
+	:global(.action-bar .action-button:not(.disabled):nth-child(5)) {
+		color: #6b7280;
 	}
 </style>

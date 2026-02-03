@@ -37,6 +37,10 @@
 	let pos = $state(0);
 
 	let contactName = $state('');
+	let showQr = $state(false);
+
+	let telegramUrl = $derived(valid ? `https://t.me/${value}` : '');
+	let qrUrl = $derived(telegramUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(telegramUrl)}` : '');
 
 	$effect(() => {
 		const handleKeydown = (event) => {
@@ -157,10 +161,18 @@
 		{/if}
 	</div>
 
+	{#if showQr && valid}
+		<div class="flex flex-col items-center py-4 gap-2" transition:scale={{ duration: 200, start: 0.9 }}>
+			<img src={qrUrl} alt="QR code for Telegram" width="200" height="200" class="rounded-xl bg-white p-2" />
+			<p class="text-sm text-muted-foreground">Scan to open in Telegram</p>
+		</div>
+	{/if}
+
 	<ActionBar
 		{valid}
 		{value}
 		bind:contactName
+		bind:showQr
 		onDownloadContact={() => downloadVCard(contactName || 'Contact')}
 	/>
 </div>
