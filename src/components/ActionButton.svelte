@@ -67,28 +67,12 @@
 		justify-content: center;
 	}
 
-	.highlighted .icon-wrapper::before {
-		content: '';
-		position: absolute;
-		inset: -8px;
-		background: radial-gradient(circle, rgba(0,136,204,0.35) 0%, transparent 70%);
-		border-radius: 50%;
-		animation: pulse 2s ease-in-out infinite;
-	}
-
 	.highlighted {
 		color: #0088cc;
 	}
 
-	@keyframes pulse {
-		0%, 100% {
-			opacity: 0.6;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 1;
-			transform: scale(1.15);
-		}
+	.highlighted .icon-wrapper {
+		filter: drop-shadow(0 0 6px rgba(0, 136, 204, 0.5));
 	}
 
 	.label {

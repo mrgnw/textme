@@ -7,6 +7,7 @@
 	import { copyToClipboard, notifyDownload } from "$lib/utils";
 	import { Badge } from "$lib/components/ui/badge";
 
+	import { CopyIcon } from "lucide-svelte";
 	import { fly } from "svelte/transition";
 	import { scale } from "svelte/transition";
 
@@ -136,7 +137,7 @@
 
 	<div class="flex justify-center items-center py-4">
 		{#if valid}
-			<div transition:scale={{ duration: 300, start: 0.9 }}>
+			<div transition:scale={{ duration: 300, start: 0.9 }} class="flex items-center gap-2">
 				<Badge
 					variant="default"
 					class="text-lg sm:text-xl lg:text-2xl flex items-center gap-2 transition-all duration-200 ease-in-out bg-foreground text-background hover:bg-foreground/90 rounded-2xl px-4 py-2 shadow-lg hover:shadow-xl"
@@ -145,25 +146,21 @@
 						{detailedValue?.formatInternational || "Enter a phone number"}
 					</span>
 				</Badge>
+				<button
+					onclick={handleCopy}
+					class="p-2 rounded-xl hover:bg-muted transition-colors"
+					aria-label="Copy number"
+				>
+					<CopyIcon size={24} />
+				</button>
 			</div>
 		{/if}
 	</div>
 
-	{#if valid}
-		<div class="flex justify-center mb-4">
-			<input
-				type="text"
-				class="w-48 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring text-center"
-				placeholder="Contact name (optional)"
-				bind:value={contactName}
-			/>
-		</div>
-	{/if}
-
 	<ActionBar
 		{valid}
 		{value}
-		onCopy={handleCopy}
+		bind:contactName
 		onDownloadContact={() => downloadVCard(contactName || 'Contact')}
 	/>
 </div>

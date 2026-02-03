@@ -3,9 +3,9 @@
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
-	import { CopyIcon, ContactRound } from "lucide-svelte";
+	import { ContactRound } from "lucide-svelte";
 
-	let { valid = false, value = '', onCopy, onDownloadContact } = $props();
+	let { valid = false, value = '', contactName = $bindable(''), onDownloadContact } = $props();
 
 	let telegramUrl = $derived(valid ? `https://t.me/${value}` : '#');
 	let whatsappUrl = $derived(valid ? `https://wa.me/${value}` : '#');
@@ -13,6 +13,16 @@
 </script>
 
 <div class="action-bar">
+	{#if valid}
+		<div class="contact-name-row">
+			<input
+				type="text"
+				class="contact-input"
+				placeholder="Contact name (optional)"
+				bind:value={contactName}
+			/>
+		</div>
+	{/if}
 	<div class="action-bar-inner">
 		<ActionButton
 			href={telegramUrl}
@@ -39,12 +49,6 @@
 			label="Contact"
 			disabled={!valid}
 		/>
-		<ActionButton
-			onclick={onCopy}
-			icon={CopyIcon}
-			label="Copy"
-			disabled={!valid}
-		/>
 	</div>
 </div>
 
@@ -59,6 +63,28 @@
 		border-top: 1px solid hsl(var(--border));
 		padding-bottom: env(safe-area-inset-bottom);
 		z-index: 50;
+	}
+
+	.contact-name-row {
+		display: flex;
+		justify-content: center;
+		padding: 0.5rem 1rem 0;
+	}
+
+	.contact-input {
+		width: 12rem;
+		border-radius: 0.75rem;
+		border: 1px solid hsl(var(--border));
+		background: hsl(var(--background));
+		padding: 0.5rem 0.75rem;
+		font-size: 0.875rem;
+		text-align: center;
+	}
+
+	.contact-input:focus {
+		outline: none;
+		ring: 2px;
+		ring-color: hsl(var(--ring));
 	}
 
 	.action-bar-inner {
@@ -80,6 +106,12 @@
 			backdrop-filter: none;
 			border-top: none;
 			padding-bottom: 0;
+			display: flex;
+			flex-direction: column-reverse;
+		}
+
+		.contact-name-row {
+			padding: 0.5rem 0 0;
 		}
 
 		.action-bar-inner {
