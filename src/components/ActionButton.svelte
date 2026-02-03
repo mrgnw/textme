@@ -1,5 +1,5 @@
 <script>
-	let { href = null, onclick = null, icon: Icon, label, highlighted = false, disabled = false } = $props();
+	let { href = null, onclick = null, icon: Icon, label, disabled = false } = $props();
 </script>
 
 {#if href}
@@ -7,7 +7,6 @@
 		{href}
 		target="_blank"
 		class="action-button"
-		class:highlighted
 		class:disabled
 		onclick={(e) => disabled && e.preventDefault()}
 	>
@@ -20,7 +19,6 @@
 	<button
 		{onclick}
 		class="action-button"
-		class:highlighted
 		{disabled}
 	>
 		<span class="icon-wrapper">
@@ -67,14 +65,7 @@
 		justify-content: center;
 	}
 
-	.highlighted {
-		color: #0088cc;
-	}
-
-	.highlighted .icon-wrapper {
-		filter: drop-shadow(0 0 6px rgba(0, 136, 204, 0.5));
-	}
-
+	
 	.label {
 		font-size: 0.7rem;
 		font-weight: 500;

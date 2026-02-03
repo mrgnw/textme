@@ -28,7 +28,6 @@
 			href={telegramUrl}
 			icon={RiTelegramLine}
 			label="Telegram"
-			highlighted={valid}
 			disabled={!valid}
 		/>
 		<ActionButton
@@ -120,7 +119,7 @@
 		}
 	}
 
-	:global(.action-bar .action-button.highlighted:not(.disabled)) {
+	:global(.action-bar .action-button:not(.disabled):nth-child(1)) {
 		color: #0088cc;
 	}
 
