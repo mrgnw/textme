@@ -73,3 +73,38 @@ export function copyToClipboard(text: string) {
 export function notifyDownload(filename: string) {
 	toast.success(`Downloaded ${filename}`);
 }
+
+export function generateVCard(phone: string, name?: string): string {
+	const clean = phone.replace(/[^\d]/g, "");
+	const formatted = clean.startsWith("+") ? clean : `+${clean}`;
+	const displayName = name || "Contact";
+
+	return [
+		"BEGIN:VCARD",
+		"VERSION:3.0",
+		`FN:${displayName}`,
+		`TEL;TYPE=CELL:${formatted}`,
+		`X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/${formatted}`,
+		`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${formatted}`,
+		"END:VCARD",
+	].join("\n");
+}
+
+export function downloadVCard(phone: string, name?: string): void {
+	const vcard = generateVCard(phone, name);
+	const safeName = (name || "contact")
+		.replace(/[^a-z0-9]/gi, "_")
+		.toLowerCase();
+	const filename = `${safeName}.vcf`;
+
+	const blob = new Blob([vcard], { type: "text/vcard" });
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	window.URL.revokeObjectURL(url);
+	notifyDownload(filename);
+}
