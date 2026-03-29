@@ -10,7 +10,19 @@ export function replaceDigitWords(phone) {
 		'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9',
 	};
 
-	return phone.replace(/([a-zA-Z]+)/g, word => {
+	const circledDigitMap = {
+		'⓪': '0', '①': '1', '②': '2', '③': '3', '④': '4',
+		'⑤': '5', '⑥': '6', '⑦': '7', '⑧': '8', '⑨': '9',
+		'⓿': '0', '❶': '1', '❷': '2', '❸': '3', '❹': '4',
+		'❺': '5', '❻': '6', '❼': '7', '❽': '8', '❾': '9',
+	};
+
+	let result = phone;
+	for (const [circled, digit] of Object.entries(circledDigitMap)) {
+		result = result.replaceAll(circled, digit);
+	}
+
+	return result.replace(/([a-zA-Z]+)/g, word => {
 		const lowerWord = word.toLowerCase();
 		return wordToDigitMap.hasOwnProperty(lowerWord) ? wordToDigitMap[lowerWord] : word;
 	});
