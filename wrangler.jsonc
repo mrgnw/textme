@@ -7,5 +7,10 @@
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
-	}
+	},
+	"workers_dev": false,
+	"routes": [
+		{ "pattern": "textme.cc/*", "zone_name": "textme.cc" },
+		{ "pattern": "x.textme.cc/*", "zone_name": "textme.cc" }
+	]
 }
