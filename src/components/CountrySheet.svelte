@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog } from "bits-ui";
 	import { Search, X, Check } from "lucide-svelte";
-	import { normalizedCountries } from "svelte-tel-input";
+	import { countries } from "svelte-tel-input";
 	import type { CountryCode } from "svelte-tel-input/types";
 	import { getFlag } from "$lib/countryFlags.js";
 
@@ -16,12 +16,12 @@
 
 	let filteredCountries = $derived(
 		searchQuery
-			? normalizedCountries.filter((c) =>
+			? countries.filter((c) =>
 					c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 					c.iso2.toLowerCase().includes(searchQuery.toLowerCase()) ||
 					String(c.dialCode).includes(searchQuery)
 				)
-			: normalizedCountries
+			: countries
 	);
 
 	function handleSelect(iso2: CountryCode) {
