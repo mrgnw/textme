@@ -2,7 +2,6 @@
 	import { TelInput } from "svelte-tel-input";
 	import type {
 		DetailedValue,
-		E164Number,
 		CountryCode,
 		TelInputOptions,
 	} from "svelte-tel-input/types";
@@ -11,15 +10,15 @@
 	import CountrySelector from "./CountrySelector.svelte";
 
 	interface Props {
-		value: E164Number | null;
+		value: string | null;
 		country?: CountryCode | null;
 		valid: boolean;
-		detailedValue?: DetailedValue | null;
+		detailedValue?: Partial<DetailedValue> | null;
 		options: TelInputOptions;
 	}
 
 	let {
-		value = $bindable(),
+		value = $bindable(""),
 		country = $bindable(null),
 		valid = $bindable(),
 		detailedValue = $bindable(null),
@@ -38,9 +37,7 @@
 		const input = event.target as HTMLInputElement;
 		const start = input.selectionStart ?? input.value.length;
 		const end = input.selectionEnd ?? input.value.length;
-		const newValue =
-			input.value.slice(0, start) + replacedText + input.value.slice(end);
-		value = newValue as E164Number;
+		value = input.value.slice(0, start) + replacedText + input.value.slice(end);
 	}
 </script>
 
@@ -64,11 +61,13 @@
 
 		<TelInput
 			{options}
+			initialFormat="national"
 			bind:country
+			value={value ?? ""}
+			onValueChange={(newValue) => (value = newValue)}
 			bind:valid
-			bind:value
 			bind:detailedValue
-			on:paste={handlePaste}
+			onpaste={handlePaste}
 			class="w-full pl-16 pr-4 py-4 text-2xl sm:text-3xl
 				   bg-transparent focus:outline-none rounded-2xl"
 		/>
