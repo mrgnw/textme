@@ -31,22 +31,16 @@
 	let flag = $derived(country ? getFlag(country) : "🌐");
 
 	function handlePaste(event: ClipboardEvent) {
-		event.preventDefault();
 		const pastedText = event.clipboardData?.getData("text");
-		if (pastedText) {
-			const replacedText = replaceDigitWords(pastedText);
-			const input = event.target as HTMLInputElement;
-			const start = input.selectionStart || 0;
-			const end = input.selectionEnd || 0;
-			const newValue =
-				input.value.slice(0, start) + replacedText + input.value.slice(end);
-			input.value = newValue;
-			input.setSelectionRange(
-				start + replacedText.length,
-				start + replacedText.length,
-			);
-			input.dispatchEvent(new Event("input", { bubbles: true }));
-		}
+		if (!pastedText) return;
+		event.preventDefault();
+		const replacedText = replaceDigitWords(pastedText);
+		const input = event.target as HTMLInputElement;
+		const start = input.selectionStart ?? input.value.length;
+		const end = input.selectionEnd ?? input.value.length;
+		const newValue =
+			input.value.slice(0, start) + replacedText + input.value.slice(end);
+		value = newValue as E164Number;
 	}
 </script>
 
