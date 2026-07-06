@@ -11,6 +11,7 @@
 		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^5.20260705.1",
 		"@playwright/test": "^1.61.1",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/kit": "^2.68.0",
@@ -25,6 +26,8 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify/json": "^2.2.491",
+		"@mrgnw/anahtar": "^0.0.29",
+		"@simplewebauthn/browser": "^13.3.0",
 		"@sveltejs/adapter-cloudflare": "^4.9.0",
 		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
