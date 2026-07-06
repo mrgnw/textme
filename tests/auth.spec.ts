@@ -38,3 +38,25 @@ test('gated route is accessible once signed in', async ({ page }) => {
 	await page.goto('/gated');
 	await expect(page.getByTestId('gated-user')).toHaveText(email);
 });
+
+test('signing in via the login page, then signing out', async ({ page }) => {
+	const email = uniqueEmail('ui');
+	await page.goto('/login?next=%2Fgated');
+
+	await page.locator('input.anahtar-input').fill(email);
+	await page.locator('button.anahtar-submit-icon').click();
+
+	await expect(page.locator('input.anahtar-otp-digit').first()).toBeVisible();
+	const code = await otpFor(page, email);
+	await page.locator('input.anahtar-otp-digit').first().fill(code);
+
+	await page.locator('.anahtar-passkey-later').click();
+	await expect(page).toHaveURL('/gated');
+	await expect(page.getByTestId('gated-user')).toHaveText(email);
+	await expect(page.locator('.anahtar-pill-email')).toHaveText(email);
+
+	await page.locator('button[title="Sign out"]').click();
+	await expect(page.locator('input.anahtar-pill-email-input')).toBeVisible();
+	await page.goto('/gated');
+	await expect(page).toHaveURL('/login?next=%2Fgated');
+});
