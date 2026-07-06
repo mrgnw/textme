@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>textme — PWA icon preview</title>
+		<style>
+			/* Real project tokens */
+			:root {
+				--coral: #f07142;
+				--bg: #ffffff;
+				--fg: #0f172a;
+				--muted: #64748b;
+				--card: #ffffff;
+				--border: #e2e8f0;
+			}
+			* { box-sizing: border-box; }
+			body {
+				margin: 0;
+				font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+				color: var(--fg);
+				background: #f1f5f9;
+				padding: 40px 24px 64px;
+			}
+			header { max-width: 960px; margin: 0 auto 32px; }
+			h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: -0.02em; }
+			header p { margin: 0; color: var(--muted); }
+			.grid {
+				max-width: 960px; margin: 0 auto;
+				display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 20px;
+			}
+			.card {
+				background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+				padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 16px;
+			}
+			.card h2 { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+			.stage { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 140px; }
+			.caption { font-size: 12px; color: var(--muted); text-align: center; }
+
+			/* iOS home-screen tile: superellipse-ish rounded square + subtle shadow */
+			.ios-tile { width: 120px; height: 120px; border-radius: 27px; overflow: hidden; box-shadow: 0 8px 24px rgba(15,23,42,0.18); }
+			.ios-tile img { width: 100%; height: 100%; display: block; }
+
+			/* Android adaptive: maskable icon clipped to circle and squircle */
+			.mask { width: 108px; height: 108px; overflow: hidden; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
+			.mask.circle { border-radius: 50%; }
+			.mask.squircle { border-radius: 28%; }
+			.mask img { width: 100%; height: 100%; display: block; }
+
+			/* Favicon sizes on a browser-tab-like chip */
+			.fav-row { display: flex; align-items: flex-end; gap: 22px; }
+			.fav { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+			.fav img { image-rendering: auto; border-radius: 4px; }
+
+			/* Standalone splash */
+			.splash { width: 200px; height: 150px; border-radius: 14px; background: var(--coral); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #fff; }
+			.splash img { width: 56px; height: 56px; border-radius: 12px; }
+			.splash span { font-weight: 600; letter-spacing: -0.01em; }
+
+			.safe { position: relative; width: 120px; height: 120px; }
+			.safe img { width: 100%; height: 100%; border-radius: 10px; }
+			.safe::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.9); pointer-events: none; }
+
+			dl { max-width: 960px; margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; display: grid; grid-template-columns: 160px 1fr; gap: 8px 16px; }
+			dt { color: var(--muted); }
+			dd { margin: 0; font-variant-numeric: tabular-nums; }
+			code { background: #f1f5f9; padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>textme — PWA icon &amp; install preview</h1>
+			<p>How the app icon renders once installed. Brand coral <code>#f07142</code>. Icon is a placeholder — regenerate via <code>node scripts/make-icons.mjs</code>.</p>
+		</header>
+
+		<div class="grid">
+			<div class="card">
+				<h2>iOS home screen</h2>
+				<div class="stage"><div class="ios-tile"><img src="/apple-touch-icon.png" alt="apple touch icon" /></div></div>
+				<p class="caption">apple-touch-icon.png · 180×180, rounded by iOS</p>
+			</div>
+
+			<div class="card">
+				<h2>Android adaptive</h2>
+				<div class="stage">
+					<div class="mask circle"><img src="/icon-512.png" alt="maskable circle" /></div>
+					<div class="mask squircle"><img src="/icon-512.png" alt="maskable squircle" /></div>
+				</div>
+				<p class="caption">maskable icon under circle &amp; squircle masks</p>
+			</div>
+
+			<div class="card">
+				<h2>Maskable safe zone</h2>
+				<div class="stage"><div class="safe"><img src="/icon-512.png" alt="safe zone" /></div></div>
+				<p class="caption">glyph sits inside the safe circle — nothing clipped</p>
+			</div>
+
+			<div class="card">
+				<h2>Standalone launch</h2>
+				<div class="stage"><div class="splash"><img src="/icon-192.png" alt="splash icon" /><span>textme</span></div></div>
+				<p class="caption">theme_color background · display: standalone</p>
+			</div>
+
+			<div class="card">
+				<h2>Favicon</h2>
+				<div class="stage fav-row">
+					<div class="fav"><img src="/favicon.png" width="16" height="16" alt="16" /><span class="caption">16</span></div>
+					<div class="fav"><img src="/favicon.png" width="32" height="32" alt="32" /><span class="caption">32</span></div>
+					<div class="fav"><img src="/favicon.png" width="64" height="64" alt="64" /><span class="caption">64</span></div>
+				</div>
+				<p class="caption">favicon.png · replaces the old gray Svelte logo</p>
+			</div>
+
+			<div class="card">
+				<h2>Full icon</h2>
+				<div class="stage"><img src="/icon-512.png" width="120" height="120" style="border-radius:14px" alt="icon 512" /></div>
+				<p class="caption">icon-512.png · source artwork</p>
+			</div>
+		</div>
+
+		<dl>
+			<dt>name</dt><dd>textme</dd>
+			<dt>display</dt><dd>standalone</dd>
+			<dt>start_url / scope</dt><dd>/</dd>
+			<dt>theme_color</dt><dd>#f07142</dd>
+			<dt>background_color</dt><dd>#ffffff</dd>
+			<dt>icons</dt><dd>192, 512 — each <code>any</code> + <code>maskable</code></dd>
+		</dl>
+	</body>
+</html>
