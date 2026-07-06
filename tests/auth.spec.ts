@@ -60,3 +60,39 @@ test('signing in via the login page, then signing out', async ({ page }) => {
 	await page.goto('/gated');
 	await expect(page).toHaveURL('/login?next=%2Fgated');
 });
+
+test('passkey: register after OTP, sign out, sign back in with passkey', async ({ page }) => {
+	const client = await page.context().newCDPSession(page);
+	await client.send('WebAuthn.enable');
+	await client.send('WebAuthn.addVirtualAuthenticator', {
+		options: {
+			protocol: 'ctap2',
+			transport: 'internal',
+			hasResidentKey: true,
+			hasUserVerification: true,
+			isUserVerified: true,
+			automaticPresenceSimulation: true
+		}
+	});
+
+	const email = uniqueEmail('passkey');
+	await page.goto('/login');
+	await page.locator('input.anahtar-input').fill(email);
+	await page.locator('button.anahtar-submit-icon').click();
+	await expect(page.locator('input.anahtar-otp-digit').first()).toBeVisible();
+	const code = await otpFor(page, email);
+	await page.locator('input.anahtar-otp-digit').first().fill(code);
+
+	await page.locator('.anahtar-passkey-add').click();
+	await expect(page).toHaveURL('/', { timeout: 10_000 });
+	await expect(page.locator('.anahtar-pill-email')).toHaveText(email);
+
+	await page.request.post('/api/auth/logout');
+	await page.reload();
+
+	// Conditional WebAuthn autofill signs back in with the registered passkey
+	// (same /passkey/login-start + /login-finish ceremony), no OTP.
+	await expect(page.locator('.anahtar-pill-email')).toHaveText(email, { timeout: 15_000 });
+	await page.goto('/gated');
+	await expect(page.getByTestId('gated-user')).toHaveText(email);
+});
