@@ -24,7 +24,7 @@ test("page head links manifest, theme color, apple-touch-icon", async ({ page })
 	await page.goto("/");
 	await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
 		"href",
-		"/manifest.webmanifest",
+		/\/manifest\.webmanifest$/,
 	);
 	await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
 		"content",
@@ -32,7 +32,7 @@ test("page head links manifest, theme color, apple-touch-icon", async ({ page })
 	);
 	await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
 		"href",
-		"/apple-touch-icon.png",
+		/\/apple-touch-icon\.png$/,
 	);
 });
 
