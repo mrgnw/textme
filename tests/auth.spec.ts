@@ -26,3 +26,15 @@ test('email OTP round-trip creates a session', async ({ page }) => {
 	const body = await signInViaApi(page, email);
 	expect(body.user.email).toBe(email);
 });
+
+test('gated route redirects to login when signed out', async ({ page }) => {
+	await page.goto('/gated');
+	await expect(page).toHaveURL('/login?next=%2Fgated');
+});
+
+test('gated route is accessible once signed in', async ({ page }) => {
+	const email = uniqueEmail('guard');
+	await signInViaApi(page, email);
+	await page.goto('/gated');
+	await expect(page.getByTestId('gated-user')).toHaveText(email);
+});
