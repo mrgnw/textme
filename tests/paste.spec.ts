@@ -68,3 +68,31 @@ test("deep-linking to /{number} enables the buttons", async ({ page }) => {
 
 	await expect(whatsappLink(page)).not.toHaveClass(/disabled/);
 });
+
+test.describe("with a non-matching geo default country", () => {
+	test.use({ extraHTTPHeaders: { "cf-ipcountry": "ES" } });
+
+	test("pasting an international number overrides the geo country", async ({
+		page,
+	}) => {
+		await page.goto("/", { waitUntil: "networkidle" });
+		const input = page.locator('input[type="tel"]');
+
+		await expect(
+			page.getByRole("button", { name: "Change country" }),
+		).toHaveText("🇪🇸");
+
+		await input.focus();
+		await pasteInto(input, VALID_US_NUMBER);
+
+		// The card debounces a replaceState to /{digits}; the number must survive
+		// that round-trip, not just the moment of the paste.
+		await page.waitForURL(/\/12024561111$/);
+
+		await expect(whatsappLink(page)).not.toHaveClass(/disabled/);
+		await expect(whatsappLink(page)).toHaveAttribute(
+			"href",
+			`https://wa.me/${EXPECTED_E164}`,
+		);
+	});
+});

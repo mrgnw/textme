@@ -5,6 +5,7 @@
 	import PhoneDebug from "./PhoneDebug.svelte";
 	import ActionBar from "./ActionBar.svelte";
 	import { copyToClipboard, downloadVCard } from "$lib/utils";
+	import { parse } from "svelte-tel-input/utils";
 	import { Badge } from "$lib/components/ui/badge";
 
 	import { CopyIcon } from "lucide-svelte";
@@ -14,11 +15,37 @@
 	let { initialValue = null } = $props();
 
 	let cf_data = $state($page.data);
-	let country = $state(
-		$page.data.ip_country ? $page.data.ip_country.toUpperCase() : "US"
-	);
+
+	const geoCountry = $page.data.ip_country
+		? $page.data.ip_country.toUpperCase()
+		: "US";
+
+	// A number arriving via the URL has lost its leading "+", so it would be
+	// parsed against the geo country and truncated to that country's national
+	// length. Fall back to reading it as an international number.
+	const initialDetails = resolveInitial(initialValue, geoCountry);
+
+	function resolveInitial(raw, fallbackCountry) {
+		if (!raw) return { value: raw, country: fallbackCountry };
+
+		const national = parse(raw, fallbackCountry);
+		if (national.isValid) return { value: raw, country: fallbackCountry };
+
+		const digits = raw.replace(/[^\d]/g, "");
+		const international = parse(`+${digits}`, fallbackCountry);
+		if (international.isValid && international.countryCode) {
+			return {
+				value: international.e164,
+				country: international.countryCode,
+			};
+		}
+
+		return { value: raw, country: fallbackCountry };
+	}
+
+	let country = $state(initialDetails.country);
 	let valid = $state(false);
-	let value = $state(initialValue);
+	let value = $state(initialDetails.value);
 	let detailedValue = $state(null);
 
 	let showDebug = $state(false);
