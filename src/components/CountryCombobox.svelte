@@ -2,7 +2,7 @@
 	import { Combobox } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 	import { Check } from "lucide-svelte";
-	import { normalizedCountries } from "svelte-tel-input";
+	import { countries } from "svelte-tel-input";
 	import type { CountryCode } from "svelte-tel-input/types";
 	import { getFlag } from "$lib/countryFlags.js";
 
@@ -18,12 +18,12 @@
 
 	let filteredCountries = $derived(
 		searchValue
-			? normalizedCountries.filter((c) =>
+			? countries.filter((c) =>
 					c.name.toLowerCase().includes(searchValue.toLowerCase()) ||
 					c.iso2.toLowerCase().includes(searchValue.toLowerCase()) ||
 					String(c.dialCode).includes(searchValue)
 				)
-			: normalizedCountries
+			: countries
 	);
 
 	function handleValueChange(newValue: string | undefined) {
