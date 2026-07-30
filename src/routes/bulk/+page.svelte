@@ -1,18 +1,9 @@
 <script>
-	import { TextareaAutosize } from "runed";
 	import { parseBulkText } from "$lib/bulkParse";
 	import BulkRow from "$components/BulkRow.svelte";
 	import { scale } from "svelte/transition";
 
-	let textareaEl = $state(
-		/** @type {HTMLTextAreaElement | undefined} */ (undefined),
-	);
 	let input = $state("");
-
-	new TextareaAutosize({
-		element: () => textareaEl,
-		input: () => input,
-	});
 
 	let contacts = $derived(parseBulkText(input));
 
@@ -34,7 +25,6 @@ Elena 34678901234`;
 	</div>
 
 	<textarea
-		bind:this={textareaEl}
 		bind:value={input}
 		{placeholder}
 		class="bulk-textarea"
@@ -56,8 +46,9 @@ Elena 34678901234`;
 <style>
 	.bulk-textarea {
 		width: 100%;
-		resize: none;
-		overflow: hidden;
+		resize: vertical;
+		field-sizing: content;
+		min-height: 5rem;
 		border: 1px solid hsl(var(--border));
 		border-radius: 0.75rem;
 		padding: 0.75rem 1rem;

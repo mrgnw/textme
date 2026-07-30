@@ -1,0 +1,16 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "textme",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2026-03-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"workers_dev": false,
+	"routes": [
+		{ "pattern": "textme.cc/*", "zone_name": "textme.cc" },
+		{ "pattern": "x.textme.cc/*", "zone_name": "textme.cc" }
+	]
+}

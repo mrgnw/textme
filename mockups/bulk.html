@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Bulk contacts — design mockups</title>
+		<style>
+			:root {
+				--bg: #f8f7f5;
+				--surface: #ffffff;
+				--ink: #1c1917;
+				--muted: #7c756e;
+				--line: #e8e4df;
+				--coral: hsl(16 85% 58%);
+				--coral-soft: hsl(16 85% 96%);
+				--radius: 14px;
+				--shadow-sm: 0 1px 2px rgba(40, 30, 20, 0.04),
+					0 1px 3px rgba(40, 30, 20, 0.05);
+				--shadow-md: 0 2px 4px rgba(40, 30, 20, 0.03),
+					0 8px 24px rgba(40, 30, 20, 0.07);
+				--spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				background: var(--bg);
+				color: var(--ink);
+				font:
+					16px/1.6 ui-sans-serif,
+					system-ui,
+					-apple-system,
+					sans-serif;
+				padding: 48px 24px 96px;
+			}
+
+			.page {
+				max-width: 720px;
+				margin: 0 auto;
+			}
+
+			.variant-label {
+				font-size: 0.75rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted);
+				margin: 80px 0 20px;
+				padding-bottom: 8px;
+				border-bottom: 1px solid var(--line);
+			}
+
+			.variant-label:first-of-type {
+				margin-top: 0;
+			}
+
+			.variant-note {
+				font-size: 0.9rem;
+				color: var(--muted);
+				margin: -12px 0 24px;
+				max-width: 60ch;
+			}
+
+			h1 {
+				font-size: clamp(2.25rem, 6vw, 3.25rem);
+				line-height: 1.05;
+				letter-spacing: -0.03em;
+				margin: 0 0 0.4rem;
+				font-weight: 650;
+			}
+
+			.lede {
+				font-size: 1.15rem;
+				color: var(--muted);
+				margin: 0 0 32px;
+			}
+
+			/* ---------- shared paste surface ---------- */
+			.paste {
+				position: relative;
+				background: var(--surface);
+				border: 1px solid var(--line);
+				border-radius: var(--radius);
+				box-shadow: var(--shadow-sm);
+				transition:
+					border-color 0.2s,
+					box-shadow 0.2s;
+			}
+
+			.paste:focus-within {
+				border-color: var(--coral);
+				box-shadow: var(--shadow-md);
+			}
+
+			textarea {
+				display: block;
+				width: 100%;
+				border: 0;
+				background: transparent;
+				color: inherit;
+				resize: vertical;
+				field-sizing: content;
+				min-height: 7rem;
+				padding: 18px 20px;
+				border-radius: var(--radius);
+				font:
+					0.95rem/1.7 ui-monospace,
+					SFMono-Regular,
+					Menlo,
+					monospace;
+			}
+
+			textarea:focus {
+				outline: none;
+			}
+
+			textarea::placeholder {
+				color: var(--muted);
+				opacity: 0.55;
+			}
+
+			.paste-actions {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 0 20px 14px;
+			}
+
+			.chip {
+				border: 1px solid var(--line);
+				background: var(--surface);
+				color: var(--muted);
+				border-radius: 999px;
+				padding: 5px 12px;
+				font-size: 0.8rem;
+				cursor: pointer;
+				transition: all 0.15s;
+			}
+
+			.chip:hover {
+				color: var(--ink);
+				border-color: var(--ink);
+				transform: translateY(-1px);
+			}
+
+			.chip.primary {
+				background: var(--coral);
+				border-color: var(--coral);
+				color: #fff;
+			}
+
+			.count {
+				margin-left: auto;
+				font-size: 0.8rem;
+				color: var(--muted);
+				font-variant-numeric: tabular-nums;
+			}
+
+			/* ---------- A: quiet list ---------- */
+			.list {
+				margin-top: 28px;
+				background: var(--surface);
+				border: 1px solid var(--line);
+				border-radius: var(--radius);
+				box-shadow: var(--shadow-sm);
+				overflow: hidden;
+			}
+
+			.row {
+				display: grid;
+				grid-template-columns: 1fr auto;
+				align-items: center;
+				gap: 12px;
+				padding: 14px 18px;
+				border-top: 1px solid var(--line);
+				transition: background 0.15s;
+			}
+
+			.row:first-child {
+				border-top: 0;
+			}
+
+			.row:hover {
+				background: #fcfbfa;
+			}
+
+			.who {
+				min-width: 0;
+			}
+
+			.name {
+				display: block;
+				width: 100%;
+				border: 1px solid transparent;
+				background: transparent;
+				border-radius: 8px;
+				padding: 2px 6px;
+				margin-left: -6px;
+				font: inherit;
+				font-weight: 550;
+				color: inherit;
+			}
+
+			.name:hover {
+				border-color: var(--line);
+			}
+
+			.name:focus {
+				outline: none;
+				border-color: var(--coral);
+				background: #fff;
+			}
+
+			.num {
+				font:
+					0.85rem ui-monospace,
+					Menlo,
+					monospace;
+				color: var(--muted);
+				padding-left: 0;
+				letter-spacing: 0.02em;
+			}
+
+			.acts {
+				display: flex;
+				gap: 2px;
+				opacity: 0.35;
+				transition: opacity 0.15s;
+			}
+
+			.row:hover .acts,
+			.row:focus-within .acts {
+				opacity: 1;
+			}
+
+			.ico {
+				width: 34px;
+				height: 34px;
+				display: grid;
+				place-items: center;
+				border: 0;
+				background: transparent;
+				border-radius: 9px;
+				color: var(--muted);
+				cursor: pointer;
+				text-decoration: none;
+				transition:
+					transform 0.15s var(--spring),
+					background 0.15s,
+					color 0.15s;
+			}
+
+			.ico:hover {
+				background: var(--coral-soft);
+				color: var(--coral);
+				transform: translateY(-1px);
+			}
+
+			.ico svg {
+				width: 17px;
+				height: 17px;
+			}
+
+			/* ---------- B: cards ---------- */
+			.grid {
+				margin-top: 28px;
+				display: grid;
+				gap: 12px;
+				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+			}
+
+			.card {
+				background: var(--surface);
+				border: 1px solid var(--line);
+				border-radius: var(--radius);
+				padding: 16px;
+				box-shadow: var(--shadow-sm);
+				transition:
+					transform 0.18s var(--spring),
+					box-shadow 0.18s;
+			}
+
+			.card:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-md);
+			}
+
+			.card .num {
+				display: block;
+				margin: 2px 0 12px;
+			}
+
+			.card .acts {
+				opacity: 1;
+				justify-content: space-between;
+			}
+
+			.avatar {
+				width: 30px;
+				height: 30px;
+				border-radius: 999px;
+				background: var(--coral-soft);
+				color: var(--coral);
+				display: grid;
+				place-items: center;
+				font-size: 0.8rem;
+				font-weight: 650;
+				float: right;
+			}
+
+			/* ---------- C: empty state ---------- */
+			.empty {
+				margin-top: 28px;
+				text-align: center;
+				padding: 48px 24px;
+				border: 1px dashed var(--line);
+				border-radius: var(--radius);
+				color: var(--muted);
+			}
+
+			.empty strong {
+				display: block;
+				color: var(--ink);
+				font-size: 1.05rem;
+				margin-bottom: 6px;
+			}
+
+			.empty code {
+				background: var(--surface);
+				border: 1px solid var(--line);
+				border-radius: 6px;
+				padding: 2px 6px;
+				font-size: 0.8rem;
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				* {
+					transition: none !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<p class="variant-label">Variant A — quiet list (recommended)</p>
+			<p class="variant-note">
+				One card holds everything. Name is the primary text and directly
+				editable; the number recedes to a monospace subline. Actions fade in on
+				hover so a 40-row paste reads as a list of people, not a wall of icons.
+			</p>
+
+			<h1>Bulk contacts</h1>
+			<p class="lede">Paste names and numbers — one per line.</p>
+
+			<div class="paste">
+				<textarea spellcheck="false">
+Maria 34612345678
+Luis 34698765432
+Ana B 34656781234
+
+Friends:
+Carlos 34634567890</textarea
+				>
+				<div class="paste-actions">
+					<button class="chip primary">Download all .vcf</button>
+					<button class="chip">Copy all</button>
+					<button class="chip">Clear</button>
+					<span class="count">4 contacts</span>
+				</div>
+			</div>
+
+			<div class="list">
+				<div class="row">
+					<div class="who">
+						<input class="name" value="Maria" />
+						<span class="num">+34 612 345 678</span>
+					</div>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="who">
+						<input class="name" value="Luis" />
+						<span class="num">+34 698 765 432</span>
+					</div>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="who">
+						<input class="name" value="Ana B" />
+						<span class="num">+34 656 781 234</span>
+					</div>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="who">
+						<input class="name" value="Carlos" />
+						<span class="num">+34 634 567 890</span>
+					</div>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+			</div>
+
+			<p class="variant-label">Variant B — cards</p>
+			<p class="variant-note">
+				Same data as tiles. Reads well for 3–12 contacts and on mobile, but a
+				50-name paste becomes a lot of scrolling. Use only if the typical paste
+				is small.
+			</p>
+
+			<div class="grid">
+				<div class="card">
+					<span class="avatar">M</span>
+					<input class="name" value="Maria" />
+					<span class="num">+34 612 345 678</span>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+				<div class="card">
+					<span class="avatar">L</span>
+					<input class="name" value="Luis" />
+					<span class="num">+34 698 765 432</span>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+				<div class="card">
+					<span class="avatar">A</span>
+					<input class="name" value="Ana B" />
+					<span class="num">+34 656 781 234</span>
+					<div class="acts">
+						<a class="ico" href="#" aria-label="Copy"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="Telegram"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="SMS"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z" /></svg
+						></a>
+						<a class="ico" href="#" aria-label="WhatsApp"
+							><svg viewBox="0 0 24 24" fill="currentColor">
+								<path
+									d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+								/></svg
+						></a>
+						<a class="ico" href="#" aria-label="Save contact"
+							><svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></svg
+						></a>
+					</div>
+				</div>
+			</div>
+
+			<p class="variant-label">Empty state</p>
+			<p class="variant-note">
+				What you see before pasting anything — the current design shows nothing
+				at all, which is where the broken page looked identical to a working
+				one.
+			</p>
+
+			<div class="paste">
+				<textarea
+					spellcheck="false"
+					placeholder="Maria 34612345678&#10;Luis 34698765432&#10;&#10;Friends:&#10;Carlos 34634567890"
+				></textarea>
+			</div>
+			<div class="empty">
+				<strong>Nothing to parse yet</strong>
+				Paste a list — <code>Name 34612345678</code> per line. Headers ending in
+				<code>:</code> are skipped.
+			</div>
+		</div>
+	</body>
+</html>

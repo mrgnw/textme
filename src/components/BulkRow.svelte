@@ -3,7 +3,7 @@
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiTelegramLine from "~icons/ri/telegram-line";
-	import { copyToClipboard, notifyDownload } from "$lib/utils";
+	import { copyToClipboard, downloadVCard } from "$lib/utils";
 
 	let { phone, name: initialName } = $props();
 
@@ -20,30 +20,8 @@
 		copyToClipboard(formatted);
 	}
 
-	function downloadVCard() {
-		const vcard = [
-			"BEGIN:VCARD",
-			"VERSION:3.0",
-			`FN:${name || "Contact"}`,
-			`TEL;TYPE=CELL:${formatted}`,
-			`X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/${clean}`,
-			`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${formatted}`,
-			"END:VCARD",
-		].join("\n");
-
-		const blob = new Blob([vcard], { type: "text/vcard" });
-		const url = window.URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		const safeName = (name || "contact")
-			.replace(/[^a-z0-9]/gi, "_")
-			.toLowerCase();
-		a.download = `${safeName}.vcf`;
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		window.URL.revokeObjectURL(url);
-		notifyDownload(`${safeName}.vcf`);
+	function handleDownloadVCard() {
+		downloadVCard(phone, name);
 	}
 </script>
 
@@ -74,7 +52,7 @@
 			<RiWhatsappLine class="w-[18px] h-[18px]" />
 		</a>
 		<button
-			onclick={downloadVCard}
+			onclick={handleDownloadVCard}
 			class="icon-btn contact"
 			aria-label="Download contact"
 		>

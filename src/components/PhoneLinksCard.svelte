@@ -4,7 +4,7 @@
 	import PhoneInput from "./PhoneInput.svelte";
 	import PhoneDebug from "./PhoneDebug.svelte";
 	import ActionBar from "./ActionBar.svelte";
-	import { copyToClipboard, notifyDownload } from "$lib/utils";
+	import { copyToClipboard, downloadVCard } from "$lib/utils";
 	import { Badge } from "$lib/components/ui/badge";
 
 	import { CopyIcon } from "lucide-svelte";
@@ -97,32 +97,9 @@
 		};
 	}
 
-	function downloadVCard(name = 'Contact') {
+	function handleDownloadVCard(name = 'Contact') {
 		if (!valid) return;
-		const cleanPhone = value.replace(/[^\d]/g, '');
-		const formattedPhone = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
-		
-		const vcard = [
-			'BEGIN:VCARD',
-			'VERSION:3.0',
-			`FN:${name}`,
-			`TEL;TYPE=CELL:${formattedPhone}`,
-			`X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/${formattedPhone}`,
-			`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${formattedPhone}`,
-			'END:VCARD'
-		].join('\n');
-
-		const blob = new Blob([vcard], { type: 'text/vcard' });
-		const url = window.URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		const safeName = (name || 'contact').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-		a.download = `${safeName}.vcf`;
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		window.URL.revokeObjectURL(url);
-		notifyDownload(`${safeName}.vcf`);
+		downloadVCard(value, name);
 		contactName = '';
 	}
 </script>
@@ -173,7 +150,7 @@
 		{value}
 		bind:contactName
 		bind:showQr
-		onDownloadContact={() => downloadVCard(contactName || 'Contact')}
+		onDownloadContact={() => handleDownloadVCard(contactName || 'Contact')}
 	/>
 </div>
 
