@@ -10,7 +10,7 @@ const config = {
       $components: "./src/components",
 			"@/*": "./src/lib/*",
 		},
-		adapter: adapter()
+		adapter: adapter({ platformProxy: { persist: false } })
 	}
 };
 
