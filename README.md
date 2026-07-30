@@ -1,38 +1,56 @@
-# create-svelte
+# textme
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Type a phone number, get one-tap links to message it — Telegram, WhatsApp, or SMS — plus a downloadable contact card and a QR code. Live at [textme.cc](https://textme.cc).
 
-## Creating a project
+> [!NOTE]
+> This project was built with heavy LLM assistance and should be considered proof-of-concept. Contributions are welcome, but I can't guarantee the accuracy of the code or that I will continue to maintain it. If there are any mistakes in attribution or anything else, please let me know.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+- One input → direct-message links: Telegram (`t.me`), WhatsApp (`wa.me`), and SMS (`sms:`)
+- Download a contact card (`.vcf`) with WhatsApp and Telegram profiles attached
+- QR code for the Telegram link
+- Phone validation via [svelte-tel-input](https://github.com/gyurielf/svelte-tel-input), with your country auto-detected from Cloudflare's `cf-ipcountry` header
+- Bulk mode at [textme.cc/bulk](https://textme.cc/bulk) — paste `Name number` lines and get a row of links per contact
 
-# create a new project in my-app
-npm create svelte@latest my-app
+## Deep links
+
+Any path is treated as a phone number and prefills the form:
+
+```
+https://textme.cc/+15551234567
 ```
 
-## Developing
+Number words work too, in English and Spanish (`five` and `cinco` → `5`), as do circled digits (`①`, `❶`).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## API
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```sh
+curl https://textme.cc/api/links/+15551234567
 ```
 
-## Building
+Returns `{ "phone": ..., "links": { "telegram", "whatsapp", "sms" } }`. The `/api/telegram/{phone}`, `/api/whatsapp/{phone}`, and `/api/sms/{phone}` routes 302-redirect straight to the deep link.
 
-To create a production version of your app:
+## Develop
 
-```bash
-npm run build
+Needs Node 20 and [pnpm](https://pnpm.io).
+
+```sh
+pnpm install
+pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Build & test
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```sh
+pnpm build
+pnpm preview
+pnpm check
+pnpm test:e2e
+```
+
+Deploys to Cloudflare Pages via `@sveltejs/adapter-cloudflare` (see `wrangler.toml`).
+
+## Stack
+
+Svelte 5 + SvelteKit 2, TypeScript, TailwindCSS, bits-ui, svelte-tel-input, deployed on Cloudflare Pages.
