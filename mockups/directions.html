@@ -1998,6 +1998,7 @@
 			}
 
 			const BUILD = { a: renderA, b: renderB, c: renderC };
+			window.DECK = { variants: DIRS.map((d) => d.id), states: STATES.map((s) => s.id) };
 
 			/* ---------- shell ---------- */
 			const dirsEl = document.getElementById('dirs');
@@ -2019,7 +2020,7 @@
 				const b = document.createElement('button');
 				b.type = 'button';
 				b.textContent = d.label;
-				b.dataset.dirBtn = d.id;
+				b.dataset.variant = d.id;
 				b.addEventListener('click', () => select(d.id, state, true));
 				dirsEl.appendChild(b);
 			});
@@ -2042,7 +2043,7 @@
 				}
 				urlEl.textContent = s.url;
 				noteEl.innerHTML = d.note;
-				dirsEl.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dirBtn === dir)));
+				dirsEl.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.variant === dir)));
 				pagerEl.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.set === state)));
 			}
 
