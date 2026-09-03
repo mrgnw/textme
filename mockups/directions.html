@@ -183,7 +183,7 @@
 			}
 			.screen.desk {
 				width: 100%;
-				height: 700px;
+				height: 760px;
 			}
 
 			/* phone chrome */
@@ -1633,6 +1633,25 @@
 			.screen[data-dir='c'] .homebar {
 				background: #fff;
 			}
+			/* ---------- review fixes ---------- */
+			.screen.phone .is-empty .a-num {
+				font-size: 36px;
+			}
+			.a-lhead,
+			.b-lrow {
+				align-items: center;
+			}
+			.screen.phone .b-mini .av {
+				display: none;
+			}
+			.screen.phone .tag {
+				display: block;
+				width: max-content;
+				margin: 3px 0 0;
+			}
+			.b-stack > * {
+				min-width: 0;
+			}
 		</style>
 	</head>
 	<body>
@@ -1849,8 +1868,8 @@
 				return (
 					top +
 					`<section class="a-hero">${cc('applied to bare numbers')}<pre class="a-paste">${PASTE_TEXT}</pre></section>` +
-					`<section class="a-list"><div class="a-lhead"><span class="a-count">6 contacts</span><span class="a-note">1 number got +34</span></div>` +
-					`<div class="a-lbtns"><button class="a-btn primary">${ico('download')}Download all .vcf</button><button class="a-btn">${ico('copy')}Copy all</button><button class="a-btn ghost">Clear</button></div>` +
+					`<section class="a-list"><div class="a-lhead"><span class="a-count">6 contacts</span><span class="a-note">1 number got +34</span><button class="a-btn ghost">Clear</button></div>` +
+					`<div class="a-lbtns"><button class="a-btn primary">${ico('download')}Download all .vcf</button><button class="a-btn">${ico('copy')}Copy all</button></div>` +
 					`<div class="a-crows">` +
 					CONTACTS.map(
 						(c) =>
@@ -1910,8 +1929,8 @@
 				return (
 					top +
 					`<div class="b-scene"><div class="b-card">${stamp}<div class="b-kicker">Pasted list</div><pre class="b-pre">${PASTE_TEXT}</pre>` +
-					`<div class="b-lrow"><span class="b-count b-display">6 contacts</span><span class="b-note">1 number got +34</span></div>` +
-					`<div class="b-btns"><button class="b-btn primary">${ico('download')}Download all .vcf</button><button class="b-btn">${ico('copy')}Copy all</button><button class="b-btn ghost">Clear</button></div></div>` +
+					`<div class="b-lrow"><span class="b-count b-display">6 contacts</span><span class="b-note">1 number got +34</span><button class="b-btn ghost">Clear</button></div>` +
+					`<div class="b-btns"><button class="b-btn primary">${ico('download')}Download all .vcf</button><button class="b-btn">${ico('copy')}Copy all</button></div></div>` +
 					`<div class="b-stack">` +
 					CONTACTS.map(
 						(c) =>
@@ -1973,7 +1992,7 @@
 							`<div class="c-bubble recv contact"><div class="who"><b>${c.name}</b><span>${c.num}${c.inferred ? '<i class="tag">+34 added</i>' : ''}</span></div>` +
 							`<div class="c-mini">${rowActs('')}</div></div>`,
 					).join('') +
-					`</main><div class="c-bar"><button class="primary">${ico('download')}Download 6 contacts</button><button class="ghost">Copy all</button><button class="ghost">Clear</button></div>` +
+					`</main><div class="c-bar"><button class="primary">${ico('download')}Download 6 contacts</button><button class="ghost">Copy all</button></div>` +
 					composer('list')
 				);
 			}
