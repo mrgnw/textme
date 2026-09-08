@@ -1,194 +1,178 @@
-<script>
-	import { page } from "$app/stores";
-	import { goto } from "$app/navigation";
-	import PhoneInput from "./PhoneInput.svelte";
-	import PhoneDebug from "./PhoneDebug.svelte";
-	import ActionBar from "./ActionBar.svelte";
-	import { copyToClipboard, downloadVCard } from "$lib/utils";
-	import { parse } from "svelte-tel-input/utils";
-	import { Badge } from "$lib/components/ui/badge";
+<script lang="ts">
+	import { page } from "$app/state";
+	import { replaceState } from "$app/navigation";
+	import { useDebounce } from "runed";
+	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
+	import CopyIcon from "@lucide/svelte/icons/copy";
+	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
+	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
+	import { Button } from "$lib/components/ui/button";
+	import { copyToClipboard } from "$lib/utils";
+	import { getFlag } from "$lib/countryFlags.js";
+	import { classify, digitsOf } from "$lib/phone";
+	import { remember } from "$lib/recent.svelte";
+	import ActionButtons from "./ActionButtons.svelte";
+	import CountrySelector from "./CountrySelector.svelte";
+	import ListEditor from "./ListEditor.svelte";
+	import NumberCard from "./NumberCard.svelte";
+	import QrPanel from "./QrPanel.svelte";
+	import RecentNumbers from "./RecentNumbers.svelte";
+	import SecondaryActions from "./SecondaryActions.svelte";
+	import ShareDialog from "./ShareDialog.svelte";
 
-	import { CopyIcon } from "lucide-svelte";
-	import { fly } from "svelte/transition";
-	import { scale } from "svelte/transition";
-
-	let { initialValue = null } = $props();
-
-	let cf_data = $state($page.data);
-
-	const geoCountry = $page.data.ip_country
-		? $page.data.ip_country.toUpperCase()
-		: "US";
-
-	// A number arriving via the URL has lost its leading "+", so it would be
-	// parsed against the geo country and truncated to that country's national
-	// length. Fall back to reading it as an international number.
-	const initialDetails = resolveInitial(initialValue, geoCountry);
-
-	function resolveInitial(raw, fallbackCountry) {
-		if (!raw) return { value: raw, country: fallbackCountry };
-
-		const national = parse(raw, fallbackCountry);
-		if (national.isValid) return { value: raw, country: fallbackCountry };
-
-		const digits = raw.replace(/[^\d]/g, "");
-		const international = parse(`+${digits}`, fallbackCountry);
-		if (international.isValid && international.countryCode) {
-			return {
-				value: international.e164,
-				country: international.countryCode,
-			};
-		}
-
-		return { value: raw, country: fallbackCountry };
+	interface Props {
+		initialValue?: string | null;
+		initialName?: string;
+		mode?: "single" | "list";
 	}
 
-	let country = $state(initialDetails.country);
-	let valid = $state(false);
-	let value = $state(initialDetails.value);
-	let detailedValue = $state(null);
+	let { initialValue = null, initialName = "", mode: initialMode = "single" }: Props = $props();
 
-	let showDebug = $state(false);
-	const konami = [
-		"ArrowUp",
-		"ArrowUp",
-		"ArrowDown",
-		"ArrowDown",
-		"ArrowLeft",
-		"ArrowRight",
-		"ArrowLeft",
-		"ArrowRight",
-		"b",
-		"a",
-	];
-	let pos = $state(0);
+	const geoCountry = ((page.data.ip_country as string | undefined)?.toUpperCase() as CountryCode) || "US";
+	// svelte-ignore state_referenced_locally
+	const initial = resolveInitial(initialValue, geoCountry);
 
-	let contactName = $state('');
+	function resolveInitial(raw: string | null, fallback: CountryCode) {
+		if (!raw) return { value: "", country: fallback };
+		const national = parse(raw, fallback);
+		if (national.isValid && national.e164) return { value: national.e164, country: national.countryCode ?? fallback };
+		const international = parse(`+${raw.replace(/\D/g, "")}`, fallback);
+		if (international.isValid && international.e164) {
+			return { value: international.e164, country: international.countryCode ?? fallback };
+		}
+		return { value: raw, country: fallback };
+	}
+
+	let country = $state<CountryCode | null>(initial.country);
+	let value = $state(initial.value);
+	let detailedValue = $state<Partial<DetailedValue> | null>(null);
+	let countryOpen = $state(false);
+	// svelte-ignore state_referenced_locally
+	let mode = $state(initialMode);
+	let listText = $state("");
+	// svelte-ignore state_referenced_locally
+	let name = $state(initialName);
 	let showQr = $state(false);
+	let shareOpen = $state(false);
 
-	let telegramUrl = $derived(valid ? `https://t.me/${value}` : '');
-	let qrUrl = $derived(telegramUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(telegramUrl)}` : '');
+	const classified = $derived(classify(value, country));
+	const e164 = $derived(classified.state === "valid" ? (classified.detail?.e164 ?? null) : null);
+	const landing = $derived(initialName !== "");
+	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
+	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
 
-	$effect(() => {
-		const handleKeydown = (event) => {
-			if (event.key === konami[pos]) {
-				pos++;
-				if (pos === konami.length) {
-					showDebug = !showDebug;
-					pos = 0;
-				}
-			} else {
-				pos = 0;
-			}
-		};
+	const syncUrl = useDebounce(() => {
+		if (!e164) return;
+		const path = `/${digitsOf(e164)}`;
+		if (page.url.pathname === path) return;
+		replaceState(path, page.state);
+		remember(e164, "");
+	}, 500);
 
-		window.addEventListener("keydown", handleKeydown);
-
-		return () => {
-			window.removeEventListener("keydown", handleKeydown);
-		};
-	});
-
-	// Navigation effect - clean and focused
-	let debounceTimer;
-	$effect(() => {
-		if (valid && value && value !== initialValue) {
-			clearTimeout(debounceTimer);
-			debounceTimer = setTimeout(() => {
-				const cleanDigits = value.replace(/[^\d]/g, '');
-				if (cleanDigits) {
-					goto(`/${cleanDigits}`, { replaceState: true, noScroll: true });
-				}
-			}, 500);
-		}
-		
-		return () => clearTimeout(debounceTimer);
-	});
-
-	function focusInputField() {
-		document.querySelector('input[type="tel"]').focus();
+	function onValueChange(next: string, details: Partial<DetailedValue> | null) {
+		value = next;
+		if (details) detailedValue = details;
+		syncUrl();
 	}
 
-	function handleCopy() {
-		copyToClipboard(detailedValue.nationalNumber);
+	function pickRecent(picked: string) {
+		const detail = parse(picked, country);
+		if (detail.countryCode) country = detail.countryCode;
+		onValueChange(picked, detail);
 	}
 
-	function debugTransition(node, { delay = 0, duration = 300 }) {
-		return {
-			delay,
-			duration,
-			css: (t, u) => `
-				opacity: ${t};
-				transform: scale(${1 - 0.1 * u}) translateY(${-10 * u}px);
-			`,
-		};
+	function enterList(text: string) {
+		listText = text;
+		mode = "list";
 	}
 
-	function handleDownloadVCard(name = 'Contact') {
-		if (!valid) return;
-		downloadVCard(value, name);
-		contactName = '';
+	function clearList() {
+		listText = "";
+		mode = "single";
 	}
 </script>
 
-<div class="max-w-2xl mx-auto p-6 sm:p-8 lg:p-10 my-8 pb-32 sm:pb-8">
-	<div class="text-center mb-8">
-		<h1 class="text-3xl sm:text-4xl lg:text-5xl mb-4">Social message links</h1>
-		<p class="text-xl sm:text-2xl lg:text-3xl text-muted-foreground">
-			Enter a phone number to get direct message links on supported apps
-		</p>
-	</div>
+{#snippet stamp()}
+	<Button
+		variant="outline"
+		size="sm"
+		class="h-8 gap-1.5 rounded-full px-3 font-medium"
+		aria-label="Change country"
+		onclick={() => (countryOpen = true)}
+	>
+		<span>{country ? getFlag(country) : "🌐"}</span>
+		<span class="tabular-nums">{countryLabel}</span>
+		<ChevronDownIcon class="size-3.5 text-muted-foreground" />
+	</Button>
+	<CountrySelector bind:value={country} bind:open={countryOpen} />
+{/snippet}
 
-	<div class="inputs-container text-center mb-6 flex justify-center">
-		<PhoneInput bind:country bind:valid bind:value bind:detailedValue options={{}} />
-	</div>
+<div class="flex min-h-svh flex-col">
+	<header class="flex h-14 shrink-0 items-center justify-center">
+		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
+	</header>
 
-	<div class="flex justify-center items-center py-4">
-		{#if valid}
-			<div transition:scale={{ duration: 300, start: 0.9 }} class="flex items-center gap-2">
-				<Badge
-					variant="default"
-					class="text-lg sm:text-xl lg:text-2xl flex items-center gap-2 transition-all duration-200 ease-in-out bg-foreground text-background hover:bg-foreground/90 rounded-2xl px-4 py-2 shadow-lg hover:shadow-xl"
-				>
-					<span class="select-text">
-						{detailedValue?.formatInternational || "Enter a phone number"}
-					</span>
-				</Badge>
-				<button
-					onclick={handleCopy}
-					class="p-2 rounded-xl hover:bg-muted transition-colors"
-					aria-label="Copy number"
-				>
-					<CopyIcon size={24} />
-				</button>
+	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
+		{#if mode === "list"}
+			<ListEditor bind:text={listText} {country} {countryLabel} onclear={clearList} {stamp} />
+		{:else}
+			<div class="rounded-2xl border bg-card text-card-foreground shadow-sm">
+				{#if showQr && e164}
+					<div class="space-y-5 p-6">
+						<QrPanel {e164} onclose={() => (showQr = false)} />
+					</div>
+				{:else if landing && e164}
+					<div class="space-y-5 p-6">
+						<div class="flex items-start justify-between">
+							<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-primary-foreground">
+								{initialName[0].toUpperCase()}
+							</div>
+							{@render stamp()}
+						</div>
+						<div>
+							<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
+							<div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground">
+								<span class="tabular-nums">{classified.detail?.formatInternational}</span>
+								<Button variant="ghost" size="icon" class="h-8 w-8" aria-label="Copy number" onclick={() => copyToClipboard(e164 ?? "")}>
+									<CopyIcon />
+								</Button>
+							</div>
+						</div>
+						<ActionButtons {e164} />
+						<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
+					</div>
+				{:else}
+					<NumberCard
+						{value}
+						bind:country
+						bind:detailedValue
+						status={classified.state}
+						kicker={initialValue && !landing ? "Shared number" : "Phone number"}
+						{stamp}
+						{onValueChange}
+						onListPaste={enterList}
+					>
+						{#if classified.state !== "empty"}
+							<ActionButtons {e164} />
+							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
+						{/if}
+					</NumberCard>
+				{/if}
 			</div>
+
+			{#if classified.state === "empty"}
+				<RecentNumbers onpick={pickRecent} />
+			{/if}
+
+			{#if initialValue}
+				<p class="pt-6 text-center text-sm text-muted-foreground">
+					Shared with textme · <a href="/" class="font-medium text-foreground underline underline-offset-4">Make your own link</a>
+				</p>
+			{/if}
 		{/if}
-	</div>
-
-	{#if showQr && valid}
-		<div class="flex flex-col items-center py-4 gap-2" transition:scale={{ duration: 200, start: 0.9 }}>
-			<img src={qrUrl} alt="QR code for Telegram" width="200" height="200" class="rounded-xl bg-white p-2" />
-			<p class="text-sm text-muted-foreground">Scan to open in Telegram</p>
-		</div>
-	{/if}
-
-	<ActionBar
-		{valid}
-		{value}
-		bind:contactName
-		bind:showQr
-		onDownloadContact={() => handleDownloadVCard(contactName || 'Contact')}
-	/>
+	</main>
 </div>
 
-{#if showDebug}
-	<div class="debug" transition:fly={{ x: -300, duration: 300 }}>
-		<PhoneDebug bind:value bind:detailedValue bind:cf_data />
-	</div>
+{#if e164}
+	<ShareDialog bind:open={shareOpen} {e164} bind:name />
 {/if}
-
-<style>
-	:global(.fixed) {
-		z-index: 50;
-	}
-</style>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog } from "bits-ui";
 	import { cn } from "$lib/utils.js";
-	import { X } from "lucide-svelte";
+	import X from "@lucide/svelte/icons/x";
 	import type { Snippet } from "svelte";
 
 	interface Props {
