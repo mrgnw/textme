@@ -1,3 +1,8 @@
+---
+branch: design/identity-mockups
+done: 2026-09-03
+---
+
 # Card redesign — implementation plan
 
 Source of truth for the look: `mockups/card.html` and `mockups/stills/card/`. Every state, token and class recipe in the deck is what the app should produce. This plan turns it into SvelteKit code while reusing the frameworks already in the repo. Hand-written phone parsing, hand-rolled dialogs, and ad-hoc spacing are out.
