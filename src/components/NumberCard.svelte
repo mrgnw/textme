@@ -72,24 +72,24 @@
 </script>
 
 <div class="space-y-5 p-6">
-	<div class="flex items-center justify-between">
-		<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kicker}</span>
-		<CountryStamp bind:country />
-	</div>
+	<span class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kicker}</span>
 
-	<TelInput
-		bind:el
-		bind:country
-		bind:detailedValue
-		{value}
-		{onValueChange}
-		initialFormat="national"
-		options={{ validateOn: "blur" }}
-		onpaste={handlePaste}
-		onblur={() => (touched = true)}
-		aria-label="Phone number"
-		class="w-full bg-transparent p-0 font-display text-4xl font-bold tracking-tight tabular-nums text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
-	/>
+	<div class="flex items-center gap-3">
+		<CountryStamp bind:country />
+		<TelInput
+				bind:el
+				bind:country
+				bind:detailedValue
+				{value}
+				{onValueChange}
+				initialFormat="national"
+				options={{ validateOn: "blur" }}
+				onpaste={handlePaste}
+				onblur={() => (touched = true)}
+				aria-label="Phone number"
+				class="min-w-0 flex-1 bg-transparent p-0 font-display text-3xl font-bold tracking-tight tabular-nums text-foreground placeholder:text-muted-foreground/50 focus:outline-none sm:text-4xl"
+		/>
+	</div>
 
 	{#if status === "invalid" && touched}
 		<p class="flex items-center gap-1.5 text-sm text-destructive" role="alert">
