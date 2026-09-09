@@ -81,3 +81,11 @@ PAIRS = [
 for name, hex_color in PAIRS:
 	w, d = ratio(hex_color, WHITE), ratio(hex_color, DARK_INK)
 	print(f'{name}: white {w:4.2f}  dark {d:4.2f}')
+
+print('--- jet.com purple candidates for SMS ---')
+for name, hex_color in [
+	('jet #8F44F2 (Pantone 2665 C)', '#8F44F2'), ('jet #7D43F3', '#7D43F3'),
+	('dark tint hsl(266 90% 70%)', hsl_to_hex(266, 90, 70)), ('dark tint hsl(266 90% 74%)', hsl_to_hex(266, 90, 74)),
+	('dark tint hsl(262 92% 72%)', hsl_to_hex(262, 92, 72)),
+]:
+	print(f'{name}: white {ratio(hex_color, WHITE):4.2f}  dark {ratio(hex_color, DARK_INK):4.2f}  on dark card {ratio(hex_color, DARK_CARD):4.2f}  ({hex_color})')
