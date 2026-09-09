@@ -4,12 +4,15 @@
 	import { useDebounce } from "runed";
 	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import CopyIcon from "@lucide/svelte/icons/copy";
+	import XIcon from "@lucide/svelte/icons/x";
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import { Button } from "$lib/components/ui/button";
+	import { Sheet } from "$lib/components/ui/sheet";
+	import { isMobile } from "$lib/media.svelte";
 	import { copyToClipboard } from "$lib/utils";
 	import { getFlag } from "$lib/countryFlags.js";
-	import { classify, digitsOf } from "$lib/phone";
+	import { classify, digitsOf, type App } from "$lib/phone";
 	import { remember } from "$lib/recent.svelte";
 	import ActionButtons from "./ActionButtons.svelte";
 	import CountrySelector from "./CountrySelector.svelte";
@@ -52,12 +55,13 @@
 	let listText = $state("");
 	// svelte-ignore state_referenced_locally
 	let name = $state(initialName);
-	let showQr = $state(false);
+	let qrApp = $state<App | null>(null);
 	let shareOpen = $state(false);
 
 	const classified = $derived(classify(value, country));
 	const e164 = $derived(classified.state === "valid" ? (classified.detail?.e164 ?? null) : null);
 	const landing = $derived(initialName !== "");
+	const sideQr = $derived(qrApp !== null && e164 !== null && !isMobile.current);
 	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
 
@@ -71,6 +75,7 @@
 
 	function onValueChange(next: string, details: Partial<DetailedValue> | null) {
 		value = next;
+		qrApp = null;
 		if (details) detailedValue = details;
 		syncUrl();
 	}
@@ -112,52 +117,65 @@
 		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
 	</header>
 
-	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
+	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[52rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
 		{#if mode === "list"}
 			<ListEditor bind:text={listText} {country} {countryLabel} onclear={clearList} {stamp} />
 		{:else}
-			<div class="rounded-2xl border bg-card text-card-foreground shadow-sm">
-				{#if showQr && e164}
-					<div class="space-y-5 p-6">
-						<QrPanel {e164} onclose={() => (showQr = false)} />
-					</div>
-				{:else if landing && e164}
-					<div class="space-y-5 p-6">
-						<div class="flex items-start justify-between">
-							<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-primary-foreground">
-								{initialName[0].toUpperCase()}
+			<div class="flex items-start gap-4">
+				<div class="min-w-0 flex-1 rounded-2xl border bg-card text-card-foreground shadow-sm">
+					{#if landing && e164}
+						<div class="space-y-5 p-6">
+							<div class="flex items-start justify-between">
+								<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-primary-foreground">
+									{initialName[0].toUpperCase()}
+								</div>
+								{@render stamp()}
 							</div>
-							{@render stamp()}
-						</div>
-						<div>
-							<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
-							<div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground">
-								<span class="tabular-nums">{classified.detail?.formatInternational}</span>
-								<Button variant="ghost" size="icon" class="h-8 w-8" aria-label="Copy number" onclick={() => copyToClipboard(e164 ?? "")}>
-									<CopyIcon />
-								</Button>
+							<div>
+								<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
+								<div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground">
+									<span class="tabular-nums">{classified.detail?.formatInternational}</span>
+									<Button variant="ghost" size="icon" class="h-8 w-8" aria-label="Copy number" onclick={() => copyToClipboard(e164 ?? "")}>
+										<CopyIcon />
+									</Button>
+								</div>
 							</div>
+							<ActionButtons {e164} onqr={(app) => (qrApp = app)} />
+							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 						</div>
-						<ActionButtons {e164} />
-						<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
+					{:else}
+						<NumberCard
+							{value}
+							bind:country
+							bind:detailedValue
+							status={classified.state}
+							kicker={initialValue && !landing ? "Shared number" : "Phone number"}
+							{stamp}
+							{onValueChange}
+							onListPaste={enterList}
+						>
+							{#if classified.state !== "empty"}
+								<ActionButtons {e164} onqr={(app) => (qrApp = app)} />
+								<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
+							{/if}
+						</NumberCard>
+					{/if}
+				</div>
+			{#if sideQr && qrApp && e164}
+				<aside class="w-80 shrink-0 rounded-2xl border bg-card text-card-foreground shadow-sm">
+					<div class="space-y-4 p-6">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">QR code</span>
+							<Button variant="ghost" size="icon" class="h-8 w-8 rounded-full" aria-label="Close" onclick={() => (qrApp = null)}>
+								<XIcon class="h-4 w-4" />
+							</Button>
+						</div>
+						{#key qrApp}
+							<QrPanel {e164} app={qrApp} />
+						{/key}
 					</div>
-				{:else}
-					<NumberCard
-						{value}
-						bind:country
-						bind:detailedValue
-						status={classified.state}
-						kicker={initialValue && !landing ? "Shared number" : "Phone number"}
-						{stamp}
-						{onValueChange}
-						onListPaste={enterList}
-					>
-						{#if classified.state !== "empty"}
-							<ActionButtons {e164} />
-							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
-						{/if}
-					</NumberCard>
-				{/if}
+				</aside>
+			{/if}
 			</div>
 
 			{#if classified.state === "empty"}
@@ -175,4 +193,15 @@
 
 {#if e164}
 	<ShareDialog bind:open={shareOpen} {e164} bind:name />
+	{#if isMobile.current}
+		<Sheet open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title="QR code">
+			{#if qrApp}
+				<div class="space-y-4 px-4 pb-8 pt-4">
+					{#key qrApp}
+						<QrPanel {e164} app={qrApp} />
+					{/key}
+				</div>
+			{/if}
+		</Sheet>
+	{/if}
 {/if}

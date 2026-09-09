@@ -21,7 +21,7 @@ Where the QR shows once an H segment is tapped, without losing the card:
 - L sheet on phone (number stays above the scrim), side card on desktop.
 - M pills swap: number and footer stay, the pill zone becomes a tabbed QR block.
 
-QR pick: keep the footer QR and extend the card back from two tabs to Telegram / WhatsApp / SMS / textme. Per-app QR then costs one extra tap and the pills stay at one segment. Add the H toggle only if per-app QR turns out to be frequent.
+Pick (2026-09-09): H for the pills, L for showing the code. One segment per pill, QR / Copy toggle below, footer QR dropped. Tapping a QR segment opens a bottom sheet on the phone and a side card on desktop, tabs Telegram / WhatsApp / SMS / textme preselected to the tapped app.
 
 Implementation notes for A:
 

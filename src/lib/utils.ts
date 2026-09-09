@@ -63,9 +63,9 @@ export const flyAndScale = (
 	};
 };
 
-export function copyToClipboard(text: string) {
+export function copyToClipboard(text: string, label = "to clipboard") {
 	navigator.clipboard.writeText(text).then(() => {
-		toast.success("Copied to clipboard");
+		toast.success(`Copied ${label}`);
 	}).catch(() => {
 		toast.error("Failed to copy");
 	});
