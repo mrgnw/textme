@@ -48,10 +48,18 @@ const config: Config = {
 					DEFAULT: "hsl(var(--card) / <alpha-value>)",
 					foreground: "hsl(var(--card-foreground) / <alpha-value>)"
 				},
-				telegram: "hsl(var(--telegram) / <alpha-value>)",
-				whatsapp: "hsl(var(--whatsapp) / <alpha-value>)",
-				sms: "hsl(var(--sms) / <alpha-value>)",
-				"brand-foreground": "hsl(var(--brand-foreground) / <alpha-value>)"
+				telegram: {
+					DEFAULT: "hsl(var(--telegram) / <alpha-value>)",
+					foreground: "hsl(var(--telegram-foreground) / <alpha-value>)"
+				},
+				whatsapp: {
+					DEFAULT: "hsl(var(--whatsapp) / <alpha-value>)",
+					foreground: "hsl(var(--whatsapp-foreground) / <alpha-value>)"
+				},
+				sms: {
+					DEFAULT: "hsl(var(--sms) / <alpha-value>)",
+					foreground: "hsl(var(--sms-foreground) / <alpha-value>)"
+				}
 			},
 			borderRadius: {
 				lg: "var(--radius)",

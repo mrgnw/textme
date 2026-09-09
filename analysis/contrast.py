@@ -62,3 +62,22 @@ for name, a, b in pairs:
 	r = ratio(a, b)
 	mark = 'AAA' if r >= 7 else 'AA' if r >= 4.5 else 'AA-large' if r >= 3 else 'FAIL'
 	print(f'{r:5.2f}  {mark:8}  {name}  ({a} on {b})')
+
+print('--- brand colors as used by the apps ---')
+BRAND = [('telegram #2AABEE', '#2AABEE'), ('whatsapp #25D366', '#25D366'), ('sms (iOS Messages) #34C759', '#34C759')]
+for name, hex_color in BRAND:
+	for label, text in (('white text', WHITE), ('dark text', LIGHT_FG), ('icon on white card', WHITE)):
+		r = ratio(hex_color, text)
+		mark = 'AAA' if r >= 7 else 'AA' if r >= 4.5 else 'AA-large' if r >= 3 else 'FAIL'
+		print(f'{r:5.2f}  {mark:8}  {name} + {label}')
+
+print('--- per-app light/dark accents, text options ---')
+DARK_INK = hsl_to_hex(220, 20, 8)
+PAIRS = [
+	('telegram light #0088FF', '#0088FF'), ('telegram dark #3E88F7', '#3E88F7'),
+	('whatsapp light #008069', '#008069'), ('whatsapp light #1DAA61', '#1DAA61'), ('whatsapp dark #25D366', '#25D366'), ('whatsapp dark #21C063', '#21C063'),
+	('purple light #AF52DE', '#AF52DE'), ('purple dark #BF5AF2', '#BF5AF2'),
+]
+for name, hex_color in PAIRS:
+	w, d = ratio(hex_color, WHITE), ratio(hex_color, DARK_INK)
+	print(f'{name}: white {w:4.2f}  dark {d:4.2f}')

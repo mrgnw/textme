@@ -13,7 +13,7 @@
 
 	const hrefs = $derived(e164 ? links(e164) : null);
 	const disabled = $derived(!hrefs);
-	const base = "h-12 w-full rounded-full text-base font-semibold text-brand-foreground [&_svg]:size-5";
+	const base = "h-12 w-full rounded-full text-xl font-bold [&_svg]:size-5";
 	const off = "pointer-events-none opacity-50";
 </script>
 
@@ -22,7 +22,7 @@
 		href={hrefs?.telegram ?? "#"}
 		target="_blank"
 		size="lg"
-		class="{base} bg-telegram hover:bg-telegram/90 {disabled ? off : ''}"
+		class="{base} bg-telegram text-telegram-foreground hover:bg-telegram/90 {disabled ? off : ''}"
 		aria-disabled={disabled}
 		tabindex={disabled ? -1 : undefined}
 	>
@@ -33,7 +33,7 @@
 		href={hrefs?.whatsapp ?? "#"}
 		target="_blank"
 		size="lg"
-		class="{base} bg-whatsapp hover:bg-whatsapp/90 {disabled ? off : ''}"
+		class="{base} bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90 {disabled ? off : ''}"
 		aria-disabled={disabled}
 		tabindex={disabled ? -1 : undefined}
 	>
@@ -44,7 +44,7 @@
 		href={hrefs?.sms ?? "#"}
 		target="_blank"
 		size="lg"
-		class="{base} bg-sms hover:bg-sms/90 {disabled ? off : ''}"
+		class="{base} bg-sms text-sms-foreground hover:bg-sms/90 {disabled ? off : ''}"
 		aria-disabled={disabled}
 		tabindex={disabled ? -1 : undefined}
 	>
