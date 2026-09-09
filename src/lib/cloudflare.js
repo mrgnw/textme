@@ -1,5 +1,6 @@
 import {countries} from '$lib/countries.js'
 
+/** @param {Request} request */
 export function getCloudflareData(request) {
 	const { headers } = request;
 	const ip_country = headers.get('cf-ipcountry') || '';

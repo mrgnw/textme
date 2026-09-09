@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { toast } from "svelte-sonner";
+import { links } from "$lib/phone";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -78,26 +79,21 @@ export function generateVCard(phone: string, name?: string): string {
 	const clean = phone.replace(/[^\d]/g, "");
 	const formatted = clean.startsWith("+") ? clean : `+${clean}`;
 	const displayName = name || "Contact";
+	const hrefs = links(formatted);
 
 	return [
 		"BEGIN:VCARD",
 		"VERSION:3.0",
 		`FN:${displayName}`,
 		`TEL;TYPE=CELL:${formatted}`,
-		`X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/${formatted}`,
-		`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${formatted}`,
+		`X-SOCIALPROFILE;TYPE=whatsapp:${hrefs.whatsapp}`,
+		`X-SOCIALPROFILE;TYPE=telegram:${hrefs.telegram}`,
 		"END:VCARD",
 	].join("\n");
 }
 
-export function downloadVCard(phone: string, name?: string): void {
-	const vcard = generateVCard(phone, name);
-	const safeName = (name || "contact")
-		.replace(/[^a-z0-9]/gi, "_")
-		.toLowerCase();
-	const filename = `${safeName}.vcf`;
-
-	const blob = new Blob([vcard], { type: "text/vcard" });
+function downloadText(filename: string, text: string, mime: string): void {
+	const blob = new Blob([text], { type: mime });
 	const url = window.URL.createObjectURL(blob);
 	const a = document.createElement("a");
 	a.href = url;
@@ -107,4 +103,20 @@ export function downloadVCard(phone: string, name?: string): void {
 	document.body.removeChild(a);
 	window.URL.revokeObjectURL(url);
 	notifyDownload(filename);
+}
+
+export function downloadVCard(phone: string, name?: string): void {
+	const vcard = generateVCard(phone, name);
+	const safeName = (name || "contact")
+		.replace(/[^a-z0-9]/gi, "_")
+		.toLowerCase();
+	downloadText(`${safeName}.vcf`, vcard, "text/vcard");
+}
+
+export function generateVCards(entries: { phone: string; name?: string }[]): string {
+	return entries.map((entry) => generateVCard(entry.phone, entry.name)).join("\n");
+}
+
+export function downloadVCards(entries: { phone: string; name?: string }[]): void {
+	downloadText("contacts.vcf", generateVCards(entries), "text/vcard");
 }

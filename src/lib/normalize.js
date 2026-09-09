@@ -1,8 +1,10 @@
 // add function words-to-digits
+/** @param {string} phone */
 export function replaceDigitWords(phone) {
 	// takes english or spanish words like 'one' or 'uno' and converts to '1'
 	// example: SEIS-CERO-SIETEblah
 	// returns: 6-0-7blah
+	/** @type {Record<string, string>} */
 	const wordToDigitMap = {
 		'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
 		'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9',
@@ -10,6 +12,7 @@ export function replaceDigitWords(phone) {
 		'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9',
 	};
 
+	/** @type {Record<string, string>} */
 	const circledDigitMap = {
 		'⓪': '0', '①': '1', '②': '2', '③': '3', '④': '4',
 		'⑤': '5', '⑥': '6', '⑦': '7', '⑧': '8', '⑨': '9',
@@ -28,6 +31,10 @@ export function replaceDigitWords(phone) {
 	});
 }
 
+/**
+ * @param {string | number} phone
+ * @param {string} [country_code]
+ */
 export function normalize(phone, country_code = '1') {
 	if (typeof phone !== 'string') {
 		phone = String(phone);

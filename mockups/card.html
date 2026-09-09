@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>textme — Card, every state</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- compiled by mockups/build-css.sh from tailwind.config.ts + src/app.css -->
+		<link rel="stylesheet" href="card.css" />
+		<style>
+			/* ---------- proposed theme tokens (the future app.css :root / .dark) ---------- */
+			.screen {
+				--background: 216 25% 95%;
+				--foreground: 215 25% 11%;
+				--card: 0 0% 100%;
+				--card-foreground: 215 25% 11%;
+				--popover: 0 0% 100%;
+				--popover-foreground: 215 25% 11%;
+				--muted: 214 24% 92%;
+				--muted-foreground: 215 19% 35%;
+				--accent: 214 24% 92%;
+				--accent-foreground: 215 25% 11%;
+				--secondary: 214 24% 92%;
+				--secondary-foreground: 215 25% 11%;
+				--border: 214 20% 86%;
+				--input: 214 20% 80%;
+				--primary: 240 55% 55%;
+				--primary-foreground: 0 0% 100%;
+				--destructive: 0 65% 45%;
+				--destructive-foreground: 0 0% 100%;
+				--ring: 240 55% 55%;
+				--radius: 0.75rem;
+				--telegram: 208 100% 50%;
+				--telegram-foreground: 0 0% 100%;
+				--whatsapp: 169 100% 25%;
+				--whatsapp-foreground: 0 0% 100%;
+				--sms: 266 87% 61%;
+				--sms-foreground: 0 0% 100%;
+			}
+			.screen.dark {
+				--background: 220 20% 8%;
+				--foreground: 210 20% 96%;
+				--card: 220 18% 12%;
+				--card-foreground: 210 20% 96%;
+				--popover: 220 18% 12%;
+				--popover-foreground: 210 20% 96%;
+				--muted: 220 15% 17%;
+				--muted-foreground: 215 15% 70%;
+				--accent: 220 15% 17%;
+				--accent-foreground: 210 20% 96%;
+				--secondary: 220 15% 17%;
+				--secondary-foreground: 210 20% 96%;
+				--border: 220 14% 20%;
+				--input: 220 14% 26%;
+				--primary: 240 70% 74%;
+				--primary-foreground: 240 30% 12%;
+				--destructive: 0 70% 62%;
+				--destructive-foreground: 0 0% 100%;
+				--ring: 240 70% 74%;
+				--telegram: 216 92% 61%;
+				--telegram-foreground: 0 0% 100%;
+				--whatsapp: 142 70% 49%;
+				--whatsapp-foreground: 220 20% 8%;
+				--sms: 266 87% 61%;
+				--sms-foreground: 0 0% 100%;
+			}
+			.font-display {
+				font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+				font-optical-sizing: auto;
+			}
+			.ico {
+				fill: none;
+				stroke: currentColor;
+				stroke-width: 2;
+				stroke-linecap: round;
+				stroke-linejoin: round;
+				flex: none;
+			}
+			.brand {
+				fill: currentColor;
+				flex: none;
+			}
+			.caret {
+				display: inline-block;
+				width: 3px;
+				height: 0.85em;
+				margin-right: 2px;
+				vertical-align: -0.06em;
+				background: hsl(var(--primary));
+				animation: blink 1.1s steps(2) infinite;
+			}
+			@keyframes blink {
+				50% {
+					opacity: 0;
+				}
+			}
+			.app > * {
+				animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+			}
+			@keyframes rise {
+				from {
+					opacity: 0;
+					transform: translateY(6px);
+				}
+				to {
+					opacity: 1;
+					transform: none;
+				}
+			}
+
+			/* ---------- deck shell (review chrome, not product) ---------- */
+			:root {
+				--shell-bg: #e9e8e4;
+				--shell-ink: #1f1f1d;
+				--shell-muted: #6d6c67;
+				--shell-line: #d5d3cc;
+			}
+			body {
+				background: var(--shell-bg);
+				color: var(--shell-ink);
+				font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+			}
+			.wrap {
+				padding: 20px 24px 64px;
+			}
+			header.deck {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 12px 28px;
+				align-items: center;
+				margin-bottom: 18px;
+			}
+			.deck h1 {
+				font-size: 15px;
+				font-weight: 600;
+				margin: 0;
+			}
+			.thesis {
+				color: var(--shell-muted);
+				max-width: 64ch;
+				margin: 0;
+			}
+			.controls {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				align-items: center;
+				width: 100%;
+			}
+			.seg {
+				display: inline-flex;
+				gap: 2px;
+				padding: 3px;
+				background: #fff;
+				border: 1px solid var(--shell-line);
+				border-radius: 999px;
+			}
+			.seg button {
+				border: 0;
+				background: transparent;
+				border-radius: 999px;
+				padding: 6px 13px;
+				font: inherit;
+				font-weight: 500;
+				color: var(--shell-muted);
+				cursor: pointer;
+			}
+			.seg button[aria-pressed='true'] {
+				background: var(--shell-ink);
+				color: #fff;
+			}
+			.kbd {
+				color: var(--shell-muted);
+				font-size: 12px;
+			}
+			.kbd kbd {
+				font: inherit;
+				border: 1px solid var(--shell-line);
+				border-bottom-width: 2px;
+				border-radius: 5px;
+				padding: 0 5px;
+				background: #fff;
+				margin-right: 2px;
+			}
+			#note {
+				width: 100%;
+				margin: 0;
+				max-width: 80ch;
+			}
+			.stage {
+				display: flex;
+				gap: 32px;
+				align-items: flex-start;
+				flex-wrap: wrap;
+			}
+			.lane[hidden] {
+				display: none;
+			}
+			.lane.phone {
+				flex: none;
+				width: 412px;
+			}
+			.bezel {
+				width: 412px;
+				height: 866px;
+				border: 11px solid #17171a;
+				border-radius: 50px;
+				background: #000;
+				overflow: hidden;
+				box-shadow:
+					0 2px 6px rgba(0, 0, 0, 0.18),
+					0 30px 60px -30px rgba(0, 0, 0, 0.45);
+			}
+			.screen {
+				position: relative;
+				width: 390px;
+				height: 844px;
+				overflow: hidden;
+				background: hsl(var(--background));
+				color: hsl(var(--foreground));
+				font-size: 16px;
+				line-height: 1.5;
+				-webkit-font-smoothing: antialiased;
+			}
+			.lane.desk {
+				flex: 1 1 760px;
+				max-width: 1024px;
+				min-width: 0;
+			}
+			.win {
+				width: 1024px;
+				max-width: 100%;
+				border-radius: 12px;
+				overflow: hidden;
+				border: 1px solid var(--shell-line);
+				background: #fff;
+				box-shadow:
+					0 2px 6px rgba(0, 0, 0, 0.06),
+					0 24px 48px -24px rgba(0, 0, 0, 0.25);
+			}
+			.win-bar {
+				height: 38px;
+				display: flex;
+				align-items: center;
+				gap: 7px;
+				padding: 0 14px;
+				background: #f3f2ef;
+				border-bottom: 1px solid var(--shell-line);
+			}
+			.win-bar i {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				background: #d6d4cd;
+			}
+			.win-url {
+				margin-left: 10px;
+				flex: 1;
+				max-width: 420px;
+				height: 24px;
+				border-radius: 7px;
+				background: #fff;
+				border: 1px solid var(--shell-line);
+				font-size: 12px;
+				color: #6d6c67;
+				display: flex;
+				align-items: center;
+				padding: 0 10px;
+				font-family: ui-monospace, Menlo, monospace;
+			}
+			.screen.desk {
+				width: 100%;
+				height: 760px;
+			}
+			.statusbar {
+				position: absolute;
+				inset: 0 0 auto 0;
+				height: 48px;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+				padding: 0 30px 9px;
+				font: 600 15px/1 -apple-system, system-ui, sans-serif;
+				z-index: 40;
+				pointer-events: none;
+			}
+			.statusbar .cell {
+				display: flex;
+				gap: 5px;
+				align-items: center;
+			}
+			.statusbar .bat {
+				width: 26px;
+				height: 12px;
+				border: 1.5px solid currentColor;
+				border-radius: 4px;
+				padding: 1.5px;
+			}
+			.statusbar .bat i {
+				display: block;
+				height: 100%;
+				width: 78%;
+				background: currentColor;
+				border-radius: 1.5px;
+			}
+			.island {
+				position: absolute;
+				top: 11px;
+				left: 50%;
+				width: 122px;
+				height: 35px;
+				transform: translateX(-50%);
+				background: #000;
+				border-radius: 20px;
+				z-index: 41;
+			}
+			.homebar {
+				position: absolute;
+				bottom: 8px;
+				left: 50%;
+				width: 134px;
+				height: 5px;
+				border-radius: 3px;
+				background: hsl(var(--foreground));
+				transform: translateX(-50%);
+				z-index: 41;
+				opacity: 0.85;
+			}
+			.app {
+				position: absolute;
+				inset: 0;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+			}
+			.screen.phone .app {
+				padding-top: 52px;
+				padding-bottom: 26px;
+			}
+			@media (prefers-reduced-motion: reduce) {
+				*,
+				*::before,
+				*::after {
+					animation: none !important;
+					transition: none !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+			<defs>
+				<symbol id="i-copy" viewBox="0 0 24 24">
+					<rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+					<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+				</symbol>
+				<symbol id="i-clipboard" viewBox="0 0 24 24">
+					<rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+					<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+				</symbol>
+				<symbol id="i-share" viewBox="0 0 24 24">
+					<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+					<polyline points="16 6 12 2 8 6" />
+					<line x1="12" x2="12" y1="2" y2="15" />
+				</symbol>
+				<symbol id="i-qr-code" viewBox="0 0 24 24">
+					<rect width="5" height="5" x="3" y="3" rx="1" />
+					<rect width="5" height="5" x="16" y="3" rx="1" />
+					<rect width="5" height="5" x="3" y="16" rx="1" />
+					<path d="M21 16h-3a2 2 0 0 0-2 2v3" />
+					<path d="M21 21v.01" />
+					<path d="M12 7v3a2 2 0 0 1-2 2H7" />
+					<path d="M3 12h.01" />
+					<path d="M12 3h.01" />
+					<path d="M12 16v.01" />
+					<path d="M16 12h1" />
+					<path d="M21 12v.01" />
+					<path d="M12 21v-1" />
+				</symbol>
+				<symbol id="i-contact-round" viewBox="0 0 24 24">
+					<path d="M16 2v2" />
+					<path d="M17.915 22a6 6 0 0 0-12 0" />
+					<path d="M8 2v2" />
+					<circle cx="12" cy="12" r="4" />
+					<rect x="3" y="4" width="18" height="18" rx="2" />
+				</symbol>
+				<symbol id="i-download" viewBox="0 0 24 24">
+					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+					<polyline points="7 10 12 15 17 10" />
+					<line x1="12" x2="12" y1="15" y2="3" />
+				</symbol>
+				<symbol id="i-x" viewBox="0 0 24 24">
+					<path d="M18 6 6 18" />
+					<path d="m6 6 12 12" />
+				</symbol>
+				<symbol id="i-check" viewBox="0 0 24 24">
+					<path d="M20 6 9 17l-5-5" />
+				</symbol>
+				<symbol id="i-search" viewBox="0 0 24 24">
+					<circle cx="11" cy="11" r="8" />
+					<path d="m21 21-4.3-4.3" />
+				</symbol>
+				<symbol id="i-circle-alert" viewBox="0 0 24 24">
+					<circle cx="12" cy="12" r="10" />
+					<line x1="12" x2="12" y1="8" y2="12" />
+					<line x1="12" x2="12.01" y1="16" y2="16" />
+				</symbol>
+				<symbol id="i-chevron-down" viewBox="0 0 24 24">
+					<path d="m6 9 6 6 6-6" />
+				</symbol>
+				<symbol id="i-clock" viewBox="0 0 24 24">
+					<circle cx="12" cy="12" r="10" />
+					<polyline points="12 6 12 12 16 14" />
+				</symbol>
+				<symbol id="i-pencil" viewBox="0 0 24 24">
+					<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+					<path d="m15 5 4 4" />
+				</symbol>
+				<symbol id="b-tg" viewBox="0 0 24 24">
+					<path
+						d="M21.5 3.5 2.9 10.6c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.3.8 1.3 1 1.8.3l2.4-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3.2-14.4c.2-.9-.6-1.6-1.4-1.3Z"
+					/>
+				</symbol>
+				<symbol id="b-wa" viewBox="0 0 24 24">
+					<path
+						d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6a11 11 0 0 1-4.2-3.9c-.3-.5-.7-1.2-.7-2s.4-1.2.6-1.4c.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.5.3v.9Z"
+					/>
+				</symbol>
+				<symbol id="b-sms" viewBox="0 0 24 24">
+					<path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" />
+				</symbol>
+			</defs>
+		</svg>
+
+		<div class="wrap">
+			<header class="deck">
+				<h1>textme — Card direction, every state</h1>
+				<p class="thesis">
+					Built from the project's Tailwind config and shadcn-svelte class recipes (button, card,
+					input, badge, sheet, popover, tabs) so spacing and contrast come from the framework, not
+					hand-tuned values. Tokens checked against WCAG AA in analysis/contrast.py.
+				</p>
+				<div class="controls">
+					<div class="seg" id="variants" role="group" aria-label="Theme"></div>
+					<div class="seg" id="pager" role="group" aria-label="State"></div>
+					<div class="seg" id="focus" role="group" aria-label="Device">
+						<button type="button" data-focus="both" aria-pressed="true">Both</button>
+						<button type="button" data-focus="phone" aria-pressed="false">Phone</button>
+						<button type="button" data-focus="desk" aria-pressed="false">Desktop</button>
+					</div>
+					<span class="kbd"><kbd>1</kbd><kbd>2</kbd> theme · <kbd>←</kbd><kbd>→</kbd> state</span>
+				</div>
+				<p id="note"></p>
+			</header>
+
+			<main class="stage" id="stage">
+				<section class="lane phone" id="lane-phone">
+					<div class="bezel">
+						<div class="screen phone" id="screen-phone" data-lane="phone">
+							<div class="island"></div>
+							<div class="statusbar">
+								<span>9:41</span>
+								<span class="cell"><span>●●●●</span><span class="bat"><i></i></span></span>
+							</div>
+							<div id="app-phone"></div>
+							<div class="homebar"></div>
+						</div>
+					</div>
+				</section>
+				<section class="lane desk" id="lane-desk">
+					<div class="win">
+						<div class="win-bar"><i></i><i></i><i></i><span class="win-url" id="url"></span></div>
+						<div class="screen desk" id="screen-desk" data-lane="desk"><div id="app-desk"></div></div>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<script>
+			const VARIANTS = ['light', 'dark'];
+			const STATES = [
+				{ id: 'empty', label: 'Empty', url: 'textme.cc', note: 'First open. One card, one primary action (Paste), recents as secondary badges. Nothing else competes.' },
+				{ id: 'typing', label: 'Typing', url: 'textme.cc', note: 'Mid-entry. No error styling while the number is incomplete; actions are disabled with the framework opacity, not hidden.' },
+				{ id: 'invalid', label: 'Invalid', url: 'textme.cc/6123456', note: 'Only after the field loses focus with a complete-looking but invalid number: one destructive line, stamp highlighted, actions stay disabled.' },
+				{ id: 'valid', label: 'Valid', url: 'textme.cc/34612345678', note: 'The core state. Number as display type, E.164 with copy, three stacked brand buttons, secondary actions as ghost buttons under a divider.' },
+				{ id: 'name', label: 'Save contact', url: 'textme.cc/34612345678', note: 'Save contact opens an inline field inside the card instead of a floating input; Save is the primary button of that section.' },
+				{ id: 'qr', label: 'QR', url: 'textme.cc/34612345678', note: 'The card flips to its back: tabs switch between the Telegram link and the textme link. Generated client-side.' },
+				{ id: 'share', label: 'Share link', url: 'textme.cc/34612345678', note: 'Phone: bottom sheet. Desktop: popover. Optional name turns the link into a contact-card landing.' },
+				{ id: 'country', label: 'Country', url: 'textme.cc', note: 'Phone: bottom sheet (existing CountrySheet restyled). Desktop: combobox popover under the stamp.' },
+				{ id: 'list', label: 'List paste', url: 'textme.cc', note: 'A multi-line paste turns the same card into the list editor (runed TextareaAutosize); results are a second card with one row per contact.' },
+				{ id: 'list-edit', label: 'List · edit name', url: 'textme.cc', note: 'Names are editable in place; the row swaps its label for an input with the framework focus ring.' },
+				{ id: 'landing', label: 'Shared · named', url: 'textme.cc/34612345678/Maria', note: 'Visitor view when the link carries a name: contact-card header, then the same buttons. Footer points back to the tool.' },
+				{ id: 'landing-plain', label: 'Shared · no name', url: 'textme.cc/34612345678', note: 'Visitor view without a name: identical to Valid, number still editable, plus the footer link.' },
+			];
+			window.DECK = { variants: VARIANTS, states: STATES.map((s) => s.id) };
+
+			const RECENT = [
+				{ n: '+1 202 456 1111', who: '', when: '3d' },
+				{ n: '+34 698 76 54 32', who: 'Luis', when: '1w' },
+			];
+			const CONTACTS = [
+				{ name: 'Maria', num: '+34 612 34 56 78' },
+				{ name: 'Luis', num: '+34 698 76 54 32' },
+				{ name: 'Ana B', num: '+34 656 78 12 34' },
+				{ name: 'Carlos', num: '+34 634 56 78 90' },
+				{ name: 'Elena', num: '+34 678 90 12 34' },
+				{ name: 'Pablo', num: '+34 655 12 34 56', inferred: true },
+			];
+			const PASTE_TEXT =
+				'Maria 34612345678\nLuis 34698765432\nAna B 34656781234\n\nFriends:\nCarlos 34634567890\nElena 34678901234\nPablo 655 123 456';
+			const COUNTRIES = [
+				['🇪🇸', 'Spain', '+34', true],
+				['🇺🇸', 'United States', '+1'],
+				['🇬🇧', 'United Kingdom', '+44'],
+				['🇫🇷', 'France', '+33'],
+				['🇩🇪', 'Germany', '+49'],
+				['🇵🇹', 'Portugal', '+351'],
+				['🇮🇹', 'Italy', '+39'],
+				['🇲🇽', 'Mexico', '+52'],
+			];
+
+			/* ---------- shadcn-svelte class recipes ---------- */
+			const BTN =
+				'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+			const VARIANT = {
+				primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+				outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+				ghost: 'hover:bg-accent hover:text-accent-foreground',
+				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+			};
+			const SIZE = {
+				lg: 'h-12 rounded-full px-6 text-base',
+				md: 'h-10 rounded-md px-4 text-sm',
+				sm: 'h-9 rounded-md px-3 text-sm',
+				icon: 'h-10 w-10 rounded-md',
+				iconSm: 'h-9 w-9 rounded-md',
+			};
+			const INPUT =
+				'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+			const CARD = 'rounded-2xl border bg-card text-card-foreground shadow-sm';
+			const KICKER = 'text-xs font-semibold uppercase tracking-wider text-muted-foreground';
+			const btn = (variant, size, cls, inner, attrs = '', tag = 'button') =>
+				`<${tag} class="${BTN} ${VARIANT[variant]} ${SIZE[size]} ${cls}" ${attrs}>${inner}</${tag}>`;
+			const ico = (n, cls = 'h-4 w-4') => `<svg class="ico ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+			const brand = (n, cls = 'h-5 w-5') => `<svg class="brand ${cls}" aria-hidden="true"><use href="#b-${n}"/></svg>`;
+			const disabledAttr = (off) => (off ? 'aria-disabled="true" tabindex="-1"' : '');
+			const disabledCls = (off) => (off ? 'pointer-events-none opacity-50' : '');
+
+			const wordmark = `<span class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></span>`;
+			const stamp = (state = '') =>
+				btn(
+					'outline',
+					'sm',
+					`h-8 rounded-full px-3 gap-1.5 font-medium ${state === 'invalid' ? 'border-destructive text-destructive' : ''}`,
+					`<span>🇪🇸</span><span class="tabular-nums">+34</span>${ico('chevron-down', 'h-3.5 w-3.5 text-muted-foreground')}`,
+					'aria-label="Country: Spain, +34"',
+				);
+			const pills = (off = false) =>
+				`<div class="grid gap-3">` +
+				[
+					['tg', 'Telegram', 'bg-[hsl(var(--telegram))] text-[hsl(var(--telegram-foreground))] hover:bg-[hsl(var(--telegram))]/90'],
+					['wa', 'WhatsApp', 'bg-[hsl(var(--whatsapp))] text-[hsl(var(--whatsapp-foreground))] hover:bg-[hsl(var(--whatsapp))]/90'],
+					['sms', 'SMS', 'bg-[hsl(var(--sms))] text-[hsl(var(--sms-foreground))] hover:bg-[hsl(var(--sms))]/90'],
+				]
+					.map(
+						([k, label, cls]) =>
+							`<a href="#" class="${BTN} ${SIZE.lg} w-full text-xl font-bold ${cls} ${disabledCls(off)}" ${disabledAttr(off)}>${brand(k)}${label}</a>`,
+					)
+					.join('') +
+				`</div>`;
+			const footer = (opts = {}) => {
+				const { off = false, name = '', active = '' } = opts;
+				const item = (key, icon, label) =>
+					btn(
+						'ghost',
+						'sm',
+						`${active === key ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'} ${disabledCls(off)}`,
+						`${ico(icon)}${label}`,
+						disabledAttr(off),
+					);
+				return `<div class="grid grid-cols-3 gap-2 border-t pt-4">${item('save', 'contact-round', name ? `Save ${name}` : 'Save contact')}${item('share', 'share', 'Share link')}${item('qr', 'qr-code', 'QR')}</div>`;
+			};
+			const numberLine = (text, opts = {}) => {
+				const { ghost = false, caret = false } = opts;
+				return `<div class="font-display text-4xl font-bold tracking-tight tabular-nums ${ghost ? 'text-muted-foreground/50' : ''}">${text}${caret ? '<span class="caret"></span>' : ''}</div>`;
+			};
+			const intlLine = `<div class="-my-1 flex items-center gap-1 text-sm text-muted-foreground"><span class="tabular-nums">+34 612 34 56 78</span>${btn('ghost', 'iconSm', 'h-8 w-8', ico('copy'), 'aria-label="Copy +34 612 34 56 78"')}</div>`;
+			const kickerRow = (text, state = '') =>
+				`<div class="flex items-center justify-between"><span class="${KICKER}">${text}</span>${stamp(state)}</div>`;
+			const tail = `<p class="pt-6 text-center text-sm text-muted-foreground">Shared with textme · <a href="#" class="font-medium text-foreground underline underline-offset-4">Make your own link</a></p>`;
+			const chip = (r) =>
+				`<span class="inline-flex h-9 items-center gap-1.5 rounded-full border bg-card pl-3 pr-1 text-sm tabular-nums"><span>${r.n}</span>${r.who ? `<span class="text-muted-foreground">${r.who}</span>` : ''}${btn('ghost', 'iconSm', 'h-7 w-7 rounded-full text-muted-foreground', ico('x', 'h-3.5 w-3.5'), 'aria-label="Remove"')}</span>`;
+			const recents = `<div class="space-y-3 pt-6"><p class="${KICKER} text-center">Recent</p><div class="flex flex-wrap justify-center gap-2">${RECENT.map(chip).join('')}</div></div>`;
+
+			function qrSvg(seed) {
+				const n = 25;
+				let s = seed;
+				const rnd = () => {
+					s = (s * 1103515245 + 12345) & 0x7fffffff;
+					return s / 0x7fffffff;
+				};
+				const inFinder = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+				let rects = '';
+				for (let y = 0; y < n; y++) {
+					for (let x = 0; x < n; x++) {
+						let on;
+						if (inFinder(x, y)) {
+							const fx = x < 7 ? x : x - (n - 7);
+							const fy = y < 7 ? y : y - (n - 7);
+							on = fx === 0 || fx === 6 || fy === 0 || fy === 6 || (fx >= 2 && fx <= 4 && fy >= 2 && fy <= 4);
+						} else on = rnd() < 0.45;
+						if (on) rects += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+					}
+				}
+				return `<svg viewBox="0 0 ${n} ${n}" class="h-full w-full" shape-rendering="crispEdges" fill="currentColor" aria-label="QR code">${rects}</svg>`;
+			}
+
+			const countryList = () =>
+				`<div class="border-b p-2"><div class="flex h-10 items-center gap-2 rounded-md border border-input px-3">${ico('search', 'h-4 w-4 text-muted-foreground')}<input class="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" placeholder="Search country or code" /></div></div>` +
+				`<ul class="p-1 text-sm">` +
+				COUNTRIES.map(
+					([flag, name, code, sel]) =>
+						`<li class="flex h-10 items-center gap-3 rounded-sm px-2 ${sel ? 'bg-accent text-accent-foreground' : ''}"><span class="text-lg">${flag}</span><span class="flex-1">${name}</span><span class="tabular-nums text-muted-foreground">${code}</span>${sel ? ico('check', 'h-4 w-4 text-primary') : '<span class="w-4"></span>'}</li>`,
+				).join('') +
+				`</ul>`;
+
+			const sheet = (title, inner) =>
+				`<div class="absolute inset-0 z-20 bg-black/50"></div>` +
+				`<div class="absolute inset-x-0 bottom-0 z-30 rounded-t-2xl border-t bg-background shadow-lg"><div class="flex items-center justify-between px-4 pt-4 pb-2"><h2 class="text-lg font-semibold">${title}</h2>${btn('ghost', 'iconSm', 'rounded-full', ico('x'), 'aria-label="Close"')}</div>${inner}</div>`;
+			const popover = (pos, inner) =>
+				`<div class="absolute z-30 w-80 rounded-md border bg-popover text-popover-foreground shadow-md ${pos}">${inner}</div>`;
+			const dialog = (title, inner) =>
+				`<div class="absolute inset-0 z-20 bg-black/50"></div>` +
+				`<div class="absolute left-1/2 top-1/2 z-30 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background p-6 shadow-lg"><div class="flex items-center justify-between pb-4"><h2 class="text-lg font-semibold">${title}</h2>${btn('ghost', 'iconSm', 'rounded-full', ico('x'), 'aria-label="Close"')}</div>${inner}</div>`;
+
+			const shareInner = (pad) =>
+				`<div class="space-y-4 ${pad}"><p class="text-sm text-muted-foreground">Anyone with the link gets these buttons for this number.</p>` +
+				`<div class="space-y-1.5"><label class="text-sm font-medium">Name <span class="font-normal text-muted-foreground">(optional)</span></label><input class="${INPUT}" placeholder="e.g. Maria" /></div>` +
+				`<div class="flex gap-2"><input readonly class="${INPUT} font-mono" value="textme.cc/34612345678" />${btn('primary', 'md', 'shrink-0', `${ico('copy')}Copy`)}</div>` +
+				`${btn('outline', 'md', 'w-full', `${ico('share')}Share…`)}</div>`;
+
+			/* ---------- the card in each state ---------- */
+			function cardFront(state) {
+				const off = state !== 'valid' && state !== 'name' && state !== 'share' && state !== 'landing-plain';
+				const parts = [];
+				parts.push(kickerRow(state === 'landing-plain' ? 'Shared number' : 'Phone number', state));
+				if (state === 'empty') parts.push(numberLine('<span class="caret"></span>612 34 56 78', { ghost: true }));
+				else if (state === 'typing') parts.push(numberLine('612 34', { caret: true }));
+				else if (state === 'invalid') parts.push(numberLine('612 34 56 7'));
+				else parts.push(numberLine('612 34 56 78'));
+				if (state === 'invalid')
+					parts.push(`<p class="flex items-center gap-1.5 text-sm text-destructive">${ico('circle-alert')}Not a valid number for Spain. Check the country code.</p>`);
+				if (state === 'empty') {
+					parts.push(btn('primary', 'lg', 'w-full', `${ico('clipboard', 'h-5 w-5')}Paste number`));
+					parts.push(`<p class="text-center text-sm text-muted-foreground">or type it · paste a whole list to save them all</p>`);
+					return parts;
+				}
+				if (!off) parts.push(intlLine);
+				parts.push(pills(off));
+				if (state === 'name')
+					parts.push(
+						`<div class="space-y-2 rounded-lg bg-muted p-3"><label class="text-sm font-medium" for="cn">Name <span class="font-normal text-muted-foreground">(optional)</span></label><div class="flex gap-2"><input id="cn" class="${INPUT}" placeholder="Who is this?" />${btn('primary', 'md', 'shrink-0', `${ico('download')}Save .vcf`)}</div></div>`,
+					);
+				parts.push(footer({ off, active: state === 'name' ? 'save' : state === 'share' ? 'share' : '' }));
+				return parts;
+			}
+
+			function cardBack() {
+				return [
+					`<div class="flex items-center justify-between"><span class="${KICKER}">QR code</span>${btn('ghost', 'iconSm', 'rounded-full', ico('x'), 'aria-label="Back to number"')}</div>`,
+					`<div class="flex h-10 w-full items-center justify-center rounded-md bg-muted p-1 text-muted-foreground"><button class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-sm bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm">Telegram</button><button class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium">textme link</button></div>`,
+					`<div class="mx-auto h-52 w-52 rounded-lg border bg-white p-3 text-black">${qrSvg(7)}</div>`,
+					`<p class="text-center text-sm text-muted-foreground">Scan to open <span class="font-medium text-foreground">+34 612 34 56 78</span> in Telegram</p>`,
+				];
+			}
+
+			function landingCard() {
+				return [
+					`<div class="flex items-start justify-between"><div class="font-display flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">M</div>${stamp()}</div>`,
+					`<div><div class="font-display text-3xl font-bold tracking-tight">Maria</div><div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground"><span class="tabular-nums">+34 612 34 56 78</span>${btn('ghost', 'iconSm', 'h-8 w-8', ico('copy'), 'aria-label="Copy"')}</div></div>`,
+					pills(false),
+					footer({ name: 'Maria' }),
+				];
+			}
+
+			const listRow = (c, lane, editing = false) =>
+				`<div class="flex items-center gap-3 px-4 py-2.5">` +
+				`<div class="min-w-0 flex-1">` +
+				(editing
+					? `<input class="${INPUT} h-8 max-w-[11rem] ring-2 ring-ring ring-offset-2" value="Ana Belén" aria-label="Name" />`
+					: `<div class="truncate text-sm font-medium">${c.name}</div>`) +
+				`<div class="text-sm tabular-nums text-muted-foreground">${c.num}${c.inferred ? `<span class="${lane === 'phone' ? 'mt-0.5 block w-max' : 'ml-2'} rounded-sm bg-primary/10 px-1.5 text-xs font-medium text-primary">+34 added</span>` : ''}</div>` +
+				`</div>` +
+				`<div class="-mr-2 flex shrink-0">` +
+				btn('ghost', 'iconSm', 'text-muted-foreground', ico('copy'), 'aria-label="Copy"') +
+				btn('ghost', 'iconSm', 'text-[hsl(var(--telegram))]', brand('tg', 'h-[18px] w-[18px]'), 'aria-label="Telegram"', 'a') +
+				btn('ghost', 'iconSm', 'text-[hsl(var(--whatsapp))]', brand('wa', 'h-[18px] w-[18px]'), 'aria-label="WhatsApp"', 'a') +
+				btn('ghost', 'iconSm', 'text-[hsl(var(--sms))]', brand('sms', 'h-[18px] w-[18px]'), 'aria-label="SMS"', 'a') +
+				btn('ghost', 'iconSm', 'text-muted-foreground', ico('contact-round'), 'aria-label="Save contact"') +
+				`</div></div>`;
+
+			function listCards(lane, editing) {
+				const top =
+					`<div class="${CARD}"><div class="space-y-4 p-6">${kickerRow('Pasted list')}` +
+					`<textarea rows="8" class="${INPUT} h-auto resize-none font-mono leading-6">${PASTE_TEXT}</textarea>` +
+					`<div class="flex items-center gap-2"><span class="font-display text-lg font-semibold">6 contacts</span><span class="text-sm text-muted-foreground">· 1 got +34</span>${btn('ghost', 'sm', 'ml-auto text-muted-foreground', 'Clear')}</div>` +
+					`<div class="flex gap-2">${btn('primary', 'md', 'flex-1', `${ico('download')}Download all .vcf`)}${btn('outline', 'md', '', `${ico('copy')}Copy all`)}</div>` +
+					`</div></div>`;
+				const list = `<div class="${CARD} mt-4 divide-y">${CONTACTS.map((c, i) => listRow(c, lane, editing && i === 2)).join('')}</div>`;
+				return top + list;
+			}
+
+			function render(stateId, lane) {
+				const mainCls =
+					lane === 'phone'
+						? 'relative flex-1 overflow-hidden px-4 pb-6 pt-1'
+						: `relative mx-auto w-full ${stateId.startsWith('list') ? 'max-w-xl' : 'max-w-md'} px-6 pb-10 pt-8`;
+				let body = '';
+				let overlay = '';
+				const card = (parts) => `<div class="${CARD}"><div class="space-y-5 p-6">${parts.join('')}</div></div>`;
+
+				if (stateId === 'empty') body = card(cardFront('empty')) + recents;
+				else if (stateId === 'qr') body = card(cardBack());
+				else if (stateId === 'landing') body = card(landingCard()) + tail;
+				else if (stateId === 'landing-plain') body = card(cardFront('landing-plain')) + tail;
+				else if (stateId === 'list' || stateId === 'list-edit') body = listCards(lane, stateId === 'list-edit');
+				else body = card(cardFront(stateId));
+
+				let anchored = '';
+				if (stateId === 'share')
+					overlay = lane === 'phone' ? sheet('Share link', shareInner('px-4 pb-6')) : dialog('Share link', shareInner(''));
+				if (stateId === 'country') {
+					if (lane === 'phone') overlay = sheet('Country', countryList());
+					else anchored = popover('right-6 top-[4.5rem] w-72 overflow-hidden', countryList());
+				}
+
+				return (
+					`<header class="flex h-14 shrink-0 items-center justify-center">${wordmark}</header>` +
+					`<main class="${mainCls}">${body}${anchored}</main>` +
+					overlay
+				);
+			}
+
+			/* ---------- shell ---------- */
+			const variantsEl = document.getElementById('variants');
+			const pagerEl = document.getElementById('pager');
+			const noteEl = document.getElementById('note');
+			const urlEl = document.getElementById('url');
+			const screens = { phone: document.getElementById('screen-phone'), desk: document.getElementById('screen-desk') };
+			let variant = 'light';
+			let state = 'empty';
+
+			VARIANTS.forEach((v) => {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.textContent = v[0].toUpperCase() + v.slice(1);
+				b.dataset.variant = v;
+				b.addEventListener('click', () => select(v, state, true));
+				variantsEl.appendChild(b);
+			});
+			STATES.forEach((s) => {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.textContent = s.label;
+				b.dataset.set = s.id;
+				b.addEventListener('click', () => select(variant, s.id, true));
+				pagerEl.appendChild(b);
+			});
+
+			function paint() {
+				const s = STATES.find((x) => x.id === state);
+				for (const lane of ['phone', 'desk']) {
+					screens[lane].classList.toggle('dark', variant === 'dark');
+					const old = document.getElementById(`app-${lane}`);
+					old.outerHTML = `<div id="app-${lane}" class="app bg-background text-foreground">${render(state, lane)}</div>`;
+				}
+				urlEl.textContent = s.url;
+				noteEl.textContent = s.note;
+				variantsEl.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.variant === variant)));
+				pagerEl.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.set === state)));
+			}
+
+			function select(v, s, push) {
+				if (!VARIANTS.includes(v) || !STATES.some((x) => x.id === s)) return;
+				variant = v;
+				state = s;
+				if (push) history.replaceState(null, '', `#${v}/${s}`);
+				paint();
+			}
+
+			const focusBar = document.getElementById('focus');
+			focusBar.addEventListener('click', (e) => {
+				const b = e.target.closest('button');
+				if (!b) return;
+				focusBar.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+				document.getElementById('lane-phone').hidden = b.dataset.focus === 'desk';
+				document.getElementById('lane-desk').hidden = b.dataset.focus === 'phone';
+			});
+
+			addEventListener('keydown', (e) => {
+				if (e.target.matches('input, textarea')) return;
+				const si = STATES.findIndex((x) => x.id === state);
+				if (e.key === 'ArrowRight') select(variant, STATES[(si + 1) % STATES.length].id, true);
+				else if (e.key === 'ArrowLeft') select(variant, STATES[(si + STATES.length - 1) % STATES.length].id, true);
+				else if (e.key === '1' || e.key === '2') select(VARIANTS[Number(e.key) - 1], state, true);
+			});
+
+			function fromHash() {
+				const [v, s] = location.hash.replace('#', '').split('/');
+				if (VARIANTS.includes(v) && STATES.some((x) => x.id === s)) select(v, s, false);
+				else paint();
+			}
+			addEventListener('hashchange', fromHash);
+			fromHash();
+		</script>
+	</body>
+</html>

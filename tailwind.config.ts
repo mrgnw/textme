@@ -47,6 +47,18 @@ const config: Config = {
 				card: {
 					DEFAULT: "hsl(var(--card) / <alpha-value>)",
 					foreground: "hsl(var(--card-foreground) / <alpha-value>)"
+				},
+				telegram: {
+					DEFAULT: "hsl(var(--telegram) / <alpha-value>)",
+					foreground: "hsl(var(--telegram-foreground) / <alpha-value>)"
+				},
+				whatsapp: {
+					DEFAULT: "hsl(var(--whatsapp) / <alpha-value>)",
+					foreground: "hsl(var(--whatsapp-foreground) / <alpha-value>)"
+				},
+				sms: {
+					DEFAULT: "hsl(var(--sms) / <alpha-value>)",
+					foreground: "hsl(var(--sms-foreground) / <alpha-value>)"
 				}
 			},
 			borderRadius: {
@@ -55,7 +67,8 @@ const config: Config = {
 				sm: "calc(var(--radius) - 4px)"
 			},
 			fontFamily: {
-				sans: [...fontFamily.sans]
+				sans: [...fontFamily.sans],
+				display: ["Bricolage Grotesque Variable", ...fontFamily.sans]
 			}
 		}
 	},

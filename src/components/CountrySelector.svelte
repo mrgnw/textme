@@ -1,34 +1,34 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import type { CountryCode } from "svelte-tel-input/types";
-	import CountryCombobox from "./CountryCombobox.svelte";
-	import CountrySheet from "./CountrySheet.svelte";
+	import * as Dialog from "$lib/components/ui/dialog";
+	import { Sheet } from "$lib/components/ui/sheet";
+	import { isMobile } from "$lib/media.svelte";
+	import CountryList from "./CountryList.svelte";
 
 	interface Props {
 		value?: CountryCode | null;
 		open?: boolean;
-		class?: string;
 	}
 
-	let { value = $bindable(), open = $bindable(false), class: className }: Props = $props();
+	let { value = $bindable(null), open = $bindable(false) }: Props = $props();
 
-	let isMobile = $state(false);
-
-	onMount(() => {
-		const mq = window.matchMedia("(max-width: 640px)");
-		isMobile = mq.matches;
-
-		function handleChange(e: MediaQueryListEvent) {
-			isMobile = e.matches;
-		}
-
-		mq.addEventListener("change", handleChange);
-		return () => mq.removeEventListener("change", handleChange);
-	});
+	function select(iso2: CountryCode) {
+		value = iso2;
+		open = false;
+	}
 </script>
 
-{#if isMobile}
-	<CountrySheet bind:value bind:open />
+{#if isMobile.current}
+	<Sheet bind:open title="Country">
+		<CountryList {value} onselect={select} />
+	</Sheet>
 {:else}
-	<CountryCombobox bind:value bind:open class={className} />
+	<Dialog.Root bind:open>
+		<Dialog.Content class="gap-0 p-0 sm:max-w-sm">
+			<Dialog.Header class="px-4 pb-2 pt-4">
+				<Dialog.Title>Country</Dialog.Title>
+			</Dialog.Header>
+			<CountryList {value} onselect={select} />
+		</Dialog.Content>
+	</Dialog.Root>
 {/if}
