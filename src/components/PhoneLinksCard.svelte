@@ -2,7 +2,6 @@
 	import { page } from "$app/state";
 	import { replaceState } from "$app/navigation";
 	import { useDebounce } from "runed";
-	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import CopyIcon from "@lucide/svelte/icons/copy";
 	import XIcon from "@lucide/svelte/icons/x";
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
@@ -11,11 +10,10 @@
 	import { Sheet } from "$lib/components/ui/sheet";
 	import { isMobile } from "$lib/media.svelte";
 	import { copyToClipboard } from "$lib/utils";
-	import { getFlag } from "$lib/countryFlags.js";
-	import { classify, digitsOf, type App } from "$lib/phone";
+	import { classify, digitsOf, resolveInitial, type App } from "$lib/phone";
 	import { remember } from "$lib/recent.svelte";
 	import ActionButtons from "./ActionButtons.svelte";
-	import CountrySelector from "./CountrySelector.svelte";
+	import CountryStamp from "./CountryStamp.svelte";
 	import ListEditor from "./ListEditor.svelte";
 	import NumberCard from "./NumberCard.svelte";
 	import QrPanel from "./QrPanel.svelte";
@@ -35,21 +33,9 @@
 	// svelte-ignore state_referenced_locally
 	const initial = resolveInitial(initialValue, geoCountry);
 
-	function resolveInitial(raw: string | null, fallback: CountryCode) {
-		if (!raw) return { value: "", country: fallback };
-		const national = parse(raw, fallback);
-		if (national.isValid && national.e164) return { value: national.e164, country: national.countryCode ?? fallback };
-		const international = parse(`+${raw.replace(/\D/g, "")}`, fallback);
-		if (international.isValid && international.e164) {
-			return { value: international.e164, country: international.countryCode ?? fallback };
-		}
-		return { value: raw, country: fallback };
-	}
-
 	let country = $state<CountryCode | null>(initial.country);
 	let value = $state(initial.value);
 	let detailedValue = $state<Partial<DetailedValue> | null>(null);
-	let countryOpen = $state(false);
 	// svelte-ignore state_referenced_locally
 	let mode = $state(initialMode);
 	let listText = $state("");
@@ -97,21 +83,6 @@
 	}
 </script>
 
-{#snippet stamp()}
-	<Button
-		variant="outline"
-		size="sm"
-		class="h-8 gap-1.5 rounded-full px-3 font-medium"
-		aria-label="Change country"
-		onclick={() => (countryOpen = true)}
-	>
-		<span>{country ? getFlag(country) : "🌐"}</span>
-		<span class="tabular-nums">{countryLabel}</span>
-		<ChevronDownIcon class="size-3.5 text-muted-foreground" />
-	</Button>
-	<CountrySelector bind:value={country} bind:open={countryOpen} />
-{/snippet}
-
 <div class="flex min-h-svh flex-col">
 	<header class="flex h-14 shrink-0 items-center justify-center">
 		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
@@ -119,7 +90,7 @@
 
 	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[52rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
 		{#if mode === "list"}
-			<ListEditor bind:text={listText} {country} {countryLabel} onclear={clearList} {stamp} />
+			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
 		{:else}
 			<div class="flex items-start gap-4">
 				<div class="min-w-0 flex-1 rounded-2xl border bg-card text-card-foreground shadow-sm">
@@ -129,7 +100,7 @@
 								<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-primary-foreground">
 									{initialName[0].toUpperCase()}
 								</div>
-								{@render stamp()}
+								<CountryStamp bind:country />
 							</div>
 							<div>
 								<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
@@ -150,7 +121,6 @@
 							bind:detailedValue
 							status={classified.state}
 							kicker={initialValue && !landing ? "Shared number" : "Phone number"}
-							{stamp}
 							{onValueChange}
 							onListPaste={enterList}
 						>

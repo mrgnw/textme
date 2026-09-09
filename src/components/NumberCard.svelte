@@ -10,6 +10,7 @@
 	import { copyToClipboard } from "$lib/utils";
 	import { replaceDigitWords } from "$lib/normalize.js";
 	import { isListPaste, type PhoneState } from "$lib/phone";
+	import CountryStamp from "./CountryStamp.svelte";
 
 	interface Props {
 		value: string;
@@ -17,7 +18,6 @@
 		detailedValue: Partial<DetailedValue> | null;
 		status: PhoneState;
 		kicker: string;
-		stamp: Snippet;
 		onValueChange: (value: string, details: Partial<DetailedValue> | null) => void;
 		onListPaste: (text: string) => void;
 		children?: Snippet;
@@ -29,7 +29,6 @@
 		detailedValue = $bindable(),
 		status,
 		kicker,
-		stamp,
 		onValueChange,
 		onListPaste,
 		children,
@@ -75,7 +74,7 @@
 <div class="space-y-5 p-6">
 	<div class="flex items-center justify-between">
 		<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kicker}</span>
-		{@render stamp()}
+		<CountryStamp bind:country />
 	</div>
 
 	<TelInput

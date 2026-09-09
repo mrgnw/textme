@@ -18,6 +18,17 @@ export function classify(raw: string, country: CountryCode | null): Classified {
 	return { state: "invalid", detail };
 }
 
+export function resolveInitial(raw: string | null, fallback: CountryCode): { value: string; country: CountryCode } {
+	if (!raw) return { value: "", country: fallback };
+	const national = parse(raw, fallback);
+	if (national.isValid && national.e164) return { value: national.e164, country: national.countryCode ?? fallback };
+	const international = parse(`+${raw.replace(/\D/g, "")}`, fallback);
+	if (international.isValid && international.e164) {
+		return { value: international.e164, country: international.countryCode ?? fallback };
+	}
+	return { value: raw, country: fallback };
+}
+
 export function digitsOf(e164: string): string {
 	if (!e164.startsWith("+")) throw new Error(`expected E.164, got ${e164}`);
 	return e164.slice(1);
