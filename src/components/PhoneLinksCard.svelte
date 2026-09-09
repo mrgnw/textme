@@ -7,7 +7,7 @@
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import { Button } from "$lib/components/ui/button";
 	import { copyToClipboard } from "$lib/utils";
-	import { classify, digitsOf } from "$lib/phone";
+	import { classify, digitsOf, resolveInitial } from "$lib/phone";
 	import { remember } from "$lib/recent.svelte";
 	import ActionButtons from "./ActionButtons.svelte";
 	import CountryStamp from "./CountryStamp.svelte";
@@ -29,17 +29,6 @@
 	const geoCountry = ((page.data.ip_country as string | undefined)?.toUpperCase() as CountryCode) || "US";
 	// svelte-ignore state_referenced_locally
 	const initial = resolveInitial(initialValue, geoCountry);
-
-	function resolveInitial(raw: string | null, fallback: CountryCode) {
-		if (!raw) return { value: "", country: fallback };
-		const national = parse(raw, fallback);
-		if (national.isValid && national.e164) return { value: national.e164, country: national.countryCode ?? fallback };
-		const international = parse(`+${raw.replace(/\D/g, "")}`, fallback);
-		if (international.isValid && international.e164) {
-			return { value: international.e164, country: international.countryCode ?? fallback };
-		}
-		return { value: raw, country: fallback };
-	}
 
 	let country = $state<CountryCode | null>(initial.country);
 	let value = $state(initial.value);
