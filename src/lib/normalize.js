@@ -1,9 +1,6 @@
-// add function words-to-digits
 /** @param {string} phone */
 export function replaceDigitWords(phone) {
 	// takes english or spanish words like 'one' or 'uno' and converts to '1'
-	// example: SEIS-CERO-SIETEblah
-	// returns: 6-0-7blah
 	/** @type {Record<string, string>} */
 	const wordToDigitMap = {
 		'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
@@ -29,33 +26,4 @@ export function replaceDigitWords(phone) {
 		const lowerWord = word.toLowerCase();
 		return wordToDigitMap.hasOwnProperty(lowerWord) ? wordToDigitMap[lowerWord] : word;
 	});
-}
-
-/**
- * @param {string | number} phone
- * @param {string} [country_code]
- */
-export function normalize(phone, country_code = '1') {
-	if (typeof phone !== 'string') {
-		phone = String(phone);
-	}
-	phone = replaceDigitWords(phone);
-	country_code = country_code.replace(/^0+/, '').replace(/[^0-9]/g, '');
-	phone = phone.replace(/^0+/, '').replace(/[^0-9+]/g, '');
-	let last10 = phone.slice(-10);
-	// if (last10.length === 8) {
-	// 	last10 = `11${last10}`;
-	// }
-
-	const prefix = phone.slice(0, -10).replace(/^\+/, '');
-	const strippedPrefix = prefix;
-
-	let result = '';
-
-	if (strippedPrefix.match(/^\d+$/)) {
-		result = `+${strippedPrefix}${last10}`;
-	} else {
-		result = `+${country_code}${last10}`;
-	}
-	return result;
 }

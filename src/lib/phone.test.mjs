@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classify, findContacts, isListPaste, links, shareUrl } from "./phone.ts";
+import { classify, findContacts, isListPaste, links, resolveInitial, shareUrl } from "./phone.ts";
 
 test("classify walks empty → incomplete → valid while typing a Spanish mobile", () => {
 	assert.equal(classify("", "ES").state, "empty");
@@ -76,4 +76,11 @@ test("findContacts accepts name-after-number and international forms", () => {
 test("isListPaste needs at least two numbers", () => {
 	assert.equal(isListPaste("612 34 56 78", "ES"), false);
 	assert.equal(isListPaste(PASTE, "ES"), true);
+});
+
+test("resolveInitial parses national, digits-only international, and passes junk through", () => {
+	assert.deepEqual(resolveInitial(null, "ES"), { value: "", country: "ES" });
+	assert.deepEqual(resolveInitial("612345678", "ES"), { value: "+34612345678", country: "ES" });
+	assert.deepEqual(resolveInitial("12024561111", "ES"), { value: "+12024561111", country: "US" });
+	assert.deepEqual(resolveInitial("1", "ES"), { value: "1", country: "ES" });
 });
