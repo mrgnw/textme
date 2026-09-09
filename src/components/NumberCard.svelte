@@ -3,11 +3,9 @@
 	import { TelInput } from "svelte-tel-input";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import ClipboardIcon from "@lucide/svelte/icons/clipboard";
-	import CopyIcon from "@lucide/svelte/icons/copy";
 	import CircleAlertIcon from "@lucide/svelte/icons/circle-alert";
 	import { toast } from "svelte-sonner";
 	import { Button } from "$lib/components/ui/button";
-	import { copyToClipboard } from "$lib/utils";
 	import { replaceDigitWords } from "$lib/normalize.js";
 	import { isListPaste, type PhoneState } from "$lib/phone";
 	import CountryStamp from "./CountryStamp.svelte";
@@ -104,21 +102,6 @@
 			Paste number
 		</Button>
 		<p class="text-center text-sm text-muted-foreground">or type it · paste a whole list to save them all</p>
-	{/if}
-
-	{#if status === "valid" && detailedValue?.e164}
-		<div class="-my-1 flex items-center gap-1 text-sm text-muted-foreground">
-			<span class="tabular-nums">{detailedValue.formatInternational}</span>
-			<Button
-				variant="ghost"
-				size="icon"
-				class="h-8 w-8"
-				aria-label="Copy {detailedValue.formatInternational}"
-				onclick={() => copyToClipboard(detailedValue?.e164 ?? "")}
-			>
-				<CopyIcon />
-			</Button>
-		</div>
 	{/if}
 
 	{@render children?.()}

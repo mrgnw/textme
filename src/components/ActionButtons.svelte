@@ -1,72 +1,94 @@
 <script lang="ts">
+	import { page } from "$app/state";
 	import RiTelegramLine from "~icons/ri/telegram-line";
 	import RiWhatsappLine from "~icons/ri/whatsapp-line";
 	import RiChat3Line from "~icons/ri/chat-3-line";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import CopyIcon from "@lucide/svelte/icons/copy";
+	import PhoneIcon from "@lucide/svelte/icons/phone";
 	import QrCodeIcon from "@lucide/svelte/icons/qr-code";
+	import { parse } from "svelte-tel-input/utils";
 	import { copyToClipboard } from "$lib/utils";
-	import { links, type App } from "$lib/phone";
+	import { CHANNELS, CHANNEL_ORDER, channelUrl, shownUrl, type Channel } from "$lib/channels";
 
 	interface Props {
 		e164: string | null;
-		showing?: App | null;
-		onqr: (app: App) => void;
+		showing?: Channel | null;
+		onqr: (channel: Channel) => void;
 	}
 
 	let { e164, showing = null, onqr }: Props = $props();
 
 	let mode = $state<"copy" | "qr">("copy");
-	let copied = $state<App | null>(null);
+	let copied = $state<Channel | null>(null);
 
-	const hrefs = $derived(e164 ? links(e164) : null);
-	const disabled = $derived(!hrefs);
+	const disabled = $derived(!e164);
+	const formatted = $derived(e164 ? (parse(e164).formatInternational ?? e164) : "");
 
-	const APPS = [
-		{ app: "telegram", label: "Telegram", icon: RiTelegramLine, fill: "bg-telegram text-telegram-foreground", line: "border-telegram-foreground/30" },
-		{ app: "whatsapp", label: "WhatsApp", icon: RiWhatsappLine, fill: "bg-whatsapp text-whatsapp-foreground", line: "border-whatsapp-foreground/30" },
-		{ app: "sms", label: "SMS", icon: RiChat3Line, fill: "bg-sms text-sms-foreground", line: "border-sms-foreground/30" },
-	] as const;
+	const ICONS = { telegram: RiTelegramLine, whatsapp: RiWhatsappLine, sms: RiChat3Line } as const;
 
 	const focus = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card";
+	const main = "inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap pl-4 text-xl font-bold transition-colors hover:bg-black/10 sm:pl-14 [&_svg]:size-5";
 	const seg = "inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 transition-colors aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-sm";
 
-	function act(app: App) {
-		if (!hrefs) return;
+	function url(channel: Channel): string {
+		return e164 ? channelUrl(page.url.origin, e164, channel) : "#";
+	}
+
+	function act(channel: Channel) {
+		if (!e164) return;
 		if (mode === "qr") {
-			onqr(app);
+			onqr(channel);
 			return;
 		}
-		copyToClipboard(hrefs[app], hrefs[app].replace(/^https:\/\//, ""));
-		copied = app;
+		const value = url(channel);
+		copyToClipboard(value, shownUrl(value));
+		copied = channel;
 		setTimeout(() => {
-			if (copied === app) copied = null;
+			if (copied === channel) copied = null;
 		}, 1500);
+	}
+
+	function copyNumber() {
+		if (!e164) return;
+		copyToClipboard(e164, formatted);
 	}
 </script>
 
 <div class="grid gap-3">
-	{#each APPS as { app, label, icon: Icon, fill, line } (app)}
-		<div class="flex h-12 w-full overflow-hidden rounded-full {fill} {disabled ? 'pointer-events-none opacity-50' : ''}">
-			<a
-				href={hrefs?.[app] ?? "#"}
-				target="_blank"
-				class="inline-flex h-12 flex-1 items-center justify-center gap-2 pl-14 text-xl font-bold transition-colors hover:bg-black/10 [&_svg]:size-5 {focus}"
-				aria-disabled={disabled}
-				tabindex={disabled ? -1 : undefined}
-			>
-				<Icon />
-				{label}
-			</a>
+	{#each CHANNEL_ORDER as channel (channel)}
+		{@const { label, fill, line } = CHANNELS[channel]}
+		<div
+			class="flex h-12 w-full overflow-hidden rounded-full {fill} {disabled ? 'pointer-events-none opacity-50' : ''}"
+			style:anchor-name={showing === channel ? "--qr-row" : undefined}
+		>
+			{#if channel === "link"}
+				<button type="button" class="{main} text-lg tabular-nums max-[359px]:text-base sm:text-xl {focus}" aria-label="Copy {formatted}" {disabled} onclick={copyNumber}>
+					<PhoneIcon class="max-[359px]:hidden" />
+					{formatted}
+				</button>
+			{:else}
+				{@const Icon = ICONS[channel]}
+				<a
+					href={url(channel)}
+					target="_blank"
+					class="{main} {focus}"
+					aria-disabled={disabled}
+					tabindex={disabled ? -1 : undefined}
+				>
+					<Icon />
+					{label}
+				</a>
+			{/if}
 			<button
 				type="button"
-				class="inline-flex h-12 w-14 items-center justify-center border-l {line} transition-colors hover:bg-black/10 {copied === app || (mode === "qr" && showing === app) ? 'bg-black/10' : ''} {focus}"
+				class="inline-flex h-12 w-14 items-center justify-center border-l {line} transition-colors hover:bg-black/10 {copied === channel || (mode === 'qr' && showing === channel) ? 'bg-black/10' : ''} {focus}"
 				aria-label={mode === "qr" ? `${label} QR code` : `Copy ${label} link`}
-				aria-pressed={mode === "qr" ? showing === app : undefined}
+				aria-pressed={mode === "qr" ? showing === channel : undefined}
 				{disabled}
-				onclick={() => act(app)}
+				onclick={() => act(channel)}
 			>
-				{#if copied === app}
+				{#if copied === channel}
 					<CheckIcon class="size-[18px] opacity-90" />
 				{:else if mode === "qr"}
 					<QrCodeIcon class="size-[18px] opacity-90" />

@@ -110,15 +110,27 @@ test("the QR is rendered locally", async ({ page }) => {
 	await page.getByRole("button", { name: "QR", exact: true }).click();
 	await page.getByRole("button", { name: "WhatsApp QR code" }).click();
 
-	await expect(page.locator("svg[aria-label='QR code'], [aria-label='QR code'] svg").first()).toBeVisible();
-	await expect(page.getByRole("tab", { name: "WhatsApp" })).toHaveAttribute("aria-selected", "true");
-	await page.getByRole("tab", { name: "textme" }).click();
-	await expect(page.getByText("on textme")).toBeVisible();
+	await expect(page.locator("[aria-label='QR code'] svg").first()).toBeVisible();
+	await expect(page.getByText("wa.me/34612345678")).toBeVisible();
 
-	await page.getByRole("button", { name: "WhatsApp QR code" }).click();
-	await expect(page.getByText("on textme")).toBeHidden();
+	await page.getByRole("button", { name: "textme QR code" }).click();
+	await expect(page.getByText(`${new URL(page.url()).host}/34612345678`)).toBeVisible();
 	await expect(page.getByRole("button", { name: "WhatsApp QR code" })).toHaveAttribute("aria-pressed", "false");
+
+	await page.getByRole("button", { name: "textme QR code" }).click();
+	await expect(page.locator("[aria-label='QR code']")).toHaveCount(0);
 	expect(external).toHaveLength(0);
+});
+
+test("the number row copies the number and its segment copies the textme link", async ({ page, context }) => {
+	await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+	await page.goto("/34612345678");
+
+	await page.getByRole("button", { name: "Copy +34 612 34 56 78" }).click();
+	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("+34612345678");
+
+	await page.getByRole("button", { name: "Copy textme link" }).click();
+	expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/34612345678$/);
 });
 
 test("the pill segment copies the app link", async ({ page, context }) => {

@@ -2,16 +2,13 @@
 	import { page } from "$app/state";
 	import { replaceState } from "$app/navigation";
 	import { useDebounce } from "runed";
-	import CopyIcon from "@lucide/svelte/icons/copy";
-	import XIcon from "@lucide/svelte/icons/x";
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
-	import { Button } from "$lib/components/ui/button";
 	import { Sheet } from "$lib/components/ui/sheet";
 	import { fade, slide } from "svelte/transition";
 	import { isMobile } from "$lib/media.svelte";
-	import { copyToClipboard } from "$lib/utils";
-	import { classify, digitsOf, resolveInitial, type App } from "$lib/phone";
+	import { CHANNELS, type Channel } from "$lib/channels";
+	import { classify, digitsOf, resolveInitial } from "$lib/phone";
 	import { remember } from "$lib/recent.svelte";
 	import ActionButtons from "./ActionButtons.svelte";
 	import CountryStamp from "./CountryStamp.svelte";
@@ -42,7 +39,7 @@
 	let listText = $state("");
 	// svelte-ignore state_referenced_locally
 	let name = $state(initialName);
-	let qrApp = $state<App | null>(null);
+	let qrApp = $state<Channel | null>(null);
 	let shareOpen = $state(false);
 
 	const classified = $derived(classify(value, country));
@@ -50,8 +47,8 @@
 	const landing = $derived(initialName !== "");
 	const sideQr = $derived(qrApp !== null && e164 !== null && !isMobile.current);
 
-	function toggleQr(app: App) {
-		qrApp = qrApp === app ? null : app;
+	function toggleQr(channel: Channel) {
+		qrApp = qrApp === channel ? null : channel;
 	}
 	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
@@ -97,7 +94,7 @@
 		{#if mode === "list"}
 			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
 		{:else}
-			<div class="flex items-start gap-4">
+			<div class="relative flex items-start gap-4">
 				<div class="min-w-0 flex-1 rounded-2xl border bg-card text-card-foreground shadow-sm">
 					{#if landing && e164}
 						<div class="space-y-5 p-6">
@@ -107,15 +104,7 @@
 								</div>
 								<CountryStamp bind:country />
 							</div>
-							<div>
-								<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
-								<div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground">
-									<span class="tabular-nums">{classified.detail?.formatInternational}</span>
-									<Button variant="ghost" size="icon" class="h-8 w-8" aria-label="Copy number" onclick={() => copyToClipboard(e164 ?? "")}>
-										<CopyIcon />
-									</Button>
-								</div>
-							</div>
+							<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
 							<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
 							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 						</div>
@@ -137,21 +126,14 @@
 					{/if}
 				</div>
 			{#if sideQr && qrApp && e164}
-				<aside class="w-80 shrink-0 rounded-2xl border bg-card text-card-foreground shadow-sm" transition:slide={{ axis: "x", duration: 250 }}>
-					<div class="space-y-4 p-6">
-						<div class="flex items-center justify-between">
-							<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">QR code</span>
-							<Button variant="ghost" size="icon" class="h-8 w-8 rounded-full" aria-label="Close" onclick={() => (qrApp = null)}>
-								<XIcon class="h-4 w-4" />
-							</Button>
+				<aside class="w-72 shrink-0" style:anchor-name="--qr-aside" transition:slide={{ axis: "x", duration: 250 }}>
+					{#key qrApp}
+						<div in:fade={{ duration: 150 }}>
+							<QrPanel {e164} channel={qrApp} />
 						</div>
-						{#key qrApp}
-							<div in:fade={{ duration: 150 }}>
-								<QrPanel {e164} app={qrApp} />
-							</div>
-						{/key}
-					</div>
+					{/key}
 				</aside>
+				<div class="notch size-4 rotate-45 rounded-sm {CHANNELS[qrApp].fill}" aria-hidden="true"></div>
 			{/if}
 			</div>
 
@@ -171,14 +153,29 @@
 {#if e164}
 	<ShareDialog bind:open={shareOpen} {e164} bind:name />
 	{#if isMobile.current}
-		<Sheet open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title="QR code">
+		<Sheet open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title={qrApp ? CHANNELS[qrApp].label : "QR code"}>
 			{#if qrApp}
-				<div class="space-y-4 px-4 pb-8 pt-4">
+				<div class="px-4 pb-8 pt-4">
 					{#key qrApp}
-						<QrPanel {e164} app={qrApp} />
+						<QrPanel {e164} channel={qrApp} />
 					{/key}
 				</div>
 			{/if}
 		</Sheet>
 	{/if}
 {/if}
+
+<style>
+	.notch {
+		position: absolute;
+		left: anchor(--qr-aside left);
+		top: anchor(--qr-row center);
+		translate: -50% -50%;
+	}
+
+	@supports not (anchor-name: --a) {
+		.notch {
+			display: none;
+		}
+	}
+</style>
