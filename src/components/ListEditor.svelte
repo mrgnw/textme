@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
 	import type { CountryCode } from "svelte-tel-input/types";
 	import type { FoundContact } from "$lib/phone";
 	import { findContacts } from "$lib/phone";
@@ -9,21 +8,20 @@
 	import { copyToClipboard, downloadVCards } from "$lib/utils";
 	import { TextareaAutosize } from "runed";
 	import ContactRow from "./ContactRow.svelte";
+	import CountryStamp from "./CountryStamp.svelte";
 	import Download from "@lucide/svelte/icons/download";
 	import Copy from "@lucide/svelte/icons/copy";
 
 	let {
 		text = $bindable(),
-		country,
+		country = $bindable(),
 		countryLabel,
 		onclear,
-		stamp,
 	}: {
 		text: string;
 		country: CountryCode | null;
 		countryLabel: string;
 		onclear: () => void;
-		stamp?: Snippet;
 	} = $props();
 
 	let ref = $state<HTMLTextAreaElement | null>(null);
@@ -53,7 +51,7 @@
 			<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
 				Pasted list
 			</span>
-			{@render stamp?.()}
+			<CountryStamp bind:country />
 		</div>
 		<Textarea bind:ref bind:value={text} class="h-auto resize-none font-mono leading-6" />
 		<div class="flex items-center gap-2">
