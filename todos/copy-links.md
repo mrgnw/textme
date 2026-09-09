@@ -10,6 +10,10 @@ Options mocked at https://mox.xcc.es/textme/copylinks.html (source `mockups/copy
 - D URL rows under the pills
 - E direct-link rows inside the Share sheet
 - F long-press / right-click menu on a pill
+- G copy + QR, two segments per pill. Label goes off-centre on the phone.
+- H one segment per pill, QR / Copy toggle under the pills sets what it does; footer QR folds in. Tapping QR flips the card to its back with a tab per app.
+
+QR pick: keep the footer QR and extend the card back from two tabs to Telegram / WhatsApp / SMS / textme. Per-app QR then costs one extra tap and the pills stay at one segment. Add the H toggle only if per-app QR turns out to be frequent.
 
 Implementation notes for A:
 

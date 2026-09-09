@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>textme — Copy a link, six options</title>
+		<title>textme — Copy or QR per pill, the options</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -499,6 +499,11 @@
 				{ id: 'rows', label: 'D · Link rows', note: 'The three URLs listed under the pills, each with a copy button. Fully explicit, but a permanent block on every valid card for an occasional need.' },
 				{ id: 'share', label: 'E · In Share', note: 'Share link grows an “Or a direct link” section. Semantically right (copying is for sending to someone), zero cost on the card, one extra tap, and invisible to a user staring at the WhatsApp button.' },
 				{ id: 'press', label: 'F · Press menu', note: 'Long-press (phone) or right-click (desktop) on a pill opens a small menu: Open, Copy link, Share. Nothing at rest, nothing to discover either. Replaces the browser menu with a nicer one.' },
+				{ id: 'both', label: 'G · Copy + QR', note: 'Two trailing segments per pill: copy and QR. Everything is one tap away, but each pill carries three targets and on the phone the label no longer centres on the pill: 214 px remain for it, so WhatsApp sits 48 px left of centre.' },
+				{ id: 'toggle-copy', label: 'H · Toggle · copy', note: 'One segment per pill; a QR / Copy toggle under the pills sets what it does. Copy selected. The footer QR folds into the pills, so the footer drops to two items. The main tap always opens, so a forgotten mode costs a QR instead of a copy, never a wrong navigation.' },
+				{ id: 'toggle-qr', label: 'H · Toggle · QR', note: 'Same card with QR selected: the segment icons switch to QR. The toggle is the only extra row and doubles as the legend for the segment icon.' },
+				{ id: 'qr-open', label: 'H · QR tapped', note: 'Tapping the WhatsApp QR segment flips the card to its back with that app selected. Tabs cover the three apps plus the textme link, so the footer QR button and the pill segments land on the same surface.' },
+
 			].map((s) => ({ ...s, url: URL }));
 			window.DECK = { variants: VARIANTS, states: STATES.map((s) => s.id) };
 
@@ -537,10 +542,10 @@
 			const kickerRow = `<div class="flex items-center justify-between"><span class="${KICKER}">Phone number</span>${stamp}</div>`;
 			const numberLine = `<div class="font-display text-4xl font-bold tracking-tight tabular-nums">612 34 56 78</div>`;
 			const intlLine = `<div class="-my-1 flex items-center gap-1 text-sm text-muted-foreground"><span class="tabular-nums">+34 612 34 56 78</span>${btn('ghost', 'iconSm', 'h-8 w-8', ico('copy'), 'aria-label="Copy +34 612 34 56 78"')}</div>`;
-			const footer = (active = '') => {
+			const footer = (active = '', showQr = true) => {
 				const item = (key, icon, label) =>
 					btn('ghost', 'sm', active === key ? 'bg-accent text-accent-foreground' : 'text-muted-foreground', `${ico(icon)}${label}`);
-				return `<div class="grid grid-cols-3 gap-2 border-t pt-4">${item('save', 'contact-round', 'Save contact')}${item('share', 'share', 'Share link')}${item('qr', 'qr-code', 'QR')}</div>`;
+				return `<div class="grid ${showQr ? 'grid-cols-3' : 'grid-cols-2'} gap-2 border-t pt-4">${item('save', 'contact-round', 'Save contact')}${item('share', 'share', 'Share link')}${showQr ? item('qr', 'qr-code', 'QR') : ''}</div>`;
 			};
 
 			const sheet = (title, inner) =>
@@ -572,13 +577,13 @@
 					),
 				);
 
-			const splitPills = (copied = '') =>
+			const splitPills = (copied = '', icon = 'copy') =>
 				group(
 					APPS.map(
 						(a) =>
 							`<div class="flex h-12 w-full overflow-hidden rounded-full ${fill(a)}">` +
 							`<a href="#" class="${BTN} h-12 flex-1 pl-14 text-xl font-bold hover:bg-black/10">${brand(a.k)}${a.label}</a>` +
-							`<button class="${BTN} h-12 w-14 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] ${copied === a.k ? 'bg-black/10' : ''} hover:bg-black/10" aria-label="Copy ${a.label} link">${ico(copied === a.k ? 'check' : 'copy', 'h-[18px] w-[18px] opacity-90')}</button>` +
+							`<button class="${BTN} h-12 w-14 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] ${copied === a.k ? 'bg-black/10' : ''} hover:bg-black/10" aria-label="${icon === 'copy' ? `Copy ${a.label} link` : `${a.label} QR code`}">${ico(copied === a.k ? 'check' : icon, 'h-[18px] w-[18px] opacity-90')}</button>` +
 							`</div>`,
 					),
 				);
@@ -627,6 +632,59 @@
 					menuItem('external-link', 'Open in WhatsApp') + menuItem('copy', 'Copy link') + menuItem('share', 'Share…'),
 				);
 
+			const bothPills = () =>
+				group(
+					APPS.map(
+						(a) =>
+							`<div class="flex h-12 w-full overflow-hidden rounded-full ${fill(a)}">` +
+							`<a href="#" class="${BTN} h-12 flex-1 text-xl font-bold hover:bg-black/10">${brand(a.k)}${a.label}</a>` +
+							`<button class="${BTN} h-12 w-12 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] hover:bg-black/10" aria-label="Copy ${a.label} link">${ico('copy', 'h-[18px] w-[18px] opacity-90')}</button>` +
+							`<button class="${BTN} h-12 w-12 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] hover:bg-black/10" aria-label="${a.label} QR code">${ico('qr-code', 'h-[18px] w-[18px] opacity-90')}</button>` +
+							`</div>`,
+					),
+				);
+
+			const modeSeg = (active) => {
+				const item = (key, icon, label) =>
+					`<button class="inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 ${active === key ? 'bg-background text-foreground shadow-sm' : ''}">${ico(icon, 'h-3.5 w-3.5')}${label}</button>`;
+				return `<div class="-mt-2 flex justify-end"><div class="inline-flex h-8 items-center rounded-full bg-muted p-0.5 text-xs font-medium text-muted-foreground">${item('qr', 'qr-code', 'QR')}${item('copy', 'copy', 'Copy')}</div></div>`;
+			};
+
+			function qrSvg(seed) {
+				const n = 25;
+				let s = seed;
+				const rnd = () => {
+					s = (s * 1103515245 + 12345) & 0x7fffffff;
+					return s / 0x7fffffff;
+				};
+				const inFinder = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+				let rects = '';
+				for (let y = 0; y < n; y++) {
+					for (let x = 0; x < n; x++) {
+						let on;
+						if (inFinder(x, y)) {
+							const fx = x < 7 ? x : x - (n - 7);
+							const fy = y < 7 ? y : y - (n - 7);
+							on = fx === 0 || fx === 6 || fy === 0 || fy === 6 || (fx >= 2 && fx <= 4 && fy >= 2 && fy <= 4);
+						} else on = rnd() < 0.45;
+						if (on) rects += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+					}
+				}
+				return `<svg viewBox="0 0 ${n} ${n}" class="h-full w-full" shape-rendering="crispEdges" fill="currentColor" aria-label="QR code">${rects}</svg>`;
+			}
+
+			const cardBack = () => {
+				const tab = (label, on = false) =>
+					`<button class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm font-medium ${on ? 'bg-background text-foreground shadow-sm' : ''}">${label}</button>`;
+				return [
+					`<div class="flex items-center justify-between"><span class="${KICKER}">QR code</span>${btn('ghost', 'iconSm', 'rounded-full', ico('x'), 'aria-label="Back to number"')}</div>`,
+					`<div class="flex h-10 w-full items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">${tab('Telegram')}${tab('WhatsApp', true)}${tab('SMS')}${tab('textme')}</div>`,
+					`<div class="mx-auto h-52 w-52 rounded-lg border bg-white p-3 text-black">${qrSvg(11)}</div>`,
+					`<p class="text-center text-sm text-muted-foreground">Scan to open <span class="font-medium text-foreground">+34 612 34 56 78</span> in WhatsApp</p>`,
+					btn('outline', 'md', 'w-full', `${ico('copy')}Copy <span class="font-mono">wa.me/34612345678</span>`),
+				];
+			};
+
 			function render(stateId, lane) {
 				const mainCls = lane === 'phone' ? 'relative flex-1 overflow-hidden px-4 pb-6 pt-1' : 'relative mx-auto w-full max-w-md px-6 pb-10 pt-8';
 				const parts = [kickerRow, numberLine, intlLine];
@@ -643,8 +701,11 @@
 					parts.push(pills());
 					overlay = lane === 'phone' ? sheet('Share', shareInner('px-4 pb-6')) : dialog('Share', shareInner(''));
 				} else if (stateId === 'press') parts.push(`<div class="relative">${pills('wa')}${pressMenu(lane)}</div>`);
-				parts.push(footer(stateId === 'share' ? 'share' : ''));
-				const card = `<div class="${CARD}"><div class="space-y-5 p-6">${parts.join('')}</div></div>`;
+				else if (stateId === 'both') parts.push(bothPills());
+				else if (stateId === 'toggle-copy') parts.push(splitPills(), modeSeg('copy'));
+				else if (stateId === 'toggle-qr') parts.push(splitPills('', 'qr-code'), modeSeg('qr'));
+				parts.push(footer(stateId === 'share' ? 'share' : '', !stateId.startsWith('toggle')));
+				const card = `<div class="${CARD}"><div class="space-y-5 p-6">${(stateId === 'qr-open' ? cardBack() : parts).join('')}</div></div>`;
 				return `<header class="flex h-14 shrink-0 items-center justify-center">${wordmark}</header><main class="${mainCls}">${card}</main>${overlay}`;
 			}
 
