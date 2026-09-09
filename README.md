@@ -15,6 +15,6 @@ pnpm test
 pnpm test:e2e
 ```
 
-Design mockups live in `mockups/` (`open mockups/card.html`); `node mockups/capture-app.mjs` screenshots every state of a running preview into `mockups/stills/app/`.
+Design mockups live in `mockups/` (`open mockups/card.html`, `open mockups/copylinks.html` for the copy-link options); `node mockups/capture-app.mjs` screenshots every state of a running preview into `mockups/stills/app/`.
 
 This project is developed with the help of LLM coding agents.

@@ -1,0 +1,19 @@
+# Copy a direct link, not just open it
+
+Users sometimes want the t.me / wa.me / sms: URL itself to send to someone, not to open it.
+
+Options mocked in `mockups/copylinks.html` (stills in `mockups/stills/copylinks/`):
+
+- A split pill: trailing copy segment inside each brand pill. Recommended.
+- B copy icon beside each pill
+- C Open / Copy link mode toggle
+- D URL rows under the pills
+- E direct-link rows inside the Share sheet
+- F long-press / right-click menu on a pill
+
+Implementation notes for A:
+
+- `ActionButtons.svelte`: wrap each pill in a flex container, `<a>` body + `<button>` segment, 56px wide, `aria-label="Copy Telegram link"`.
+- Feedback: segment icon flips to a check for ~1.5 s, toast reads `Copied t.me/+34612345678` (extend `copyToClipboard` to take a label).
+- Pills stay `<a href>`, so native right-click / long-press copy keeps working.
+- `ContactRow.svelte` list rows keep native copy only; a per-row menu is a later step.
