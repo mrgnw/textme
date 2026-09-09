@@ -107,12 +107,23 @@ test("the QR is rendered locally", async ({ page }) => {
 		route.abort();
 	});
 	await page.goto("/34612345678");
-	await page.getByRole("button", { name: "QR" }).click();
+	await page.getByRole("button", { name: "QR", exact: true }).click();
+	await page.getByRole("button", { name: "WhatsApp QR code" }).click();
 
 	await expect(page.locator("svg[aria-label='QR code'], [aria-label='QR code'] svg").first()).toBeVisible();
-	await page.getByRole("tab", { name: "textme link" }).click();
+	await expect(page.getByRole("tab", { name: "WhatsApp" })).toHaveAttribute("aria-selected", "true");
+	await page.getByRole("tab", { name: "textme" }).click();
 	await expect(page.getByText("on textme")).toBeVisible();
 	expect(external).toHaveLength(0);
+});
+
+test("the pill segment copies the app link", async ({ page, context }) => {
+	await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+	await page.goto("/34612345678");
+	await page.getByRole("button", { name: "Copy Telegram link" }).click();
+
+	await expect(page.getByText("Copied t.me/+34612345678")).toBeVisible();
+	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("https://t.me/+34612345678");
 });
 
 test("recent numbers are offered on the empty screen", async ({ page }) => {
