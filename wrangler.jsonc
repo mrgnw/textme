@@ -9,6 +9,7 @@
 		"directory": ".svelte-kit/cloudflare"
 	},
 	"workers_dev": false,
+	"preview_urls": true,
 	"routes": [
 		{ "pattern": "textme.cc/*", "zone_name": "textme.cc" },
 		{ "pattern": "x.textme.cc/*", "zone_name": "textme.cc" }
