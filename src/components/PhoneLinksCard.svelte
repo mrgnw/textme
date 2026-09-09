@@ -8,6 +8,7 @@
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import { Button } from "$lib/components/ui/button";
 	import { Sheet } from "$lib/components/ui/sheet";
+	import { fade, slide } from "svelte/transition";
 	import { isMobile } from "$lib/media.svelte";
 	import { copyToClipboard } from "$lib/utils";
 	import { classify, digitsOf, resolveInitial, type App } from "$lib/phone";
@@ -48,6 +49,10 @@
 	const e164 = $derived(classified.state === "valid" ? (classified.detail?.e164 ?? null) : null);
 	const landing = $derived(initialName !== "");
 	const sideQr = $derived(qrApp !== null && e164 !== null && !isMobile.current);
+
+	function toggleQr(app: App) {
+		qrApp = qrApp === app ? null : app;
+	}
 	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
 
@@ -88,7 +93,7 @@
 		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
 	</header>
 
-	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[52rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
+	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[52rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8 transition-[max-width] duration-300 ease-out">
 		{#if mode === "list"}
 			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
 		{:else}
@@ -111,7 +116,7 @@
 									</Button>
 								</div>
 							</div>
-							<ActionButtons {e164} onqr={(app) => (qrApp = app)} />
+							<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
 							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 						</div>
 					{:else}
@@ -125,14 +130,14 @@
 							onListPaste={enterList}
 						>
 							{#if classified.state !== "empty"}
-								<ActionButtons {e164} onqr={(app) => (qrApp = app)} />
+								<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
 								<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 							{/if}
 						</NumberCard>
 					{/if}
 				</div>
 			{#if sideQr && qrApp && e164}
-				<aside class="w-80 shrink-0 rounded-2xl border bg-card text-card-foreground shadow-sm">
+				<aside class="w-80 shrink-0 rounded-2xl border bg-card text-card-foreground shadow-sm" transition:slide={{ axis: "x", duration: 250 }}>
 					<div class="space-y-4 p-6">
 						<div class="flex items-center justify-between">
 							<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">QR code</span>
@@ -141,7 +146,9 @@
 							</Button>
 						</div>
 						{#key qrApp}
-							<QrPanel {e164} app={qrApp} />
+							<div in:fade={{ duration: 150 }}>
+								<QrPanel {e164} app={qrApp} />
+							</div>
 						{/key}
 					</div>
 				</aside>

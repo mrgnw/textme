@@ -114,6 +114,10 @@ test("the QR is rendered locally", async ({ page }) => {
 	await expect(page.getByRole("tab", { name: "WhatsApp" })).toHaveAttribute("aria-selected", "true");
 	await page.getByRole("tab", { name: "textme" }).click();
 	await expect(page.getByText("on textme")).toBeVisible();
+
+	await page.getByRole("button", { name: "WhatsApp QR code" }).click();
+	await expect(page.getByText("on textme")).toBeHidden();
+	await expect(page.getByRole("button", { name: "WhatsApp QR code" })).toHaveAttribute("aria-pressed", "false");
 	expect(external).toHaveLength(0);
 });
 

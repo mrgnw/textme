@@ -10,10 +10,11 @@
 
 	interface Props {
 		e164: string | null;
+		showing?: App | null;
 		onqr: (app: App) => void;
 	}
 
-	let { e164, onqr }: Props = $props();
+	let { e164, showing = null, onqr }: Props = $props();
 
 	let mode = $state<"copy" | "qr">("copy");
 	let copied = $state<App | null>(null);
@@ -59,8 +60,9 @@
 			</a>
 			<button
 				type="button"
-				class="inline-flex h-12 w-14 items-center justify-center border-l {line} transition-colors hover:bg-black/10 {copied === app ? 'bg-black/10' : ''} {focus}"
+				class="inline-flex h-12 w-14 items-center justify-center border-l {line} transition-colors hover:bg-black/10 {copied === app || (mode === "qr" && showing === app) ? 'bg-black/10' : ''} {focus}"
 				aria-label={mode === "qr" ? `${label} QR code` : `Copy ${label} link`}
+				aria-pressed={mode === "qr" ? showing === app : undefined}
 				{disabled}
 				onclick={() => act(app)}
 			>
