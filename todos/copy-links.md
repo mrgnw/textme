@@ -2,7 +2,7 @@
 
 Users sometimes want the t.me / wa.me / sms: URL itself to send to someone, not to open it.
 
-Options mocked in `mockups/copylinks.html` (stills in `mockups/stills/copylinks/`):
+Options mocked at https://mox.xcc.es/textme/copylinks.html (source `mockups/copylinks.html`, stills in `mockups/stills/copylinks/`):
 
 - A split pill: trailing copy segment inside each brand pill. Recommended.
 - B copy icon beside each pill
