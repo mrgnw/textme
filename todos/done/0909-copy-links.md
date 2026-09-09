@@ -1,3 +1,7 @@
+---
+branch: design/copy-links
+---
+
 # Copy a direct link, not just open it
 
 Users sometimes want the t.me / wa.me / sms: URL itself to send to someone, not to open it.
