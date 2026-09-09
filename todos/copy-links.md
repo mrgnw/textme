@@ -13,6 +13,14 @@ Options mocked at https://mox.xcc.es/textme/copylinks.html (source `mockups/copy
 - G copy + QR, two segments per pill. Label goes off-centre on the phone.
 - H one segment per pill, QR / Copy toggle under the pills sets what it does; footer QR folds in. Tapping QR flips the card to its back with a tab per app.
 
+Where the QR shows once an H segment is tapped, without losing the card:
+
+- I inline: a panel opens under the tapped pill, segment becomes the close. Card grows 140 px.
+- J popover: 256 px popover off the segment, nothing moves; covers the SMS pill and toggle.
+- K pill grows: the pill stretches into a brand-coloured block with the QR inside.
+- L sheet on phone (number stays above the scrim), side card on desktop.
+- M pills swap: number and footer stay, the pill zone becomes a tabbed QR block.
+
 QR pick: keep the footer QR and extend the card back from two tabs to Telegram / WhatsApp / SMS / textme. Per-app QR then costs one extra tap and the pills stay at one segment. Add the H toggle only if per-app QR turns out to be frequent.
 
 Implementation notes for A:

@@ -503,6 +503,11 @@
 				{ id: 'toggle-copy', label: 'H · Toggle · copy', note: 'One segment per pill; a QR / Copy toggle under the pills sets what it does. Copy selected. The footer QR folds into the pills, so the footer drops to two items. The main tap always opens, so a forgotten mode costs a QR instead of a copy, never a wrong navigation.' },
 				{ id: 'toggle-qr', label: 'H · Toggle · QR', note: 'Same card with QR selected: the segment icons switch to QR. The toggle is the only extra row and doubles as the legend for the segment icon.' },
 				{ id: 'qr-open', label: 'H · QR tapped', note: 'Tapping the WhatsApp QR segment flips the card to its back with that app selected. Tabs cover the three apps plus the textme link, so the footer QR button and the pill segments land on the same surface.' },
+				{ id: 'qr-inline', label: 'I · Inline', note: 'Tapping a QR segment opens a panel directly under that pill and the segment becomes the close. Number, other pills and footer stay put, and the pill is the label so no tabs are needed. Cost: the card grows 140 px and the pills below shift down.' },
+				{ id: 'qr-popover', label: 'J · Popover', note: 'The QR pops out of the segment in a 256 px popover; nothing else moves and a tap outside dismisses it. It covers the SMS pill and the toggle while open, and on the phone a floating card with no scrim reads as less anchored than a sheet.' },
+				{ id: 'qr-morph', label: 'K · Pill grows', note: 'The tapped pill stretches into a brand-coloured block with the QR inside: the pill row stays as its header and the segment turns into a close. Strongest tie between the code and the app it opens. Same growth as I, but the brand colour frames the code.' },
+				{ id: 'qr-sheet', label: 'L · Sheet · side panel', note: 'Phone: a bottom sheet with the WhatsApp code, the number stays readable above the scrim. Desktop: a second card sits beside the first. Standard patterns, but the phone scrim dims the very context this is meant to keep.' },
+				{ id: 'qr-swap', label: 'M · Pills swap', note: 'Only the pill zone flips: the number and footer stay, the pills give way to a tabbed QR block. Keeps the header context H loses, but the tabs come back because the pill that was tapped is gone.' },
 
 			].map((s) => ({ ...s, url: URL }));
 			window.DECK = { variants: VARIANTS, states: STATES.map((s) => s.id) };
@@ -577,16 +582,17 @@
 					),
 				);
 
-			const splitPills = (copied = '', icon = 'copy') =>
-				group(
-					APPS.map(
-						(a) =>
-							`<div class="flex h-12 w-full overflow-hidden rounded-full ${fill(a)}">` +
-							`<a href="#" class="${BTN} h-12 flex-1 pl-14 text-xl font-bold hover:bg-black/10">${brand(a.k)}${a.label}</a>` +
-							`<button class="${BTN} h-12 w-14 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] ${copied === a.k ? 'bg-black/10' : ''} hover:bg-black/10" aria-label="${icon === 'copy' ? `Copy ${a.label} link` : `${a.label} QR code`}">${ico(copied === a.k ? 'check' : icon, 'h-[18px] w-[18px] opacity-90')}</button>` +
-							`</div>`,
-					),
+			const splitPill = (a, icon = 'copy', seg = '') => {
+				const segIcon = seg === 'copied' ? 'check' : seg === 'open' ? 'x' : icon;
+				const label = seg === 'open' ? 'Hide QR code' : icon === 'copy' ? `Copy ${a.label} link` : `${a.label} QR code`;
+				return (
+					`<div class="flex h-12 w-full overflow-hidden rounded-full ${fill(a)}">` +
+					`<a href="#" class="${BTN} h-12 flex-1 pl-14 text-xl font-bold hover:bg-black/10">${brand(a.k)}${a.label}</a>` +
+					`<button class="${BTN} h-12 w-14 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] ${seg ? 'bg-black/10' : ''} hover:bg-black/10" aria-label="${label}">${ico(segIcon, 'h-[18px] w-[18px] opacity-90')}</button>` +
+					`</div>`
 				);
+			};
+			const splitPills = (copied = '', icon = 'copy') => group(APPS.map((a) => splitPill(a, icon, copied === a.k ? 'copied' : '')));
 
 			const besidePills = () =>
 				group(
@@ -685,8 +691,56 @@
 				];
 			};
 
+			/* ---------- QR without leaving the card ---------- */
+			const WA = APPS[1];
+			const qrBox = (size) => `<div class="shrink-0 rounded-lg border bg-white p-2 text-black ${size}">${qrSvg(11)}</div>`;
+			const qrCaption = (a, cls = '') =>
+				`<p class="text-sm text-muted-foreground ${cls}">Scan to open <span class="font-medium text-foreground">+34 612 34 56 78</span> in ${a.label}</p>`;
+			const copyUrl = (a, cls = 'w-full') => btn('outline', 'sm', `min-w-0 px-2 ${cls}`, `${ico('copy', 'h-4 w-4 shrink-0')}<span class="truncate font-mono">${a.url}</span>`);
+			const qrRow = (a) =>
+				`<div class="flex items-center gap-4">${qrBox('h-28 w-28')}<div class="min-w-0 flex-1 space-y-2">${qrCaption(a)}${btn('outline', 'sm', 'w-full', `${ico('copy')}Copy link`)}</div></div>`;
+			const qrStack = (a, size) => `${qrBox(`mx-auto ${size}`)}${qrCaption(a, 'text-center')}${copyUrl(a)}`;
+
+			const inlinePills = () =>
+				group(APPS.flatMap((a) => (a.k === WA.k ? [splitPill(a, 'qr-code', 'open'), `<div class="overflow-hidden rounded-2xl border bg-muted/40 p-4">${qrRow(a)}</div>`] : [splitPill(a, 'qr-code')])));
+
+			const popoverPills = () =>
+				`<div class="relative">${group(APPS.map((a) => splitPill(a, 'qr-code', a.k === WA.k ? 'open' : '')))}` +
+				popover('right-0 top-[7.25rem] w-64 space-y-3 p-3', qrStack(WA, 'h-40 w-40')) +
+				`</div>`;
+
+			const morphBlock = (a) =>
+				`<div class="overflow-hidden rounded-3xl ${fill(a)}">` +
+				`<div class="flex h-12"><a href="#" class="${BTN} h-12 flex-1 pl-14 text-xl font-bold hover:bg-black/10">${brand(a.k)}${a.label}</a>` +
+				`<button class="${BTN} h-12 w-14 border-l border-[hsl(var(--${a.v}-foreground)/0.3)] bg-black/10 hover:bg-black/10" aria-label="Hide QR code">${ico('x', 'h-[18px] w-[18px] opacity-90')}</button></div>` +
+				`<div class="m-1 rounded-b-[20px] rounded-t-md bg-card p-4 text-card-foreground">${qrRow(a)}</div>` +
+				`</div>`;
+			const morphPills = () => group(APPS.map((a) => (a.k === WA.k ? morphBlock(a) : splitPill(a, 'qr-code'))));
+
+			const sidePanel = (a) =>
+				`<div class="${CARD} w-72 shrink-0"><div class="space-y-4 p-6">` +
+				`<div class="flex items-center justify-between"><span class="${KICKER}">${a.label} QR</span>${btn('ghost', 'iconSm', 'rounded-full', ico('x'), 'aria-label="Close"')}</div>` +
+				qrStack(a, 'h-48 w-48') +
+				`</div></div>`;
+
+			const swapZone = (a) => {
+				const tab = (label, on = false) =>
+					`<button class="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm font-medium ${on ? 'bg-background text-foreground shadow-sm' : ''}">${label}</button>`;
+				return (
+					`<div class="space-y-4 overflow-hidden rounded-2xl border bg-muted/40 p-4">` +
+					`<div class="flex items-center gap-2"><div class="flex h-10 flex-1 items-center justify-center rounded-md bg-background p-1 text-muted-foreground">${tab('Telegram')}${tab(a.label, true)}${tab('SMS')}${tab('textme')}</div>${btn('ghost', 'iconSm', 'shrink-0 rounded-full', ico('x'), 'aria-label="Back to buttons"')}</div>` +
+					qrStack(a, 'h-44 w-44') +
+					`</div>`
+				);
+			};
+
 			function render(stateId, lane) {
 				const mainCls = lane === 'phone' ? 'relative flex-1 overflow-hidden px-4 pb-6 pt-1' : 'relative mx-auto w-full max-w-md px-6 pb-10 pt-8';
+				if (stateId === 'qr-sheet' && lane === 'desk') {
+					const cardParts = [kickerRow, numberLine, intlLine, splitPills('', 'qr-code'), modeSeg('qr'), footer('', false)];
+					const card = `<div class="${CARD} flex-1"><div class="space-y-5 p-6">${cardParts.join('')}</div></div>`;
+					return `<header class="flex h-14 shrink-0 items-center justify-center">${wordmark}</header><main class="relative mx-auto flex w-full max-w-3xl items-start gap-4 px-6 pb-10 pt-8">${card}${sidePanel(WA)}</main>`;
+				}
 				const parts = [kickerRow, numberLine, intlLine];
 				let overlay = '';
 				if (stateId === 'today') parts.push(pills());
@@ -704,7 +758,14 @@
 				else if (stateId === 'both') parts.push(bothPills());
 				else if (stateId === 'toggle-copy') parts.push(splitPills(), modeSeg('copy'));
 				else if (stateId === 'toggle-qr') parts.push(splitPills('', 'qr-code'), modeSeg('qr'));
-				parts.push(footer(stateId === 'share' ? 'share' : '', !stateId.startsWith('toggle')));
+				else if (stateId === 'qr-inline') parts.push(inlinePills(), modeSeg('qr'));
+				else if (stateId === 'qr-popover') parts.push(popoverPills(), modeSeg('qr'));
+				else if (stateId === 'qr-morph') parts.push(morphPills(), modeSeg('qr'));
+				else if (stateId === 'qr-sheet') {
+					parts.push(splitPills('', 'qr-code'), modeSeg('qr'));
+					overlay = sheet('WhatsApp QR', `<div class="space-y-4 px-4 pb-10">${qrStack(WA, 'h-52 w-52')}</div>`);
+				} else if (stateId === 'qr-swap') parts.push(swapZone(WA));
+				parts.push(footer(stateId === 'share' ? 'share' : '', !stateId.startsWith('toggle') && !stateId.startsWith('qr-')));
 				const card = `<div class="${CARD}"><div class="space-y-5 p-6">${(stateId === 'qr-open' ? cardBack() : parts).join('')}</div></div>`;
 				return `<header class="flex h-14 shrink-0 items-center justify-center">${wordmark}</header><main class="${mainCls}">${card}</main>${overlay}`;
 			}
