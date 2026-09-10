@@ -23,5 +23,5 @@
 	>
 		{@html svg}
 	</div>
-	<p class="truncate text-center font-mono text-sm opacity-90">{shown}</p>
+	<p class="break-all text-center font-mono text-sm leading-snug opacity-90">{shown}</p>
 </div>
