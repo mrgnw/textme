@@ -8,6 +8,7 @@
 		open?: boolean;
 		onOpenChange?: (open: boolean) => void;
 		title?: string;
+		bare?: boolean;
 		trigger?: Snippet;
 		children?: Snippet;
 	}
@@ -16,6 +17,7 @@
 		open = $bindable(false),
 		onOpenChange,
 		title,
+		bare = false,
 		trigger,
 		children
 	}: Props = $props();
@@ -36,20 +38,24 @@
 				{/if}
 			{/snippet}
 		</Dialog.Overlay>
-		<Dialog.Content forceMount class="fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col rounded-t-2xl bg-background">
+		<Dialog.Content forceMount class="fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col {bare ? '' : 'rounded-t-2xl bg-background'}">
 			{#snippet child({ props, open })}
 				{#if open}
 					<div {...props} transition:fly={{ y: 240, duration: 250 }}>
-						<div class="flex items-center justify-between border-b px-4 py-3">
-							{#if title}
-								<Dialog.Title class="text-lg font-semibold">{title}</Dialog.Title>
-							{:else}
-								<div></div>
-							{/if}
-							<Dialog.Close class="rounded-full p-1 transition-colors hover:bg-muted">
-								<X class="h-5 w-5" />
-							</Dialog.Close>
-						</div>
+						{#if bare}
+							<Dialog.Title class="sr-only">{title}</Dialog.Title>
+						{:else}
+							<div class="flex items-center justify-between border-b px-4 py-3">
+								{#if title}
+									<Dialog.Title class="text-lg font-semibold">{title}</Dialog.Title>
+								{:else}
+									<div></div>
+								{/if}
+								<Dialog.Close class="rounded-full p-1 transition-colors hover:bg-muted">
+									<X class="h-5 w-5" />
+								</Dialog.Close>
+							</div>
+						{/if}
 						<div class="flex-1 overflow-y-auto">
 							{@render children?.()}
 						</div>

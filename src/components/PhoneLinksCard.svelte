@@ -153,13 +153,11 @@
 {#if e164}
 	<ShareDialog bind:open={shareOpen} {e164} bind:name />
 	{#if !isWide.current}
-		<Sheet open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title={qrApp ? CHANNELS[qrApp].label : "QR code"}>
+		<Sheet bare open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title={qrApp ? `${CHANNELS[qrApp].label} QR code` : "QR code"}>
 			{#if qrApp}
-				<div class="px-4 pb-8 pt-4">
-					{#key qrApp}
-						<QrPanel {e164} channel={qrApp} />
-					{/key}
-				</div>
+				{#key qrApp}
+					<QrPanel {e164} channel={qrApp} class="rounded-b-none pb-10 pt-6 shadow-none" />
+				{/key}
 			{/if}
 		</Sheet>
 	{:else}
