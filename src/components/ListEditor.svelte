@@ -9,7 +9,7 @@
 	import { TextareaAutosize } from "runed";
 	import ContactRow from "./ContactRow.svelte";
 	import CountryStamp from "./CountryStamp.svelte";
-	import BookUser from "@lucide/svelte/icons/book-user";
+	import ContactRound from "@lucide/svelte/icons/contact-round";
 	import Copy from "@lucide/svelte/icons/copy";
 
 	let {
@@ -71,7 +71,7 @@
 		</div>
 		<div class="flex gap-2">
 			<Button class="flex-1" onclick={downloadAll}>
-				<BookUser />
+				<ContactRound />
 				Save all contacts
 			</Button>
 			<Button variant="outline" onclick={copyAll}>
