@@ -5,7 +5,7 @@
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import { Sheet } from "$lib/components/ui/sheet";
-	import { fade, slide } from "svelte/transition";
+	import { flushSync } from "svelte";
 	import { isMobile } from "$lib/media.svelte";
 	import { CHANNELS, type Channel } from "$lib/channels";
 	import { classify, digitsOf, resolveInitial } from "$lib/phone";
@@ -47,8 +47,19 @@
 	const landing = $derived(initialName !== "");
 	const sideQr = $derived(qrApp !== null && e164 !== null && !isMobile.current);
 
+	function setQr(next: Channel | null) {
+		if (isMobile.current || !document.startViewTransition) {
+			qrApp = next;
+			return;
+		}
+		document.startViewTransition(() => {
+			qrApp = next;
+			flushSync();
+		});
+	}
+
 	function toggleQr(channel: Channel) {
-		qrApp = qrApp === channel ? null : channel;
+		setQr(qrApp === channel ? null : channel);
 	}
 	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
@@ -90,12 +101,12 @@
 		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
 	</header>
 
-	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[52rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8 transition-[max-width] duration-300 ease-out">
+	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : sideQr ? 'max-w-[47rem]' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
 		{#if mode === "list"}
 			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
 		{:else}
 			<div class="relative flex items-start gap-4">
-				<div class="min-w-0 flex-1 rounded-2xl border bg-card text-card-foreground shadow-sm">
+				<div class="min-w-0 flex-1 rounded-2xl border bg-card text-card-foreground shadow-sm [view-transition-name:number-card]">
 					{#if landing && e164}
 						<div class="space-y-5 p-6">
 							<div class="flex items-start justify-between">
@@ -126,14 +137,12 @@
 					{/if}
 				</div>
 			{#if sideQr && qrApp && e164}
-				<aside class="w-72 shrink-0" style:anchor-name="--qr-aside" transition:slide={{ axis: "x", duration: 250 }}>
+				<aside class="w-72 shrink-0 [view-transition-name:qr-card]" style:anchor-name="--qr-aside">
 					{#key qrApp}
-						<div in:fade={{ duration: 150 }}>
-							<QrPanel {e164} channel={qrApp} />
-						</div>
+						<QrPanel {e164} channel={qrApp} />
 					{/key}
 				</aside>
-				<div class="notch size-4 rotate-45 rounded-sm {CHANNELS[qrApp].fill}" aria-hidden="true"></div>
+				<div class="notch size-4 rotate-45 rounded-sm {CHANNELS[qrApp].fill} [view-transition-name:qr-notch]" aria-hidden="true"></div>
 			{/if}
 			</div>
 
