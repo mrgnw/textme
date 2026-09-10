@@ -89,3 +89,38 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+::view-transition-group(*) {
+	animation-duration: 250ms;
+	animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-new(qr-card):only-child {
+	animation: 250ms cubic-bezier(0.16, 1, 0.3, 1) both qr-card-in;
+}
+
+::view-transition-old(qr-card):only-child {
+	animation: 180ms ease-in both qr-card-out;
+}
+
+@keyframes qr-card-in {
+	from {
+		opacity: 0;
+		transform: translateX(24px);
+	}
+}
+
+@keyframes qr-card-out {
+	to {
+		opacity: 0;
+		transform: translateX(24px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}

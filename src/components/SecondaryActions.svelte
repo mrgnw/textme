@@ -1,7 +1,5 @@
 <script lang="ts">
 	import ContactRoundIcon from "@lucide/svelte/icons/contact-round";
-	import DownloadIcon from "@lucide/svelte/icons/download";
-	import QrCodeIcon from "@lucide/svelte/icons/qr-code";
 	import ShareIcon from "@lucide/svelte/icons/share";
 	import { Button } from "$lib/components/ui/button";
 	import { Input } from "$lib/components/ui/input";
@@ -13,10 +11,9 @@
 		e164: string | null;
 		name: string;
 		onshare: () => void;
-		onqr: () => void;
 	}
 
-	let { e164, name = $bindable(""), onshare, onqr }: Props = $props();
+	let { e164, name = $bindable(""), onshare }: Props = $props();
 
 	let saving = $state(false);
 	const disabled = $derived(!e164);
@@ -35,12 +32,12 @@
 		<Label for="contact-name">Name <span class="font-normal text-muted-foreground">(optional)</span></Label>
 		<form class="flex gap-2" onsubmit={(e) => { e.preventDefault(); save(); }}>
 			<Input id="contact-name" bind:value={name} placeholder="Who is this?" autofocus />
-			<Button type="submit" class="shrink-0"><DownloadIcon />Save .vcf</Button>
+			<Button type="submit" class="shrink-0"><ContactRoundIcon />Save {name.trim() || "contact"}</Button>
 		</form>
 	</div>
 {/if}
 
-<div class="grid grid-cols-3 gap-2 border-t pt-4">
+<div class="grid grid-cols-2 gap-2 border-t pt-4">
 	<Button
 		variant="ghost"
 		size="sm"
@@ -49,14 +46,10 @@
 		onclick={() => (saving = !saving)}
 	>
 		<ContactRoundIcon />
-		{name ? `Save ${name}` : "Save contact"}
+		Save {name.trim() || "contact"}
 	</Button>
 	<Button variant="ghost" size="sm" class="text-muted-foreground {disabled ? off : ''}" aria-disabled={disabled} onclick={onshare}>
 		<ShareIcon />
 		Share link
-	</Button>
-	<Button variant="ghost" size="sm" class="text-muted-foreground {disabled ? off : ''}" aria-disabled={disabled} onclick={onqr}>
-		<QrCodeIcon />
-		QR
 	</Button>
 </div>

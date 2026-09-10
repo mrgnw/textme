@@ -2,11 +2,13 @@
 	import { page } from "$app/state";
 	import { replaceState } from "$app/navigation";
 	import { useDebounce } from "runed";
-	import CopyIcon from "@lucide/svelte/icons/copy";
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
-	import { Button } from "$lib/components/ui/button";
-	import { copyToClipboard } from "$lib/utils";
+	import { Popover } from "bits-ui";
+	import { Sheet } from "$lib/components/ui/sheet";
+	import { flushSync } from "svelte";
+	import { isWide } from "$lib/media.svelte";
+	import { CHANNELS, type Channel } from "$lib/channels";
 	import { classify, digitsOf, resolveInitial } from "$lib/phone";
 	import { remember } from "$lib/recent.svelte";
 	import ActionButtons from "./ActionButtons.svelte";
@@ -38,12 +40,28 @@
 	let listText = $state("");
 	// svelte-ignore state_referenced_locally
 	let name = $state(initialName);
-	let showQr = $state(false);
+	let qrApp = $state<Channel | null>(null);
 	let shareOpen = $state(false);
 
 	const classified = $derived(classify(value, country));
 	const e164 = $derived(classified.state === "valid" ? (classified.detail?.e164 ?? null) : null);
 	const landing = $derived(initialName !== "");
+	const sideQr = $derived(qrApp !== null && e164 !== null && isWide.current);
+
+	function setQr(next: Channel | null) {
+		if (!isWide.current || !document.startViewTransition) {
+			qrApp = next;
+			return;
+		}
+		document.startViewTransition(() => {
+			qrApp = next;
+			flushSync();
+		});
+	}
+
+	function toggleQr(channel: Channel) {
+		setQr(qrApp === channel ? null : channel);
+	}
 	const dialCode = $derived(country ? getCountryByIso2(country)?.dialCode : undefined);
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
 
@@ -57,6 +75,7 @@
 
 	function onValueChange(next: string, details: Partial<DetailedValue> | null) {
 		value = next;
+		qrApp = null;
 		if (details) detailedValue = details;
 		syncUrl();
 	}
@@ -79,8 +98,8 @@
 </script>
 
 <div class="flex min-h-svh flex-col">
-	<header class="flex h-14 shrink-0 items-center justify-center">
-		<a href="/" class="font-display text-lg font-bold tracking-tight">text<span class="text-primary">me</span></a>
+	<header class="flex h-24 shrink-0 items-center justify-center sm:h-28">
+		<a href="/" class="font-display text-4xl font-bold tracking-tight sm:text-5xl">text<span class="text-primary">me</span></a>
 	</header>
 
 	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
@@ -88,11 +107,7 @@
 			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
 		{:else}
 			<div class="rounded-2xl border bg-card text-card-foreground shadow-sm">
-				{#if showQr && e164}
-					<div class="space-y-5 p-6">
-						<QrPanel {e164} onclose={() => (showQr = false)} />
-					</div>
-				{:else if landing && e164}
+				{#if landing && e164}
 					<div class="space-y-5 p-6">
 						<div class="flex items-start justify-between">
 							<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-display text-xl font-bold text-primary-foreground">
@@ -100,17 +115,9 @@
 							</div>
 							<CountryStamp bind:country />
 						</div>
-						<div>
-							<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
-							<div class="mt-1 flex items-center gap-1 text-lg text-muted-foreground">
-								<span class="tabular-nums">{classified.detail?.formatInternational}</span>
-								<Button variant="ghost" size="icon" class="h-8 w-8" aria-label="Copy number" onclick={() => copyToClipboard(e164 ?? "")}>
-									<CopyIcon />
-								</Button>
-							</div>
-						</div>
-						<ActionButtons {e164} />
-						<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
+						<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
+						<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
+						<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 					</div>
 				{:else}
 					<NumberCard
@@ -123,8 +130,8 @@
 						onListPaste={enterList}
 					>
 						{#if classified.state !== "empty"}
-							<ActionButtons {e164} />
-							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} onqr={() => (showQr = true)} />
+							<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
+							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
 						{/if}
 					</NumberCard>
 				{/if}
@@ -145,4 +152,37 @@
 
 {#if e164}
 	<ShareDialog bind:open={shareOpen} {e164} bind:name />
+	{#if !isWide.current}
+		<Sheet bare open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title={qrApp ? `${CHANNELS[qrApp].label} QR code` : "QR code"}>
+			{#if qrApp}
+				{#key qrApp}
+					<QrPanel {e164} channel={qrApp} class="rounded-b-none pb-10 pt-6 shadow-none" />
+				{/key}
+			{/if}
+		</Sheet>
+	{:else}
+		<Popover.Root bind:open={() => sideQr, (o) => { if (!o) setQr(null); }}>
+			<Popover.Portal>
+				<Popover.Content
+					customAnchor={qrApp ? `[data-qr-row="${qrApp}"]` : null}
+					side="right"
+					sideOffset={12}
+					collisionPadding={16}
+					trapFocus={false}
+					onOpenAutoFocus={(e) => e.preventDefault()}
+					onCloseAutoFocus={(e) => e.preventDefault()}
+					onInteractOutside={(e) => { if ((e.target as Element | null)?.closest("[data-qr-segment]")) e.preventDefault(); }}
+					onFocusOutside={(e) => { if ((e.target as Element | null)?.closest("[data-qr-segment]")) e.preventDefault(); }}
+					class="z-50 w-72 outline-none [view-transition-name:qr-card]"
+				>
+					{#if qrApp}
+						{#key qrApp}
+							<QrPanel {e164} channel={qrApp} />
+						{/key}
+						<Popover.Arrow width={20} height={10} class={CHANNELS[qrApp].color} />
+					{/if}
+				</Popover.Content>
+			</Popover.Portal>
+		</Popover.Root>
+	{/if}
 {/if}

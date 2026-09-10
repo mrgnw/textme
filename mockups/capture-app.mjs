@@ -35,7 +35,8 @@ const STATES = {
 	},
 	qr: async (page) => {
 		await page.goto(`${base}/34612345678`);
-		await page.getByRole('button', { name: 'QR' }).click();
+		await page.getByRole('button', { name: 'QR', exact: true }).click();
+		await page.getByRole('button', { name: 'WhatsApp QR code' }).click();
 	},
 	share: async (page) => {
 		await page.goto(`${base}/34612345678`);

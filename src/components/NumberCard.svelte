@@ -3,11 +3,9 @@
 	import { TelInput } from "svelte-tel-input";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import ClipboardIcon from "@lucide/svelte/icons/clipboard";
-	import CopyIcon from "@lucide/svelte/icons/copy";
 	import CircleAlertIcon from "@lucide/svelte/icons/circle-alert";
 	import { toast } from "svelte-sonner";
 	import { Button } from "$lib/components/ui/button";
-	import { copyToClipboard } from "$lib/utils";
 	import { replaceDigitWords } from "$lib/normalize.js";
 	import { isListPaste, type PhoneState } from "$lib/phone";
 	import CountryStamp from "./CountryStamp.svelte";
@@ -72,24 +70,24 @@
 </script>
 
 <div class="space-y-5 p-6">
-	<div class="flex items-center justify-between">
-		<span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kicker}</span>
-		<CountryStamp bind:country />
-	</div>
+	<span class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kicker}</span>
 
-	<TelInput
-		bind:el
-		bind:country
-		bind:detailedValue
-		{value}
-		{onValueChange}
-		initialFormat="national"
-		options={{ validateOn: "blur" }}
-		onpaste={handlePaste}
-		onblur={() => (touched = true)}
-		aria-label="Phone number"
-		class="w-full bg-transparent p-0 font-display text-4xl font-bold tracking-tight tabular-nums text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
-	/>
+	<div class="flex items-center gap-3">
+		<CountryStamp bind:country />
+		<TelInput
+				bind:el
+				bind:country
+				bind:detailedValue
+				{value}
+				{onValueChange}
+				initialFormat="national"
+				options={{ validateOn: "blur" }}
+				onpaste={handlePaste}
+				onblur={() => (touched = true)}
+				aria-label="Phone number"
+				class="min-w-0 flex-1 bg-transparent p-0 font-display text-3xl font-bold tracking-tight tabular-nums text-foreground placeholder:text-muted-foreground/50 focus:outline-none sm:text-4xl"
+		/>
+	</div>
 
 	{#if status === "invalid" && touched}
 		<p class="flex items-center gap-1.5 text-sm text-destructive" role="alert">
@@ -104,21 +102,6 @@
 			Paste number
 		</Button>
 		<p class="text-center text-sm text-muted-foreground">or type it · paste a whole list to save them all</p>
-	{/if}
-
-	{#if status === "valid" && detailedValue?.e164}
-		<div class="-my-1 flex items-center gap-1 text-sm text-muted-foreground">
-			<span class="tabular-nums">{detailedValue.formatInternational}</span>
-			<Button
-				variant="ghost"
-				size="icon"
-				class="h-8 w-8"
-				aria-label="Copy {detailedValue.formatInternational}"
-				onclick={() => copyToClipboard(detailedValue?.e164 ?? "")}
-			>
-				<CopyIcon />
-			</Button>
-		</div>
 	{/if}
 
 	{@render children?.()}

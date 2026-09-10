@@ -34,7 +34,9 @@ export function digitsOf(e164: string): string {
 	return e164.slice(1);
 }
 
-export function links(e164: string) {
+export type App = "telegram" | "whatsapp" | "sms";
+
+export function links(e164: string): Record<App, string> {
 	return {
 		telegram: `https://t.me/${e164}`,
 		whatsapp: `https://wa.me/${digitsOf(e164)}`,

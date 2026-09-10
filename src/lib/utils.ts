@@ -7,12 +7,18 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function copyToClipboard(text: string) {
-	navigator.clipboard.writeText(text).then(() => {
-		toast.success("Copied to clipboard");
-	}).catch(() => {
+export async function writeClipboard(text: string): Promise<boolean> {
+	try {
+		await navigator.clipboard.writeText(text);
+		return true;
+	} catch {
 		toast.error("Failed to copy");
-	});
+		return false;
+	}
+}
+
+export async function copyToClipboard(text: string, label = "to clipboard") {
+	if (await writeClipboard(text)) toast.success(`Copied ${label}`);
 }
 
 export function generateVCard(phone: string, name?: string): string {
