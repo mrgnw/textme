@@ -98,8 +98,8 @@
 </script>
 
 <div class="flex min-h-svh flex-col">
-	<header class="flex h-20 shrink-0 items-center justify-center">
-		<a href="/" class="font-display text-3xl font-bold tracking-tight">text<span class="text-primary">me</span></a>
+	<header class="flex h-24 shrink-0 items-center justify-center sm:h-28">
+		<a href="/" class="font-display text-4xl font-bold tracking-tight sm:text-5xl">text<span class="text-primary">me</span></a>
 	</header>
 
 	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
