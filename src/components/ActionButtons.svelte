@@ -60,7 +60,7 @@
 		{@const { label, fill, line } = CHANNELS[channel]}
 		<div
 			class="flex h-12 w-full overflow-hidden rounded-full {fill} {disabled ? 'pointer-events-none opacity-50' : ''}"
-			style:anchor-name={showing === channel ? "--qr-row" : undefined}
+			data-qr-row={channel}
 		>
 			{#if channel === "link"}
 				<button type="button" class="{main} text-lg tabular-nums max-[359px]:text-base sm:text-xl {focus}" aria-label="Copy {formatted}" {disabled} onclick={copyNumber}>
@@ -85,6 +85,7 @@
 				class="inline-flex h-12 w-14 items-center justify-center border-l {line} transition-colors hover:bg-black/10 {copied === channel || (mode === 'qr' && showing === channel) ? 'bg-black/10' : ''} {focus}"
 				aria-label={mode === "qr" ? `${label} QR code` : `Copy ${label} link`}
 				aria-pressed={mode === "qr" ? showing === channel : undefined}
+				data-qr-segment
 				{disabled}
 				onclick={() => act(channel)}
 			>
