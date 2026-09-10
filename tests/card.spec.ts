@@ -62,7 +62,7 @@ test("a multi-number paste becomes the list editor", async ({ page }) => {
 	await expect(page.getByRole("link", { name: "WhatsApp" })).toHaveCount(6);
 
 	const download = page.waitForEvent("download");
-	await page.getByRole("button", { name: "Download all .vcf" }).click();
+	await page.getByRole("button", { name: "Save all contacts" }).click();
 	const file = await (await download).path();
 	const vcf = await readFile(file!, "utf8");
 	expect(vcf.match(/BEGIN:VCARD/g)).toHaveLength(6);
