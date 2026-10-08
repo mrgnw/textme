@@ -10,8 +10,8 @@
 	import { parse } from "svelte-tel-input/utils";
 	import { Popover } from "bits-ui";
 	import { fly } from "svelte/transition";
-	import { writeClipboard } from "$lib/utils";
-	import { CHANNELS, CHANNEL_ORDER, channelUrl, shownUrl, type Channel } from "$lib/channels";
+	import { writeClipboard } from "#lib/utils.js";
+	import { CHANNELS, CHANNEL_ORDER, channelUrl, shownUrl, type Channel } from "#lib/channels.js";
 
 	interface Props {
 		e164: string | null;

@@ -2,8 +2,8 @@
 	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import { getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode } from "svelte-tel-input/types";
-	import { Button } from "$lib/components/ui/button";
-	import { getFlag } from "$lib/countryFlags.js";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { getFlag } from "#lib/countryFlags.js";
 	import CountrySelector from "./CountrySelector.svelte";
 
 	let { country = $bindable() }: { country: CountryCode | null } = $props();

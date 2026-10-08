@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/state";
 	import { renderSVG } from "uqr";
-	import { CHANNELS, channelUrl, shownUrl, type Channel } from "$lib/channels";
+	import { CHANNELS, channelUrl, shownUrl, type Channel } from "#lib/channels.js";
 
 	interface Props {
 		e164: string;

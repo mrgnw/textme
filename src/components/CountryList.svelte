@@ -3,7 +3,7 @@
 	import type { CountryCode } from "svelte-tel-input/types";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import SearchIcon from "@lucide/svelte/icons/search";
-	import { getFlag } from "$lib/countryFlags.js";
+	import { getFlag } from "#lib/countryFlags.js";
 
 	interface Props {
 		value: CountryCode | null;

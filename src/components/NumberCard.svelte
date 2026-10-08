@@ -5,9 +5,9 @@
 	import ClipboardIcon from "@lucide/svelte/icons/clipboard";
 	import CircleAlertIcon from "@lucide/svelte/icons/circle-alert";
 	import { toast } from "svelte-sonner";
-	import { Button } from "$lib/components/ui/button";
-	import { replaceDigitWords } from "$lib/normalize.js";
-	import { isListPaste, type PhoneState } from "$lib/phone";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { replaceDigitWords } from "#lib/normalize.js";
+	import { isListPaste, type PhoneState } from "#lib/phone.js";
 	import CountryStamp from "./CountryStamp.svelte";
 
 	interface Props {

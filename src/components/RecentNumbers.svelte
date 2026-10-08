@@ -1,8 +1,8 @@
 <script lang="ts">
 	import XIcon from "@lucide/svelte/icons/x";
-	import { Button } from "$lib/components/ui/button";
+	import { Button } from "#lib/components/ui/button/index.js";
 	import { parse } from "svelte-tel-input/utils";
-	import { forget, recent } from "$lib/recent.svelte";
+	import { forget, recent } from "#lib/recent.svelte.js";
 
 	interface Props {
 		onpick: (e164: string) => void;

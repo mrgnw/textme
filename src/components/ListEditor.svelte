@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { CountryCode } from "svelte-tel-input/types";
-	import type { FoundContact } from "$lib/phone";
-	import { findContacts } from "$lib/phone";
-	import { Button } from "$lib/components/ui/button";
-	import { Textarea } from "$lib/components/ui/textarea";
-	import { Card } from "$lib/components/ui/card";
-	import { copyToClipboard, downloadVCards } from "$lib/utils";
+	import type { FoundContact } from "#lib/phone.js";
+	import { findContacts } from "#lib/phone.js";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Textarea } from "#lib/components/ui/textarea/index.js";
+	import { Card } from "#lib/components/ui/card/index.js";
+	import { copyToClipboard, downloadVCards } from "#lib/utils.js";
 	import { TextareaAutosize } from "runed";
 	import ContactRow from "./ContactRow.svelte";
 	import CountryStamp from "./CountryStamp.svelte";

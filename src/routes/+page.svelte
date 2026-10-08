@@ -1,5 +1,5 @@
 <script>
-	import PhoneLinksCard from "$components/PhoneLinksCard.svelte";
+	import PhoneLinksCard from "#components/PhoneLinksCard.svelte";
 </script>
 
 <PhoneLinksCard />
