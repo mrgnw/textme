@@ -1,11 +1,11 @@
 <script lang="ts">
 	import ContactRoundIcon from "@lucide/svelte/icons/contact-round";
 	import ShareIcon from "@lucide/svelte/icons/share";
-	import { Button } from "$lib/components/ui/button";
-	import { Input } from "$lib/components/ui/input";
-	import { Label } from "$lib/components/ui/label";
-	import { downloadVCard } from "$lib/utils";
-	import { remember } from "$lib/recent.svelte";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Input } from "#lib/components/ui/input/index.js";
+	import { Label } from "#lib/components/ui/label/index.js";
+	import { downloadVCard } from "#lib/utils.js";
+	import { remember } from "#lib/recent.svelte.js";
 
 	interface Props {
 		e164: string | null;

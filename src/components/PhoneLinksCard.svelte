@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { page } from "$app/state";
-	import { replaceState } from "$app/navigation";
+	import { goto } from "$app/navigation";
 	import { useDebounce } from "runed";
 	import { parse, getCountryByIso2 } from "svelte-tel-input/utils";
 	import type { CountryCode, DetailedValue } from "svelte-tel-input/types";
 	import { Popover } from "bits-ui";
-	import { Sheet } from "$lib/components/ui/sheet";
+	import { Sheet } from "#lib/components/ui/sheet/index.js";
 	import { flushSync } from "svelte";
-	import { isWide } from "$lib/media.svelte";
-	import { CHANNELS, type Channel } from "$lib/channels";
-	import { classify, digitsOf, resolveInitial } from "$lib/phone";
-	import { remember } from "$lib/recent.svelte";
+	import { isWide } from "#lib/media.svelte.js";
+	import { CHANNELS, type Channel } from "#lib/channels.js";
+	import { classify, digitsOf, resolveInitial } from "#lib/phone.js";
+	import { remember } from "#lib/recent.svelte.js";
 	import ActionButtons from "./ActionButtons.svelte";
 	import CountryStamp from "./CountryStamp.svelte";
 	import ListEditor from "./ListEditor.svelte";
@@ -28,7 +28,7 @@
 
 	let { initialValue = null, initialName = "", mode: initialMode = "single" }: Props = $props();
 
-	const geoCountry = ((page.data.ip_country as string | undefined)?.toUpperCase() as CountryCode) || "US";
+	const geoCountry = (page.data.ip_country as string | undefined)?.toUpperCase() as CountryCode || "US";
 	// svelte-ignore state_referenced_locally
 	const initial = resolveInitial(initialValue, geoCountry);
 
@@ -44,7 +44,7 @@
 	let shareOpen = $state(false);
 
 	const classified = $derived(classify(value, country));
-	const e164 = $derived(classified.state === "valid" ? (classified.detail?.e164 ?? null) : null);
+	const e164 = $derived(classified.state === "valid" ? classified.detail?.e164 ?? null : null);
 	const landing = $derived(initialName !== "");
 	const sideQr = $derived(qrApp !== null && e164 !== null && isWide.current);
 
@@ -66,11 +66,11 @@
 	const countryLabel = $derived(dialCode ? `+${dialCode}` : "");
 
 	const syncUrl = useDebounce(() => {
-		if (!e164) return;
-		const path = `/${digitsOf(e164)}`;
-		if (page.url.pathname === path) return;
-		replaceState(path, page.state);
-		remember(e164, "");
+			if (!e164) return;
+			const path = `/${digitsOf(e164)}`;
+			if (page.url.pathname === path) return;
+			goto(path, { shallow: true, replace: true, state: page.state });
+			remember(e164, "");
 	}, 500);
 
 	function onValueChange(next: string, details: Partial<DetailedValue> | null) {
@@ -104,7 +104,12 @@
 
 	<main class="mx-auto w-full {mode === 'list' ? 'max-w-xl' : 'max-w-md'} px-4 pb-6 pt-1 sm:px-6 sm:pt-8">
 		{#if mode === "list"}
-			<ListEditor bind:text={listText} bind:country {countryLabel} onclear={clearList} />
+			<ListEditor
+				bind:text={listText}
+				bind:country
+				countryLabel={countryLabel}
+				onclear={clearList}
+			/>
 		{:else}
 			<div class="rounded-2xl border bg-card text-card-foreground shadow-sm">
 				{#if landing && e164}
@@ -115,23 +120,37 @@
 							</div>
 							<CountryStamp bind:country />
 						</div>
-						<h1 class="font-display text-3xl font-bold tracking-tight">{initialName}</h1>
-						<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
-						<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
+
+						<h1
+							class="font-display text-3xl font-bold tracking-tight"
+						>{initialName}</h1>
+
+						<ActionButtons e164={e164} showing={qrApp} onqr={toggleQr} />
+
+						<SecondaryActions
+							e164={e164}
+							bind:name
+							onshare={() => shareOpen = true}
+						/>
 					</div>
 				{:else}
 					<NumberCard
-						{value}
+						value={value}
 						bind:country
 						bind:detailedValue
 						status={classified.state}
 						kicker={initialValue && !landing ? "Shared number" : "Phone number"}
-						{onValueChange}
+						onValueChange={onValueChange}
 						onListPaste={enterList}
 					>
 						{#if classified.state !== "empty"}
-							<ActionButtons {e164} showing={qrApp} onqr={toggleQr} />
-							<SecondaryActions {e164} bind:name onshare={() => (shareOpen = true)} />
+							<ActionButtons e164={e164} showing={qrApp} onqr={toggleQr} />
+
+							<SecondaryActions
+								e164={e164}
+								bind:name
+								onshare={() => shareOpen = true}
+							/>
 						{/if}
 					</NumberCard>
 				{/if}
@@ -151,12 +170,16 @@
 </div>
 
 {#if e164}
-	<ShareDialog bind:open={shareOpen} {e164} bind:name />
+	<ShareDialog bind:open={shareOpen} e164={e164} bind:name />
 	{#if !isWide.current}
 		<Sheet bare open={qrApp !== null} onOpenChange={(o) => { if (!o) qrApp = null; }} title={qrApp ? `${CHANNELS[qrApp].label} QR code` : "QR code"}>
 			{#if qrApp}
 				{#key qrApp}
-					<QrPanel {e164} channel={qrApp} class="rounded-b-none pb-10 pt-6 shadow-none" />
+					<QrPanel
+						e164={e164}
+						channel={qrApp}
+						class="rounded-b-none pb-10 pt-6 shadow-none"
+					/>
 				{/key}
 			{/if}
 		</Sheet>
@@ -177,7 +200,7 @@
 				>
 					{#if qrApp}
 						{#key qrApp}
-							<QrPanel {e164} channel={qrApp} />
+							<QrPanel e164={e164} channel={qrApp} />
 						{/key}
 						<Popover.Arrow width={20} height={10} class={CHANNELS[qrApp].color} />
 					{/if}

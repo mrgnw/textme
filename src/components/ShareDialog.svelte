@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { page } from "$app/state";
 	import { onMount } from "svelte";
-	import * as Dialog from "$lib/components/ui/dialog";
-	import Sheet from "$lib/components/ui/sheet/sheet.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import { Input } from "$lib/components/ui/input";
-	import { Label } from "$lib/components/ui/label";
+	import * as Dialog from "#lib/components/ui/dialog/index.js";
+	import Sheet from "#lib/components/ui/sheet/sheet.svelte";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Input } from "#lib/components/ui/input/index.js";
+	import { Label } from "#lib/components/ui/label/index.js";
 	import Copy from "@lucide/svelte/icons/copy";
 	import Share from "@lucide/svelte/icons/share";
-	import { shareUrl } from "$lib/phone";
-	import { copyToClipboard } from "$lib/utils";
-	import { isMobile } from "$lib/media.svelte";
+	import { shareUrl } from "#lib/phone.js";
+	import { copyToClipboard } from "#lib/utils.js";
+	import { isMobile } from "#lib/media.svelte.js";
 
 	interface Props {
 		open?: boolean;

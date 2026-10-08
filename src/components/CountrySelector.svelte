@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { CountryCode } from "svelte-tel-input/types";
-	import * as Dialog from "$lib/components/ui/dialog";
-	import { Sheet } from "$lib/components/ui/sheet";
-	import { isMobile } from "$lib/media.svelte";
+	import * as Dialog from "#lib/components/ui/dialog/index.js";
+	import { Sheet } from "#lib/components/ui/sheet/index.js";
+	import { isMobile } from "#lib/media.svelte.js";
 	import CountryList from "./CountryList.svelte";
 
 	interface Props {

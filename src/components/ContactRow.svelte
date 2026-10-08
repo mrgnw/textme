@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { FoundContact } from "$lib/phone";
-	import { links } from "$lib/phone";
-	import { Button } from "$lib/components/ui/button";
-	import { Input } from "$lib/components/ui/input";
-	import { copyToClipboard, downloadVCard } from "$lib/utils";
+	import type { FoundContact } from "#lib/phone.js";
+	import { links } from "#lib/phone.js";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Input } from "#lib/components/ui/input/index.js";
+	import { copyToClipboard, downloadVCard } from "#lib/utils.js";
 	import Copy from "@lucide/svelte/icons/copy";
 	import ContactRound from "@lucide/svelte/icons/contact-round";
 	import RiTelegramLine from "~icons/ri/telegram-line";
