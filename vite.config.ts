@@ -3,6 +3,8 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import Icons from 'unplugin-icons/vite';
+import { isMainThread } from 'node:worker_threads';
+import checker from 'vite-plugin-checker';
 
 export default defineConfig({
   plugins: [
@@ -12,6 +14,7 @@ export default defineConfig({
       compilerOptions: { experimental: { async: true } },
       experimental: { remoteFunctions: true }
     }),
-    Icons({ compiler: 'svelte' })
+    Icons({ compiler: 'svelte' }),
+    isMainThread && checker({ svelteCheck: { flags: '--tsconfig ./tsconfig.json' }, enableBuild: false })
   ]
 })
