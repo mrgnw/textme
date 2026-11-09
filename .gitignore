@@ -13,3 +13,5 @@ vite.config.ts.timestamp-*
 /.playwright
 
 .wrangler
+captures/
+package.json.tmp
