@@ -526,10 +526,11 @@
 			},
 			"google_messages_rcs": {
 				"status": "yes",
-				"notes": "Individual message replies with RCS.",
+				"notes": "Direct reply to a specific message.",
 				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://blog.google/products-and-platforms/products/messages/10-new-messages-features/", "date": "2022", "date_basis": "publication_or_documented_release" }
+					{ "source_url": "https://blog.google/products-and-platforms/products/messages/10-new-messages-features/", "date": "2022", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.google.com/messages/answer/17499346", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"apple_messages_rcs_ios_18": {
@@ -584,11 +585,10 @@
 			},
 			"signal": {
 				"status": "yes",
-				"notes": "Signal supports quoted replies; individual deployment details are client-specific.",
+				"notes": "Quoted replies and private replies to a group participant.",
 				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" },
-					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007320551-Linked-Devices/", "date": "2026-11-26", "date_basis": "accessed" }
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/6851465208986-Reply-to-a-specific-message", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"imessage": {
@@ -812,7 +812,7 @@
 				"confidence": "vendor-claim",
 				"sources": [
 					{ "source_url": "https://blog.whatsapp.com/improved-calling-this-holiday-season", "date": "2024", "date_basis": "publication_or_documented_release" },
-					{ "source_url": "https://blog.whatsapp.com/now-you-can-invite-anyone-to-a-whatsapp-call-no-account-needed-no-cost-no-time-limit", "date": "2026", "date_basis": "publication_or_documented_release" }
+					{ "source_url": "https://blog.whatsapp.com/now-you-can-invite-anyone-to-a-whatsapp-call-no-account-needed-no-cost-no-time-limit", "date": "2026-10-14", "date_basis": "publication_or_documented_release" }
 				]
 			},
 			"instagram_dms": {
@@ -867,11 +867,12 @@
 				]
 			},
 			"google_messages_rcs": {
-				"status": "unknown",
-				"notes": "Location messages are recognized; dedicated send and live sharing coverage unverified.",
-				"confidence": "estimate",
+				"status": "yes",
+				"notes": "Static location attachment and live sharing in the Google client. Live sharing uses Google Maps through Find Hub and is a separate service from encrypted message transport.",
+				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://support.google.com/messages/answer/17499346", "date": "2026-11-26", "date_basis": "accessed" }
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.google.com/messages/answer/16929688", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"apple_messages_rcs_ios_18": {
@@ -925,11 +926,11 @@
 				]
 			},
 			"signal": {
-				"status": "unknown",
-				"notes": "Native pin and live-location behavior unverified in the cited documentation.",
-				"confidence": "estimate",
+				"status": "yes",
+				"notes": "Signal documents sharing current location. Continuous live sharing is unverified.",
+				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007062172-Signal-Permissions-OS-Notification-Settings", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"imessage": {
@@ -949,7 +950,7 @@
 				"confidence": "vendor-claim",
 				"sources": [
 					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" },
-					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rcc-16-rich-communication-suite-end-to-end-encryption-specification/", "date": "2025", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.16-v2.0.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" },
 					{ "source_url": "https://www.gsma.com/newsroom/article/rcs-universal-profile-4-1-stronger-foundations-for-secure-messaging/", "date": "2026-07-28", "date_basis": "publication_or_documented_release" }
 				]
 			},
@@ -1037,7 +1038,7 @@
 				"confidence": "vendor-claim",
 				"sources": [
 					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" },
-					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rcc-16-rich-communication-suite-end-to-end-encryption-specification/", "date": "2025", "date_basis": "publication_or_documented_release" }
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.16-v2.0.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
 				]
 			},
 			"google_messages_rcs": {
@@ -1249,19 +1250,22 @@
 				]
 			},
 			"instagram_dms": {
-				"status": "unknown",
-				"notes": "Vendor announcement covers edit but not unsend; current primary help article unverified for this review.",
-				"confidence": "estimate",
+				"status": "yes",
+				"notes": "Meta documents unsending photos. The linked general unsend help page could not be retrieved, so exact client and message-type limits remain unverified.",
+				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+					{ "source_url": "https://about.fb.com/news/2024/04/new-tools-to-help-protect-against-sextortion-and-intimate-image-abuse/", "date": "2024-04", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://help.instagram.com/491370017690934/", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"messenger": {
-				"status": "unknown",
-				"notes": "Vendor encryption announcement covers edit but not removal for everyone.",
+				"status": "partial",
+				"notes": "Meta references unsend in its policy materials and described expansion to encrypted Messenger chats; current help was behind a sign-in and exact limits were not verified.",
 				"confidence": "estimate",
 				"sources": [
-					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+					{ "source_url": "https://about.fb.com/news/2021/04/messenger-policy-workshop-future-of-private-messaging/", "date": "2021-04", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2022/08/testing-end-to-end-encrypted-backups-and-more-on-messenger/", "date": "2026-03-09", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.facebook.com/help/messenger-app/194400311449172", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"telegram": {
@@ -1671,7 +1675,7 @@
 				"notes": "Existing account can use Wi-Fi.",
 				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://faq.whatsapp.com/5315147411944059/", "date": "2026-11-26", "date_basis": "accessed" }
+					{ "source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
 			"instagram_dms": {
@@ -1757,7 +1761,7 @@
 				"notes": "SMS can verify account; personal chats use data.",
 				"confidence": "vendor-claim",
 				"sources": [
-					{ "source_url": "https://faq.whatsapp.com/5315147411944059/", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android", "date": "2026-11-26", "date_basis": "accessed" },
 					{ "source_url": "https://faq.whatsapp.com/1199905020946636/", "date": "2026-11-26", "date_basis": "accessed" }
 				]
 			},
