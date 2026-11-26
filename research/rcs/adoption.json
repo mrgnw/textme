@@ -1,0 +1,1913 @@
+{
+	"as_of": "2026-11-26",
+	"metadata": {
+		"date": "ISO dates at the precision given by the source. For forecasts, date is the target period. For missing rows, date is the research cutoff.",
+		"confidence": "measured = direct count from a named inventory or disclosed measurement; vendor-claim = company or industry disclosure, including attributed disclosures via press; estimate = model, analyst estimate or forecast. Missing rows have null confidence and source_url may identify a source checked.",
+		"qualifier": "gt = strictly above the value; gte = at least the value; approx = rounded estimate; null = use the reported value as shown.",
+		"geography": "Country codes follow ISO 3166-1 alpha-2. CN refers to mainland China. Market availability refers to a local line, with no roaming inference.",
+		"comparability": "Group by metric, unit, geography and kind before charting. The monthly-user observations have different definitions. Do not connect them as a single time series. Forecasts belong in separate series."
+	},
+	"global_adoption": [
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_users",
+			"value": 300000000,
+			"unit": "users",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s global snapshot labels these monthly users. Activity and deduplication methods are undisclosed."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_addressable_connections",
+			"value": 1100000000,
+			"unit": "connections",
+			"date": "2021-06",
+			"source_url": "https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&reportId=54187",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": "approx",
+			"note": "GSMA Intelligence estimate of connections able to receive an RCS message."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_subscribers",
+			"value": 1200000000,
+			"unit": "subscribers",
+			"date": "2022",
+			"source_url": "https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper forecast published in February 2022."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_users",
+			"value": 500000000,
+			"unit": "users",
+			"date": "2023-02-27",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "approx",
+			"note": "Google described people using RCS each month. It did not publish a counting method."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_people_with_access",
+			"value": 800000000,
+			"unit": "people",
+			"date": "2023-05",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/android-updates-io-2023/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "Google reported people with RCS, without specifying a monthly activity window."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_addressable_connections",
+			"value": 2700000000,
+			"unit": "connections",
+			"date": "2023",
+			"source_url": "https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&reportId=54187",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "GSMA Intelligence forecast published in June 2021 for year-end 2023."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "google_messages_monthly_active_users_with_rcs_enabled",
+			"value": 1000000000,
+			"unit": "users",
+			"date": "2023-11-30",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "Monthly active in Google Messages with RCS enabled. RCS send or receive activity is unspecified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_juniper_2023_study",
+			"value": 930000000,
+			"unit": "users",
+			"date": "2023",
+			"source_url": "https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Juniper September 2023 baseline. The release gives no monthly activity definition."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_juniper_2023_study",
+			"value": 1100000000,
+			"unit": "users",
+			"date": "2024",
+			"source_url": "https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper September 2023 study forecast for 2024."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_installed_base_omdia",
+			"value": 666000000,
+			"unit": "users",
+			"date": "2024",
+			"source_url": "https://omdia.tech.informa.com/-/media/tech/omdia/marketing/commissioned-research/pdfs/rcs-igniting-business-messaging-with-rich-conversations.pdf?rev=8500fa80f4834d8496a473fb6ca4b014",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Omdia’s 2024 model counts people with RCS-capable devices connected to networks that have enabled RCS business messaging."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_users_mobilesquared_2024_study",
+			"value": 2790000000,
+			"unit": "users",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "September 2024 forecast including modeled iOS uplift. The public slide does not define a monthly activity window."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_devices",
+			"value": 6000000000,
+			"unit": "devices",
+			"date": "2026-07",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": "approx",
+			"note": "GSMA Industry Services cites GSMA Intelligence and reports this approximate total. Published platform subtotals do not reconcile with the total."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_subscribers",
+			"value": 3800000000,
+			"unit": "subscribers",
+			"date": "2026",
+			"source_url": "https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper’s February 2022 forecast. The release calls these RCS-capable subscribers."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_gsma_industry_services",
+			"value": 3800000000,
+			"unit": "users",
+			"date": "2026",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": "gt",
+			"note": "GSMA Industry Services July 2026 article describes a year-end active-user projection. The public article gives no active-user definition. Juniper’s older forecast uses the same magnitude for capable subscribers."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://www.mobilesquared.co.uk/buy-rich-business-messaging-market-data/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current public, deduplicated 2025–2026 count with a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_enabled_subscribers_all_clients",
+			"value": null,
+			"unit": "subscribers",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current observed total across carriers and clients was verified. Published estimates count capable devices or project subscribers."
+		}
+	],
+	"message_traffic": [
+		{
+			"geography": "Worldwide",
+			"metric": "all_rcs_messages_received_daily",
+			"value": 3200000000,
+			"unit": "messages/day",
+			"date": "2026",
+			"source_url": "https://www.publicnow.com/view/36952D56137D1CE2B93C919575CFC1F7680CE9BF",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": "approx",
+			"note": "GSMA Intelligence estimate for the beginning of 2026, published October 28. The link is a syndicated copy of the GSMA article."
+		},
+		{
+			"geography": "US",
+			"metric": "all_rcs_messages_sent_daily",
+			"value": 1000000000,
+			"unit": "messages/day",
+			"date": "2025-05-13",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "Google’s average for the preceding 28 days."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_mef",
+			"value": 4941000000,
+			"unit": "messages/year",
+			"date": "2022",
+			"source_url": "https://mobileecosystemforum.com/wp-content/uploads/2026/10/messaging-yearbook-2026-exec-summary.pdf",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "MEF yearbook executive summary, page 8. Application-to-person traffic across Google and non-Google channels."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_mef",
+			"value": 29236000000,
+			"unit": "messages/year",
+			"date": "2023",
+			"source_url": "https://mobileecosystemforum.com/wp-content/uploads/2026/10/messaging-yearbook-2026-exec-summary.pdf",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "MEF yearbook executive summary, page 8. Application-to-person traffic across Google and non-Google channels."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_mef",
+			"value": 69335000000,
+			"unit": "messages/year",
+			"date": "2024",
+			"source_url": "https://mobileecosystemforum.com/wp-content/uploads/2026/10/messaging-yearbook-2026-exec-summary.pdf",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "MEF yearbook executive summary, page 8. Application-to-person traffic across Google and non-Google channels."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_mef",
+			"value": 144515000000,
+			"unit": "messages/year",
+			"date": "2025",
+			"source_url": "https://mobileecosystemforum.com/wp-content/uploads/2026/10/messaging-yearbook-2026-exec-summary.pdf",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "MEF yearbook executive summary, page 8. Application-to-person traffic across Google and non-Google channels."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_mef",
+			"value": 316009000000,
+			"unit": "messages/year",
+			"date": "2026",
+			"source_url": "https://mobileecosystemforum.com/wp-content/uploads/2026/10/messaging-yearbook-2026-exec-summary.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "MEF yearbook executive summary, page 8. Application-to-person traffic across Google and non-Google channels."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_juniper_2024_study",
+			"value": 33000000000,
+			"unit": "messages/year",
+			"date": "2024",
+			"source_url": "https://www.juniperresearch.com/press/rcs-business-messaging-traffic-to-grow-50-in-2025/",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Juniper’s November 2024 study. Its coverage and modeling differ from MEF’s series."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_messages_juniper_2024_study",
+			"value": 50000000000,
+			"unit": "messages/year",
+			"date": "2025",
+			"source_url": "https://www.juniperresearch.com/press/rcs-business-messaging-traffic-to-grow-50-in-2025/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper’s November 2024 study. Its coverage and modeling differ from MEF’s series."
+		}
+	],
+	"carrier_coverage": [
+		{
+			"geography": "Worldwide",
+			"metric": "reported_rcs_operator_launches",
+			"value": 81,
+			"unit": "operator launches",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s snapshot. Counts launches without a Universal Profile version breakdown."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "markets_with_reported_rcs_operator_launches",
+			"value": 55,
+			"unit": "countries",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s snapshot."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "reported_rcs_operator_launches",
+			"value": 90,
+			"unit": "operator launches",
+			"date": "2020-06",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "GSMA launch map headline. The operator table was updated July 8."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "markets_with_reported_rcs_operator_launches",
+			"value": 60,
+			"unit": "countries",
+			"date": "2020-06",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "GSMA launch map headline."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "reported_rcs_operator_launches",
+			"value": null,
+			"unit": "operator launches",
+			"date": "2026-11-26",
+			"source_url": "https://www.mobilesquared.co.uk/buy-rich-business-messaging-market-data/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No comprehensive, current public census on a comparable basis was verified. Mobilesquared advertises newer operator and market data in its subscription product."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "markets_with_reported_rcs_operator_launches",
+			"value": null,
+			"unit": "countries",
+			"date": "2026-11-26",
+			"source_url": "https://www.mobilesquared.co.uk/buy-rich-business-messaging-market-data/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No comprehensive, current public census on a comparable basis was verified. Mobilesquared advertises newer operator and market data in its subscription product."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "North America",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Latin America and Caribbean",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Europe",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Asia-Pacific",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Middle East and North Africa",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Sub-Saharan Africa",
+			"metric": "universal_profile_live_operator_share",
+			"value": null,
+			"unit": "percent of mobile network operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current matched inventory of live Universal Profile operators and all mobile network operators. Regional carrier-brand directory counts are a separate measure."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "operators_connected_to_rcs_hub",
+			"value": null,
+			"unit": "operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/the-rcs-ecosystem/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No dated public count of live RCS connections specific to this hub was verified. Providers can overlap.",
+			"hub": "Google Jibe Hub"
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "operators_connected_to_rcs_hub",
+			"value": null,
+			"unit": "operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/the-rcs-ecosystem/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No dated public count of live RCS connections specific to this hub was verified. Providers can overlap.",
+			"hub": "Global Message Services"
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "operators_connected_to_rcs_hub",
+			"value": null,
+			"unit": "operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/the-rcs-ecosystem/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No dated public count of live RCS connections specific to this hub was verified. Providers can overlap.",
+			"hub": "Interop Technologies"
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "operators_connected_to_rcs_hub",
+			"value": null,
+			"unit": "operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/the-rcs-ecosystem/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No dated public count of live RCS connections specific to this hub was verified. Providers can overlap.",
+			"hub": "Mavenir"
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "operators_connected_to_rcs_hub",
+			"value": null,
+			"unit": "operators",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/the-rcs-ecosystem/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No dated public count of live RCS connections specific to this hub was verified. Providers can overlap.",
+			"hub": "Syniverse Technologies"
+		}
+	],
+	"markets": [
+		{
+			"country_code": "US",
+			"country": "United States",
+			"region": "North America",
+			"iphone": {
+				"value": 3,
+				"unit": "selected carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109526",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"AT&T",
+					"T-Mobile USA",
+					"Verizon Wireless"
+				],
+				"encryption_beta_carriers": [
+					"AT&T",
+					"T-Mobile USA",
+					"Verizon Wireless"
+				],
+				"note": "Selected national carrier brands from Apple’s directory. Apple also lists other brands. Value counts this named subset only."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019-11-14",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages rollout began after the UK, France and Mexico."
+				},
+				{
+					"date": "2026-07",
+					"source_url": "https://www.att.com/features/advanced-messaging/",
+					"confidence": "vendor-claim",
+					"note": "AT&T announced retirement of legacy Advanced Messaging RCS. RCS remains available via Google Messages."
+				}
+			]
+		},
+		{
+			"country_code": "GB",
+			"country": "United Kingdom",
+			"region": "Europe",
+			"iphone": {
+				"value": 6,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"giffgaff",
+					"O2",
+					"Tesco Mobile",
+					"3",
+					"BT",
+					"EE"
+				],
+				"encryption_beta_carriers": [
+					"3",
+					"BT",
+					"EE"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages availability announced."
+				},
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone announced Google Messages as default on applicable Android phones and a move to Jibe Cloud across its collaboration with Google."
+				}
+			]
+		},
+		{
+			"country_code": "ES",
+			"country": "Spain",
+			"region": "Europe",
+			"iphone": {
+				"value": 7,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/it-it/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Masmovil",
+					"Movistar",
+					"Vodafone",
+					"O2",
+					"Orange",
+					"Pepephone",
+					"Yoigo"
+				],
+				"encryption_beta_carriers": [
+					"O2",
+					"Orange",
+					"Pepephone",
+					"Yoigo"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Movistar, Orange and Vodafone RCS launches."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists Spain for RCS Business Messaging via a Jibe API. This evidence concerns business messaging."
+				}
+			]
+		},
+		{
+			"country_code": "DE",
+			"country": "Germany",
+			"region": "Europe",
+			"iphone": {
+				"value": 4,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Vodafone",
+					"1&1",
+					"O2",
+					"Telekom"
+				],
+				"encryption_beta_carriers": [
+					"1&1",
+					"O2",
+					"Telekom"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-06-23",
+					"source_url": "https://www.mavenir.com/press-releases/mavenirs-rcs-mobile-business-messaging-cloud/",
+					"confidence": "vendor-claim",
+					"note": "Mavenir reported Universal Profile 2.0 interconnection for Telefónica, Vodafone and Deutsche Telekom Germany."
+				},
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone later announced a move to Jibe Cloud at group level."
+				}
+			]
+		},
+		{
+			"country_code": "FR",
+			"country": "France",
+			"region": "Europe",
+			"iphone": {
+				"value": 4,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Bouygues Telecom",
+					"Free Mobile",
+					"Orange",
+					"SFR"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages availability announced."
+				}
+			]
+		},
+		{
+			"country_code": "IT",
+			"country": "Italy",
+			"region": "Europe",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/it-it/108048",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone announced Jibe Cloud and Google Messages collaboration in Europe."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists Italy for RCS Business Messaging through its Jibe API. Current consumer coverage by Android carrier is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "IN",
+			"country": "India",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 1,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-ie/118609",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Reliance Jio"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026-03-01",
+					"source_url": "https://www.airtel.in/press-release/03-2026/airtel-and-google-collaborate-to-advance-spam-protection-in-india-with-secure-rcs-messaging/",
+					"confidence": "vendor-claim",
+					"note": "Bharti Airtel announced collaboration with Google’s RCS platform."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://play.google.com/store/apps/details?id=com.jio.messages",
+					"confidence": "vendor-claim",
+					"note": "Reliance Jio lists its own Android Messages client for RCS with a Jio SIM. The listing describes exchange with other compatible Jio clients."
+				}
+			]
+		},
+		{
+			"country_code": "BR",
+			"country": "Brazil",
+			"region": "Latin America and Caribbean",
+			"iphone": {
+				"value": 2,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109520",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"TIM",
+					"Vivo"
+				],
+				"encryption_beta_carriers": [
+					"TIM",
+					"Vivo"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Claro, Nextel, Oi and Vivo launches. Historical entries reflect the market then."
+				},
+				{
+					"date": "2020-11-19",
+					"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+					"confidence": "vendor-claim",
+					"note": "Google’s global Android rollout offers service from Google or a carrier where eligible."
+				},
+				{
+					"date": "2025-09",
+					"source_url": "https://vivo.com.br/para-voce/ajuda/mais-ajuda/rcs",
+					"confidence": "vendor-claim",
+					"note": "Vivo confirms RCS on Android and on iPhone with iOS 26 since September 2025."
+				}
+			]
+		},
+		{
+			"country_code": "MX",
+			"country": "Mexico",
+			"region": "Latin America and Caribbean",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109520",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google announced availability in Google Messages."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.telcel.com/personas/servicios/llamadas-y-mensajeria/mensajes-android",
+					"confidence": "vendor-claim",
+					"note": "Telcel documents Android RCS via Google Messages and says initial provisioning on a Telcel line must take place in Mexico. Once active, roaming with internet is covered by Telcel’s terms."
+				}
+			]
+		},
+		{
+			"country_code": "JP",
+			"country": "Japan",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"au",
+					"NTT DOCOMO",
+					"SoftBank"
+				],
+				"encryption_beta_carriers": [
+					"au",
+					"NTT DOCOMO",
+					"SoftBank"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-04-08",
+					"source_url": "https://www.mavenir.com/press-releases/mavenir-cloud-native-rcs-solution-rakuten-link/",
+					"confidence": "vendor-claim",
+					"note": "Mavenir launched its RCS solution for the separate Rakuten Link app. Native iPhone interoperability is unverified."
+				},
+				{
+					"date": "2025-04-01",
+					"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html",
+					"confidence": "vendor-claim",
+					"note": "KDDI began iPhone service for au, UQ mobile and povo1.0 customers."
+				},
+				{
+					"date": "2026-08-24",
+					"source_url": "https://www.docomo.ne.jp/info/notice/page/260513_00.html",
+					"confidence": "vendor-claim",
+					"note": "DOCOMO began switching Google Messages Android service from Jibe Mobile to DOCOMO and specifies iOS 27 or later for its iPhone service."
+				},
+				{
+					"date": "2026-08",
+					"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-1171_4726.html",
+					"confidence": "vendor-claim",
+					"note": "KDDI names itself, DOCOMO and SoftBank as consumer RCS providers."
+				}
+			]
+		},
+		{
+			"country_code": "KR",
+			"country": "South Korea",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"LG U+",
+					"KT",
+					"SK Telecom"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2025-02-19",
+					"source_url": "https://www.kmcc.go.kr/download.do?fileSeq=60436",
+					"confidence": "vendor-claim",
+					"note": "Regulator described prior Galaxy-to-Galaxy RCS and recommended interoperability work with Apple."
+				},
+				{
+					"date": "2025-09",
+					"source_url": "https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&pageNo=1",
+					"confidence": "vendor-claim",
+					"note": "LG U+ confirmed the three carriers’ iPhone rollout via iOS 26 alongside existing Galaxy support."
+				}
+			]
+		},
+		{
+			"country_code": "AU",
+			"country": "Australia",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2025-03",
+					"source_url": "https://www.accc.gov.au/system/files/digital-platform-services-inquiry-final-report-march2025.pdf",
+					"confidence": "vendor-claim",
+					"note": "Australian regulator confirmed Google-hosted RCS on Android and reported local carriers had yet to add native support at that time."
+				},
+				{
+					"date": "2026-11-16",
+					"source_url": "https://www.telstra.com.au/support/mobiles-devices/rich-communication-services",
+					"confidence": "vendor-claim",
+					"note": "Telstra began carrier RCS rollout for compatible devices. Its support page gives Android setup and says compatibility will expand. General iPhone availability is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "ID",
+			"country": "Indonesia",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.telkomsel.com/en/explore/rcs",
+					"confidence": "vendor-claim",
+					"note": "Telkomsel provides setup instructions for consumer RCS through Google Messages."
+				},
+				{
+					"date": "2023",
+					"source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/From_EREP/202404/2a38db3fa8_be24c599cd.pdf",
+					"confidence": "vendor-claim",
+					"note": "Indosat reported a Google partnership for RCS Business Messaging in its annual report. This is business messaging evidence."
+				}
+			]
+		},
+		{
+			"country_code": "TH",
+			"country": "Thailand",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "announced_historically",
+			"evidence": [
+				{
+					"date": "2017-02-16",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/partnering-telenor-launch-rcs-messaging-europe-and-asia/",
+					"confidence": "vendor-claim",
+					"note": "Google named Thailand in a planned Telenor Jibe Cloud rollout. Current carrier-specific consumer status was not independently verified."
+				}
+			]
+		},
+		{
+			"country_code": "TR",
+			"country": "Türkiye",
+			"region": "Middle East and North Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA lists a Vodafone Turkey launch. Current carrier or Jibe coverage is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "AE",
+			"country": "United Arab Emirates",
+			"region": "Middle East and North Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-ie/118609",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "unverified",
+			"evidence": [
+				{
+					"date": "2026-05-06",
+					"source_url": "https://www.broadnet.me/blog/rcs-business-messaging-mena-rollout-2026",
+					"confidence": "vendor-claim",
+					"note": "Messaging provider BroadNet reports Jibe business messaging on du and e&. Current person-to-person support is unverified on these carriers."
+				}
+			]
+		},
+		{
+			"country_code": "ZA",
+			"country": "South Africa",
+			"region": "Sub-Saharan Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-mide/109518",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed a Vodacom launch."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists South Africa for RCS Business Messaging via Jibe. This does not establish present consumer support on every local line."
+				}
+			]
+		},
+		{
+			"country_code": "CN",
+			"country": "China mainland",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"China Mobile",
+					"China Telecom",
+					"China Unicom"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "carrier_ecosystem",
+			"evidence": [
+				{
+					"date": "2023-08",
+					"source_url": "https://www.digitalchina.gov.cn/2023/xwzx/zcjd/202308/t20230810_4757744.htm",
+					"confidence": "vendor-claim",
+					"note": "China’s government portal documents the operators’ domestic 5G Messaging initiative based on RCS. Global Google Jibe interoperability and use by a visitor’s overseas number were not verified."
+				}
+			]
+		},
+		{
+			"country_code": "SG",
+			"country": "Singapore",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 1,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Singtel"
+				],
+				"encryption_beta_carriers": [
+					"Singtel"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026",
+					"source_url": "https://support.apple.com/en-au/109510",
+					"confidence": "vendor-claim",
+					"note": "Apple lists encrypted RCS messaging beta on Singtel."
+				},
+				{
+					"date": "2024",
+					"source_url": "https://www.telkomsel.com/en/enterprise/insight/news/Kerja-sama-Telkomsel-Singtel-Google-RCS",
+					"confidence": "vendor-claim",
+					"note": "Telkomsel reported the Singtel and Google RCS partnership for compatible devices."
+				}
+			]
+		},
+		{
+			"country_code": "CA",
+			"country": "Canada",
+			"region": "North America",
+			"iphone": {
+				"value": 13,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109526",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Tbaytel",
+					"Bell",
+					"Chatr",
+					"Fido",
+					"Freedom Mobile",
+					"Koodo",
+					"Lucky Mobile",
+					"Public Mobile",
+					"Rogers",
+					"SaskTel",
+					"Telus",
+					"Videotron",
+					"Virgin Mobile"
+				],
+				"encryption_beta_carriers": [
+					"Bell",
+					"Chatr",
+					"Fido",
+					"Freedom Mobile",
+					"Koodo",
+					"Lucky Mobile",
+					"Public Mobile",
+					"Rogers",
+					"SaskTel",
+					"Telus",
+					"Videotron",
+					"Virgin Mobile"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Bell, Rogers and Telus launches."
+				}
+			]
+		}
+	],
+	"market_usage": [
+		{
+			"geography": "JP",
+			"metric": "kddi_rcs_users",
+			"value": 21000000,
+			"unit": "users",
+			"date": "2026-08",
+			"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-1171_4726.html",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "KDDI subscriber service only. The release does not define an activity window."
+		},
+		{
+			"geography": "US",
+			"metric": "rcs_reachable_users_mobilesquared_webex",
+			"value": 121000000,
+			"unit": "users",
+			"date": "2025",
+			"source_url": "https://www.webex.com/us/en/gp/mobilesquared-rcs-in-the-usa-2025.html",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Mobilesquared and Webex commercial reach estimate. Scope and methodology are not detailed in the public summary."
+		},
+		{
+			"geography": "BR",
+			"metric": "people_with_rcs_available_google_brazil",
+			"value": 135000000,
+			"unit": "people",
+			"date": "2025-08-21",
+			"source_url": "https://www.mobiletime.com.br/noticias/22/08/2025/rcs-135-mi-usuarios-bra/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Mobile Time reports a Google Brazil executive’s availability figure."
+		},
+		{
+			"geography": "BR",
+			"metric": "rcs_active_users_google_brazil_reported",
+			"value": 145000000,
+			"unit": "users",
+			"date": "2026-06-12",
+			"source_url": "https://www.mobiletime.com.br/noticias/12/06/2026/rcs-145-mi-brasil/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Mobile Time attributes the count to a Google Brazil executive. The outlet describes active users but supplies no activity window. Separate trade coverage described the same figure as enabled devices, so use the reported label with attribution and avoid direct MAU comparisons."
+		},
+		{
+			"geography": "US",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109526",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "GB",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/online-research/online-nation/2025/online-nations-report-2025.pdf?v=409837",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "ES",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/it-it/108048",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "DE",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "FR",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "IT",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/it-it/108048",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "IN",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-ie/118609",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "BR",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109520",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "MX",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109520",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "JP",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "KR",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "AU",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "ID",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "TH",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "TR",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "AE",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-ie/118609",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "ZA",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-mide/109518",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "CN",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "SG",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "CA",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109526",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No public nationwide count for a defined monthly RCS activity window was verified."
+		}
+	],
+	"device_support": [
+		{
+			"geography": "Worldwide",
+			"metric": "android_devices_with_google_messages_as_default_share",
+			"value": null,
+			"unit": "percent of active Android devices",
+			"date": "2026-11-26",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No representative global default-app share was verified. Preloads, Play downloads and Android market share do not provide the denominator."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "cross_platform_encrypted_rcs_conversation_share",
+			"value": null,
+			"unit": "percent of RCS conversations",
+			"date": "2026-11-26",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "Apple and Google describe a gradual, eligible-carrier rollout. No rollout completion or traffic share was verified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "google_messages_play_downloads",
+			"value": 10000000000,
+			"unit": "downloads",
+			"date": "2026-11-26",
+			"source_url": "https://play.google.com/store/apps/details/?hl=en-US&id=com.google.android.apps.messaging",
+			"confidence": "vendor-claim",
+			"kind": "snapshot",
+			"qualifier": "gte",
+			"note": "Public Google Play threshold. Cumulative downloads are separate from devices, active users and default app status."
+		}
+	],
+	"timeline": [
+		{
+			"date": "2019-11-14",
+			"geography": "US",
+			"kind": "rollout",
+			"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+			"confidence": "vendor-claim",
+			"note": "Google starts broad US rollout after enabling chat features in the UK, France and Mexico."
+		},
+		{
+			"date": "2020-11-19",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+			"confidence": "vendor-claim",
+			"note": "Google declares global Android rollout through carriers or Google itself, subject to device and provider eligibility. One-to-one encryption enters beta."
+		},
+		{
+			"date": "2021-06",
+			"geography": "Worldwide",
+			"kind": "model_publication",
+			"source_url": "https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&reportId=54187",
+			"confidence": "estimate",
+			"note": "GSMA Intelligence publishes an addressability model for operator and Google paths."
+		},
+		{
+			"date": "2021-06-15",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.youtube.com/watch?v=oB70suAIF6A",
+			"confidence": "vendor-claim",
+			"note": "Google announces end-to-end encryption for eligible one-to-one Google Messages chats."
+		},
+		{
+			"date": "2022-02-02",
+			"geography": "Worldwide",
+			"kind": "forecast_publication",
+			"source_url": "https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/",
+			"confidence": "estimate",
+			"note": "Juniper publishes a forecast for RCS-capable subscribers through 2026."
+		},
+		{
+			"date": "2023-02",
+			"geography": "Europe",
+			"kind": "partnership",
+			"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+			"confidence": "vendor-claim",
+			"note": "Vodafone announces Google Messages as the default on applicable Android devices and plans a Jibe Cloud migration."
+		},
+		{
+			"date": "2023-08-08",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://support.google.com/messages/thread/229405182?hl=en",
+			"confidence": "vendor-claim",
+			"note": "Google Messages enables RCS by default for eligible users who have not switched it off and extends end-to-end encryption to eligible Google Messages group chats."
+		},
+		{
+			"date": "2023-11-30",
+			"geography": "Worldwide",
+			"kind": "usage_disclosure",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/",
+			"confidence": "vendor-claim",
+			"note": "Google reports its monthly-active Google Messages milestone with RCS enabled."
+		},
+		{
+			"date": "2024-09-16",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/",
+			"confidence": "vendor-claim",
+			"note": "Apple adds personal RCS to Messages with iOS 18 where carriers support it."
+		},
+		{
+			"date": "2024-10",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://support.apple.com/en-us/121161",
+			"confidence": "vendor-claim",
+			"note": "Apple adds carrier-dependent RCS Business Messaging in iOS 18.1."
+		},
+		{
+			"date": "2025-03-14",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 3.0 specifications, including interoperable encryption based on Messaging Layer Security."
+		},
+		{
+			"date": "2025-04-01",
+			"geography": "JP",
+			"kind": "rollout",
+			"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html",
+			"confidence": "vendor-claim",
+			"note": "KDDI launches iPhone RCS for au, UQ mobile and povo1.0."
+		},
+		{
+			"date": "2025-05-13",
+			"geography": "US",
+			"kind": "traffic_disclosure",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+			"confidence": "vendor-claim",
+			"note": "Google publishes a daily RCS message-volume milestone."
+		},
+		{
+			"date": "2025-07-25",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 3.1 with audio messaging and onboarding updates."
+		},
+		{
+			"date": "2025-09",
+			"geography": "KR",
+			"kind": "rollout",
+			"source_url": "https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&pageNo=1",
+			"confidence": "vendor-claim",
+			"note": "LG U+, KT and SK Telecom add iPhone RCS with iOS 26."
+		},
+		{
+			"date": "2026-03-26",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 4.0, including richer text, media and a path to video calls. These are specification capabilities."
+		},
+		{
+			"date": "2026-05-11",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": "vendor-claim",
+			"note": "Apple and Google begin a default-on cross-platform encryption beta for eligible iOS 26.5 and Google Messages users."
+		},
+		{
+			"date": "2026-07-06",
+			"geography": "US",
+			"kind": "retirement",
+			"source_url": "https://www.samsung.com/us/support/troubleshoot/TSG10010566/",
+			"confidence": "vendor-claim",
+			"note": "US Samsung Messages end of service takes effect for Galaxy devices running Android 12 or newer."
+		},
+		{
+			"date": "2026-07-21",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rich-communication-service-rcs-july-2026-publications/",
+			"confidence": "vendor-claim",
+			"note": "GSMA publishes Universal Profile 4.1 with encryption interoperability refinements."
+		},
+		{
+			"date": "2026-08-24",
+			"geography": "JP",
+			"kind": "rollout",
+			"source_url": "https://www.docomo.ne.jp/info/notice/page/260513_00.html",
+			"confidence": "vendor-claim",
+			"note": "NTT DOCOMO starts native carrier RCS service and gradually replaces Jibe as the Android provider. Its iPhone path requires iOS 27."
+		},
+		{
+			"date": "2026-09",
+			"geography": "Worldwide",
+			"kind": "os_features",
+			"source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27",
+			"confidence": "vendor-claim",
+			"note": "Apple documents inline replies and Tapbacks in iOS 27 RCS."
+		},
+		{
+			"date": "2026-11-16",
+			"geography": "AU",
+			"kind": "rollout",
+			"source_url": "https://www.telstra.com.au/support/mobiles-devices/rich-communication-services",
+			"confidence": "vendor-claim",
+			"note": "Telstra starts carrier RCS rollout on compatible devices."
+		}
+	],
+	"platform_features": [
+		{
+			"platform": "Android / Google Messages",
+			"date": "2020-11-19",
+			"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+			"confidence": "vendor-claim",
+			"note": "Service can be Google-hosted or carrier-provided. Eligibility depends on device, region and service provider."
+		},
+		{
+			"platform": "Android / Google Messages",
+			"date": "2023-08-08",
+			"source_url": "https://support.google.com/messages/thread/229405182?hl=en",
+			"confidence": "vendor-claim",
+			"note": "RCS defaults on for eligible Google Messages users unless previously disabled. This setting is independent of which app is the default texting app."
+		},
+		{
+			"platform": "Android / Samsung Messages",
+			"date": "2026-07-06",
+			"source_url": "https://www.samsung.com/us/apps/samsung-messages/",
+			"confidence": "vendor-claim",
+			"note": "Samsung’s end-of-service notice is US-only. Android 11 and older are exempt. South Korea’s carrier Galaxy service has separate evidence."
+		},
+		{
+			"platform": "iPhone / iOS 18+",
+			"date": "2024-09-16",
+			"source_url": "https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/",
+			"confidence": "vendor-claim",
+			"note": "Native personal RCS on an eligible carrier plan. Supports richer media and groups. Minimum version can be higher on individual carriers."
+		},
+		{
+			"platform": "iPhone / iOS 26",
+			"date": "2026-05",
+			"source_url": "https://support.apple.com/en-gb/122195",
+			"confidence": "vendor-claim",
+			"note": "Apple documents selection of a default texting app for SMS, MMS and RCS, and a separate RCS Business Messages setting. Business messaging first appeared in iOS 18.1."
+		},
+		{
+			"platform": "iPhone / iOS 26.5 and Google Messages",
+			"date": "2026-05-11",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": "vendor-claim",
+			"note": "Messaging Layer Security-based interoperable encryption rollout began in beta, on by default for eligible chats. Requires a supporting iPhone carrier and a current Google Messages app. A lock indicates encryption for that conversation.",
+			"source_urls": [
+				"https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/",
+				"https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/"
+			]
+		},
+		{
+			"platform": "iPhone / iOS 27",
+			"date": "2026-09",
+			"source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27",
+			"confidence": "vendor-claim",
+			"note": "Apple documents Tapbacks and inline replies over RCS, plus end-to-end encryption when both ends support it."
+		}
+	],
+	"regional_estimates": [
+		{
+			"geography": "North America",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 85.7,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Latin America",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 6.71,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Caribbean",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 3.17,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Western Europe",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 25.7,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Eastern Europe",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 19.8,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Africa",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 2.58,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Middle East",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 12.3,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Asia",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 13.2,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		},
+		{
+			"geography": "Oceania",
+			"metric": "modeled_rcs_user_uplift_from_adding_ios_mobilesquared",
+			"value": 75.1,
+			"unit": "percent increase over modeled baseline",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Mobilesquared’s September 2024 forecast for the effect of adding iOS to its 2025 RCS user base. Geography follows the slide. This is a scenario comparison."
+		}
+	]
+}
