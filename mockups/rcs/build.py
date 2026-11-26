@@ -696,6 +696,178 @@ def build_country() -> None:
 	)
 
 
+# ---------- 3. platform support ----------
+
+FEATURE_TITLE = {
+	('Android / Google Messages', '2020-11-19'): 'RCS through Google or the carrier',
+	('Android / Google Messages', '2023-08-08'): 'RCS on by default',
+	('Android / Samsung Messages', '2026-07-06'): 'Samsung Messages retired in the US',
+	('iPhone / iOS 18+', '2024-09-16'): 'Native RCS on supported carriers',
+	('iPhone / iOS 26', '2026-05'): 'Pick any default texting app',
+	(
+		'iPhone / iOS 26.5 and Google Messages',
+		'2026-05-11',
+	): 'End-to-end encrypted chats, in beta, on by default',
+	('iPhone / iOS 27', '2026-09'): 'Tapbacks and inline replies over RCS',
+}
+
+PLATFORM_CSS = """
+.lanes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 8px 0 0; }
+@media (min-width: 640px) { .lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.lane h2 { margin: 0 0 8px; font-size: 22px; }
+.lane h2 small { display: block; font-family: system-ui, sans-serif; letter-spacing: 0; color: var(--ink-2); font-weight: 400; }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.steps li svg { margin-top: 4px; }
+.steps .when { display: block; font-size: 13px; color: var(--ink-2); }
+.steps .platform { font-size: 13px; color: var(--ink-2); }
+.tile { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--surface-2); }
+.tile b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.tile.gap { background: none; border: 1px dashed var(--gap); }
+.tile.gap b { color: var(--ink-2); }
+.between { margin-top: 32px; padding: 16px 0 0; border-top: 2px solid var(--ink); }
+.between h2 { margin: 0 0 8px; font-size: 22px; }
+.carriers { list-style: none; margin: 16px 0 0; padding: 0; }
+.carriers li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: center; padding: 4px 0; }
+.carriers .name { font-size: 14px; font-weight: 600; }
+.carriers .bar { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.carriers .bar svg { flex: none; min-width: 0; }
+.carriers .bar span { flex: none; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+"""
+
+
+def lane_step(f: dict) -> str:
+	title = FEATURE_TITLE[(f['platform'], f['date'])]
+	sub = f['platform'].split(' / ', 1)[1]
+	return (
+		f'<li title="{escape(f["note"])}">{confidence_swatch(f["confidence"], 16)}<div>'
+		f'<span class="when">{month(f["date"])} · <span class="platform">{escape(sub)}</span></span>'
+		f'{escape(title)} <a class="small muted" href="{escape(f["source_url"])}">{escape(publisher(f["source_url"]))}</a></div></li>'
+	)
+
+
+def carrier_bar(m: dict, scale_max: int) -> str:
+	n = m['iphone']['value']
+	enc = len(m['iphone']['encryption_beta_carriers'])
+	enc_w = enc / n * 100
+	rest_w = (n - enc) / n * 100
+	label = f'{enc} of {n}' if m['country_code'] != 'US' else f'{enc} of {n} selected'
+	title = f'{m["country"]}: {n} carrier brands listed for iPhone RCS, {enc} listed for the encryption beta. Encrypted: {", ".join(m["iphone"]["encryption_beta_carriers"]) or "none"}.'
+	rects = ''
+	if enc:
+		rects += f'<rect x="0" y="2" width="{enc_w:.3f}%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/>'
+	if n - enc:
+		rects += f'<rect x="{enc_w:.3f}%" y="2" width="{rest_w:.3f}%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/>'
+	return (
+		f'<li><span class="name">{escape(m["country"])}</span><span class="bar">'
+		f'<svg height="18" style="width:calc((100% - 96px) * {n / scale_max:.4f})" role="img" aria-label="{escape(title)}"><title>{escape(title)}</title>{rects}</svg>'
+		f'<span>{label}</span></span></li>'
+	)
+
+
+def build_platform() -> None:
+	features = DATA['platform_features']
+	shared = [
+		f for f in features if 'Google Messages' in f['platform'] and f['platform'].startswith('iPhone')
+	]
+	android = [f for f in features if f['platform'].startswith('Android')]
+	iphone = [f for f in features if f['platform'].startswith('iPhone') and f not in shared]
+	assert len(shared) + len(android) + len(iphone) == len(features)
+	downloads = next(r for r in DATA['device_support'] if r['metric'] == 'google_messages_play_downloads')
+	default_share = next(
+		r for r in DATA['device_support'] if r['metric'].startswith('android_devices_with_google_messages')
+	)
+	encrypted_share = next(
+		r for r in DATA['device_support'] if r['metric'].startswith('cross_platform_encrypted')
+	)
+	assert default_share['value'] is None and encrypted_share['value'] is None
+
+	listed = sorted(
+		(m for m in DATA['markets'] if m['iphone']['value'] > 0),
+		key=lambda m: (-m['iphone']['value'], -len(m['iphone']['encryption_beta_carriers']), m['country']),
+	)
+	unlisted = sorted(m['country'] for m in DATA['markets'] if m['iphone']['value'] == 0)
+	total = sum(m['iphone']['value'] for m in listed)
+	enc_total = sum(len(m['iphone']['encryption_beta_carriers']) for m in listed)
+	scale_max = max(m['iphone']['value'] for m in listed)
+
+	headline = f'Both phones speak RCS now. Encryption between them is in beta on {enc_total} of the {total} iPhone carrier brands counted here.'
+	urls = (
+		[f['source_url'] for f in features]
+		+ [u for f in features for u in f.get('source_urls', [])]
+		+ [downloads['source_url'], default_share['source_url'], encrypted_share['source_url']]
+		+ [m['iphone']['source_url'] for m in listed]
+	)
+	body = f"""<p class="eyebrow">RCS platform support, {month(AS_OF)}</p>
+<h1>{escape(headline)}</h1>
+<p class="caption">Android has had RCS through Google Messages since 2020. iPhone added it with iOS 18 in 2024, but only on carriers Apple lists. Messages between the two can now be end-to-end encrypted, in a beta that depends on the iPhone’s carrier.</p>
+{confidence_legend()}
+<div class="lanes">
+	<section class="lane">
+		<h2>Android<small>Google Messages, carrier or Google-hosted</small></h2>
+		<ol class="steps">{''.join(lane_step(f) for f in android)}</ol>
+		<div class="tile" title="{escape(downloads['note'])}"><b>{QUALIFIER[downloads['qualifier']]}{
+		big_number(downloads['value'])
+	}</b>Google Play downloads of Google Messages. Vendor claim; downloads are not devices or users.</div>
+		<div class="tile gap" title="{
+		escape(default_share['note'])
+	}"><b>Unknown</b>Share of Android phones with Google Messages as the default app</div>
+	</section>
+	<section class="lane">
+		<h2>iPhone<small>Messages app, carrier must support it</small></h2>
+		<ol class="steps">{''.join(lane_step(f) for f in iphone)}</ol>
+		<div class="tile" title="Measured from Apple carrier directories"><b>{
+		total
+	} carrier brands</b>listed for iPhone RCS across {len(listed)} of the {
+		len(DATA['markets'])
+	} markets in this data</div>
+	</section>
+</div>
+<section class="between">
+	<h2>Between iPhone and Android</h2>
+	<ol class="steps">{''.join(lane_step(f) for f in shared)}</ol>
+	<div class="tile gap" title="{
+		escape(encrypted_share['note'])
+	}"><b>Unknown</b>Share of iPhone–Android chats that are actually encrypted</div>
+</section>
+<h2>iPhone RCS carriers by market</h2>
+<p class="caption">Carrier brands Apple lists for RCS. Dark part: also listed for the encrypted beta.</p>
+<ul class="legend" aria-label="Bar key">
+	<li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar)"/></svg>Encrypted beta listed</li>
+	<li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar-soft)"/></svg>RCS only</li>
+	<li>Solid: counted from Apple’s directory</li>
+</ul>
+<ul class="carriers">{''.join(carrier_bar(m, scale_max) for m in listed)}</ul>
+<p class="small muted">No iPhone RCS carrier listed: {', '.join(unlisted)}.</p>
+{
+		gaps_block(
+			[
+				'Nobody publishes how many Android phones use Google Messages as their texting app. Play downloads are cumulative and count reinstalls.',
+				'There is no figure for how many iPhone–Android chats are encrypted. Apple and Google describe a gradual rollout; look for the lock in each conversation.',
+				'Carrier counts are brand names, not networks or subscribers. The US row counts only 3 selected national brands; Apple lists more.',
+				'Carrier lists and release notes can lag. A feature in the standard is not proof that your carrier has switched it on.',
+			]
+		)
+	}
+{sources_block(urls)}
+<p class="small muted">Data as of {AS_OF}.</p>"""
+	write(
+		'platform-support.html',
+		page(
+			'RCS platform support',
+			PLATFORM_CSS,
+			body,
+			{
+				'as_of': AS_OF,
+				'platform_features': features,
+				'device_support': DATA['device_support'],
+				'markets_iphone': [{'country': m['country'], **m['iphone']} for m in DATA['markets']],
+			},
+		),
+	)
+
+
 if __name__ == '__main__':
 	build_timeline()
 	build_country()
+	build_platform()
