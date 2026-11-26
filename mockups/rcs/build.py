@@ -234,12 +234,12 @@ FIGURE_LABEL = {
 
 EVENT_TITLE = {
 	('2019-11-14', 'US'): 'Google starts broad RCS rollout in the US',
-	('2020-11-19', 'Worldwide'): 'Google Messages RCS goes global on Android',
+	('2020-11-19', 'Worldwide'): 'Google announces global Android RCS rollout',
 	('2021-06-15', 'Worldwide'): 'End-to-end encryption for one-to-one Google Messages chats',
-	('2023-02', 'Europe'): 'Vodafone makes Google Messages the Android default',
-	('2023-08-08', 'Worldwide'): 'RCS on by default in Google Messages; encrypted group chats',
+	('2023-02', 'Europe'): 'Vodafone announces Google Messages as default on eligible Android devices',
+	('2023-08-08', 'Worldwide'): 'RCS on by default for eligible users; encrypted group chats',
 	('2024-09-16', 'Worldwide'): 'iPhone gets RCS with iOS 18, where carriers support it',
-	('2024-10', 'Worldwide'): 'iOS 18.1 adds RCS business messages',
+	('2024-10', 'Worldwide'): 'iOS 18.1 adds carrier-dependent RCS business messages',
 	('2025-03-14', 'Worldwide'): 'Universal Profile 3.0 adds cross-platform encryption spec',
 	('2025-04-01', 'JP'): 'KDDI (au, UQ, povo) turns on iPhone RCS in Japan',
 	('2025-07-25', 'Worldwide'): 'Universal Profile 3.1: audio messages, onboarding',
@@ -391,7 +391,7 @@ def overview_svg(figures: list[dict], iphone_date: str, scale_max: int) -> str:
 	labels = [
 		(figures[0], 'start', 8, -8, f'{big_number(figures[0]["value"])} users'),
 		(billion, 'end', -6, -20, f'>{big_number(billion["value"])} Google Messages'),
-		(top_row, 'end', -9, 4, f'{big_number(top_row["value"])} capable devices'),
+		(top_row, 'end', -9, 4, f'About {big_number(top_row["value"])} capable devices'),
 	]
 	for r, anchor, dx, dy, text in labels:
 		parts.append(
@@ -400,8 +400,8 @@ def overview_svg(figures: list[dict], iphone_date: str, scale_max: int) -> str:
 		)
 	return (
 		f'<svg class="overview" viewBox="0 0 {width} {height}" role="img" '
-		'aria-label="Dot plot of published RCS user and capability figures from 2019 to 2026, rising from '
-		'300 million to 6 billion. Points are not connected because definitions differ.">'
+		'aria-label="Dot plot of published RCS user and capability figures from 2019 to 2026, ranging from '
+		'300 million users to about 6 billion capable devices. Points are not connected because definitions differ.">'
 		f'{"".join(parts)}</svg>'
 	)
 
@@ -667,7 +667,7 @@ def build_country() -> None:
 	]
 	body = f"""<p class="eyebrow">RCS by market, local lines, {month(AS_OF)}</p>
 <h1>{escape(headline)}</h1>
-<p class="caption">For a traveler, “documented” means a local line in that country can use RCS: Apple lists iPhone carriers there, or carriers and Google document Android service. It says nothing about roaming on your home number or data-only travel eSIMs.</p>
+<p class="caption">For a traveler, “documented” means evidence of local RCS service exists, subject to device and plan eligibility: Apple lists iPhone carriers there, or carriers and Google document Android service. It says nothing about roaming on your home number or data-only travel eSIMs.</p>
 <ul class="legend" aria-label="Status key">{legend_status}</ul>
 <ul class="legend" aria-label="Confidence key">{legend_conf}</ul>
 <div class="table-wrap"><table class="matrix">
@@ -700,14 +700,14 @@ def build_country() -> None:
 
 FEATURE_TITLE = {
 	('Android / Google Messages', '2020-11-19'): 'RCS through Google or the carrier',
-	('Android / Google Messages', '2023-08-08'): 'RCS on by default',
+	('Android / Google Messages', '2023-08-08'): 'RCS on by default for eligible users',
 	('Android / Samsung Messages', '2026-07-06'): 'Samsung Messages retired in the US',
 	('iPhone / iOS 18+', '2024-09-16'): 'Native RCS on supported carriers',
-	('iPhone / iOS 26', '2026-05'): 'Pick any default texting app',
+	('iPhone / iOS 26', '2026-05'): 'Choose a default texting app',
 	(
 		'iPhone / iOS 26.5 and Google Messages',
 		'2026-05-11',
-	): 'End-to-end encrypted chats, in beta, on by default',
+	): 'Eligible chats encrypted by default in beta',
 	('iPhone / iOS 27', '2026-09'): 'Tapbacks and inline replies over RCS',
 }
 
@@ -791,7 +791,7 @@ def build_platform() -> None:
 	enc_total = sum(len(m['iphone']['encryption_beta_carriers']) for m in listed)
 	scale_max = max(m['iphone']['value'] for m in listed)
 
-	headline = f'Both phones speak RCS now. Encryption between them is in beta on {enc_total} of the {total} iPhone carrier brands counted here.'
+	headline = f'Both phones speak RCS now. Apple lists {enc_total} of the {total} iPhone carrier brands counted here for the encryption beta.'
 	urls = (
 		[f['source_url'] for f in features]
 		+ [u for f in features for u in f.get('source_urls', [])]
@@ -842,7 +842,7 @@ def build_platform() -> None:
 {
 		gaps_block(
 			[
-				'Nobody publishes how many Android phones use Google Messages as their texting app. Play downloads are cumulative and count reinstalls.',
+				'No representative global share of Android phones using Google Messages as their default texting app was verified. Play downloads are cumulative.',
 				'There is no figure for how many iPhone–Android chats are encrypted. Apple and Google describe a gradual rollout; look for the lock in each conversation.',
 				'Carrier counts are brand names, not networks or subscribers. The US row counts only 3 selected national brands; Apple lists more.',
 				'Carrier lists and release notes can lag. A feature in the standard is not proof that your carrier has switched it on.',
