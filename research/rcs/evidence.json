@@ -1,0 +1,923 @@
+{
+	"as_of": "2026-11-26",
+	"confidence_guide": {
+		"measured": "Reported observations with a stated population or report class.",
+		"vendor-claim": "Product documentation, standards-body statements, or vendor-reported observations.",
+		"estimate": "Inference or evidence gap. Null values mean no adequate observation was verified; citations on gaps are nearest context, not evidence that a study cannot exist."
+	},
+	"items": [
+		{
+			"id": "number_addressing",
+			"category": "identity",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/9487020",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.apple.com/en-gb/122195",
+					"date": "2026-05-25",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf",
+					"date": "2025-07",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "RCS uses the current line's phone number and discovers compatible recipients. If Messages already handles texts, participants do not need a second messaging app or service account; both users still need active RCS on eligible lines and clients. Google may verify the number by SMS."
+		},
+		{
+			"id": "carrier_and_os_interoperability",
+			"category": "identity",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf",
+			"date": "2025-07",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+					"date": "2026-05-11",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "An industry profile allows RCS across compatible Android and iPhone clients and interconnected providers. Verizon documents the mixed-client path. A carrier marketing the feature does not establish every prepaid plan, market or carrier pair is supported."
+		},
+		{
+			"id": "eu_app_interoperability_exception",
+			"category": "identity",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://about.fb.com/news/2025/11/messaging-interoperability-whatsapp-enables-third-party-chats-for-users-in-europe/",
+			"date": "2025-11-14",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://about.fb.com/news/2024/09/an-update-on-how-were-building-safe-and-secure-third-party-chats-for-users-in-europe/",
+					"date": "2024-09",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Meta named BirdyChat and Haiket as early WhatsApp third-party chat partners in Europe. Messenger also has a documented EU interoperability program. This is limited, opt-in service integration and does not create a route to arbitrary RCS phone numbers."
+		},
+		{
+			"id": "whatsapp_uk_adult_reach",
+			"category": "identity",
+			"value": 90,
+			"unit": "percent",
+			"confidence": "measured",
+			"source_url": "https://www.ofcom.org.uk/media-use-and-attitudes/online-habits/from-apps-to-ai-search-how-the-uk-goes-online-in-2025",
+			"date": "2025-12-10",
+			"date_basis": "publication_or_documented_release",
+			"notes": "Ofcom's 2025 Online Nation reporting puts WhatsApp reach at 90% of UK adults in its online audience measurement. UK example only; no inference about RCS reach or every destination."
+		},
+		{
+			"id": "rcs_us_messages_per_day_lower_bound",
+			"category": "identity",
+			"value": 1000000000,
+			"unit": "messages_per_day",
+			"confidence": "vendor-claim",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+			"date": "2025",
+			"date_basis": "publication_or_documented_release",
+			"notes": "Google said more than this many U.S. RCS messages were sent daily, averaged over the preceding 28 days. This measures volume, with no unique-user, delivered-message, geographic coverage or competing-app denominator."
+		},
+		{
+			"id": "bytes_per_text_vs_apps",
+			"category": "efficiency",
+			"value": null,
+			"unit": "bytes_per_message",
+			"confidence": "estimate",
+			"source_url": "https://support.google.com/messages/answer/13508703",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "No public controlled benchmark verified across RCS, WhatsApp, Instagram DMs, Messenger, Telegram, Signal and iMessage. A usable comparison needs payload, push, acknowledgements, encryption and background traffic under identical conditions."
+		},
+		{
+			"id": "bytes_per_media_vs_apps",
+			"category": "efficiency",
+			"value": null,
+			"unit": "bytes_per_transfer",
+			"confidence": "estimate",
+			"source_url": "https://support.google.com/messages/answer/6159880",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://telegram.org/faq",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "No like-for-like benchmark verified. Use the same source image or clip and measure both bytes and received quality; optimized and original modes answer different questions."
+		},
+		{
+			"id": "battery_vs_apps",
+			"category": "efficiency",
+			"value": null,
+			"unit": "energy_per_message_or_hour",
+			"confidence": "estimate",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"date": "2025-07-25",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/13508703",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "No comparable power or battery benchmark verified for cellular standby, sends, uploads, dual SIM or roaming. Push integration alone gives no measured battery advantage."
+		},
+		{
+			"id": "google_media_quality_modes",
+			"category": "efficiency",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/6159880",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Google says HD optimized uses less data and sends faster than its HD+ original option. No byte or latency measurements or external-app ranking in these docs."
+		},
+		{
+			"id": "voice_codec",
+			"category": "efficiency",
+			"value": "xHE-AAC",
+			"unit": "codec",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"date": "2025-07-25",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf",
+					"date": "2025-07",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Universal Profile 3.1 adds an audio codec intended to improve quality and compression. No matched bytes-per-minute or real-device comparison found."
+		},
+		{
+			"id": "universal_attachment_cap",
+			"category": "efficiency",
+			"value": null,
+			"unit": "bytes",
+			"confidence": "estimate",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf",
+			"date": "2025-07",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/6159880",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/122195",
+					"date": "2026-05-25",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Profile file transfer is configured with FT MAX SIZE. The cited Google and Apple product guides do not give a universal consumer ceiling."
+		},
+		{
+			"id": "personal_delivery_rate",
+			"category": "reliability",
+			"value": null,
+			"unit": "percent",
+			"confidence": "estimate",
+			"source_url": "https://support.google.com/messages/answer/9592174",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "No independent, comparable personal-message delivery rate verified by app, carrier, roaming state or signal condition."
+		},
+		{
+			"id": "personal_delivery_latency",
+			"category": "reliability",
+			"value": null,
+			"unit": "milliseconds",
+			"confidence": "estimate",
+			"source_url": "https://support.google.com/messages/answer/9592174",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://faq.whatsapp.com/665923838265756/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "No comparable median or tail delivery latency verified. Sent, delivered and read acknowledgements describe events, with no timing guarantee."
+		},
+		{
+			"id": "carrier_grade_advantage",
+			"category": "reliability",
+			"value": null,
+			"unit": "comparative_delivery_sla",
+			"confidence": "estimate",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"date": "2025-07-25",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/get-started/how-it-works",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Carrier involvement, queuing and delivery receipts are documented. No public personal-messaging service-level agreement or controlled evidence supporting a carrier-grade performance advantage was verified."
+		},
+		{
+			"id": "weak_coverage_claim",
+			"category": "reliability",
+			"value": true,
+			"unit": "design_claim",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"date": "2025-07-25",
+			"date_basis": "publication_or_documented_release",
+			"notes": "GSMA attributes better reliability in difficult coverage to new client onboarding and operating-system push integration in 3.1. No field measurements, error rates or deployment denominator supplied."
+		},
+		{
+			"id": "offline_and_fallback",
+			"category": "reliability",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/7189714",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/9592174",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/104972",
+					"date": "2026-05",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Google queues undelivered RCS and offers configurable SMS/MMS resend; it says the corresponding queued RCS is removed on switching. Apple Messages supports SMS/MMS as alternate transports. Fallback needs a working carrier messaging path and may lose encryption, media fidelity or thread continuity."
+		},
+		{
+			"id": "verizon_mixed_group_failure_modes",
+			"category": "reliability",
+			"value": true,
+			"unit": "carrier_documented_behavior",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Verizon documents that disabling RCS on one iPhone can create a separate SMS/MMS group thread. It documents a different Android failure mode where messages may wait for RCS to be restored. Do not generalize the exact behavior to every carrier combination."
+		},
+		{
+			"id": "roaming_delivery_and_latency_benchmark",
+			"category": "reliability",
+			"value": null,
+			"unit": "comparative_benchmark",
+			"confidence": "estimate",
+			"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+					"date": "2025-07-25",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "No verified matrices for local versus roaming service, weak radio, congested Wi-Fi, number changes or secondary SIM registration."
+		},
+		{
+			"id": "personal_rcs_encryption_rollout",
+			"category": "security",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf",
+			"date": "2025-03",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.16-v2.0.pdf",
+					"date": "2025-07",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.gsma.com/newsroom/article/rcs-universal-profile-4-1-stronger-foundations-for-secure-messaging/",
+					"date": "2026-07-28",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+					"date": "2026-05-11",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+					"date": "2026-05-11",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/104972",
+					"date": "2026-05",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Universal Profile 3.0 introduced interoperable end-to-end encryption based on Messaging Layer Security. Apple and Google began rollout on May 11, 2026 with iOS 26.5 beta on supported carriers and current Google Messages. A conversation lock is the practical check. Earlier iOS 18 has no cross-platform encryption."
+		},
+		{
+			"id": "encrypted_ios_carrier_or_user_coverage",
+			"category": "security",
+			"value": null,
+			"unit": "percent",
+			"confidence": "estimate",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"date": "2026-05-11",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+					"date": "2026-05-11",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/104972",
+					"date": "2026-05",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "The rollout announcement and Apple support describe requirements and gradual enablement. No global fraction of carriers, lines or unlocked conversations verified."
+		},
+		{
+			"id": "consumer_sms_privacy",
+			"category": "security",
+			"value": false,
+			"unit": "end_to_end_encryption",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/13508703",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/7189714",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/104972",
+					"date": "2026-05",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "SMS/MMS fallback loses personal RCS end-to-end encryption. Google warns that resend as SMS with a link may create a publicly accessible link for media."
+		},
+		{
+			"id": "verified_agent_controls",
+			"category": "security",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/launch/brand-verification",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/7513219",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://support.apple.com/en-gb/122195",
+					"date": "2026-05-25",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "Google or another provider verifies a business's identity before supported RCS presentation. Users can report unwanted conversations. This protects one category of sender identity and does not authenticate arbitrary personal senders or every link."
+		},
+		{
+			"id": "business_rcs_end_to_end_encryption_on_google_platform",
+			"category": "security",
+			"value": false,
+			"unit": "end_to_end_encryption",
+			"confidence": "vendor-claim",
+			"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/terms-and-policies/data-security",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/7513219",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Google documents encrypted transport between components but no device-to-business end-to-end encryption for its business platform. The personal Android–iPhone rollout is a different path."
+		},
+		{
+			"id": "kddi_brand_impersonation_case",
+			"category": "security",
+			"value": true,
+			"unit": "vendor_case_study",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/security/scams/wp-content/uploads/2025/08/KDDI-Advanced-B2C-distribution-using-RCS-%E2%80%93-Clear-and-effective-SMS-phishing-countermeasures-3.pdf",
+			"date": "2025",
+			"date_basis": "publication_or_documented_release",
+			"notes": "KDDI describes branded and authenticated business messages as a countermeasure to SMS phishing. The case is an example of a control, without a verified causal cross-channel reduction here."
+		},
+		{
+			"id": "google_messages_spam_detection",
+			"category": "security",
+			"value": 1500000000,
+			"unit": "messages_per_month",
+			"confidence": "vendor-claim",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/android-scam-and-phishing-protection/",
+			"date": "2022",
+			"date_basis": "publication_or_documented_release",
+			"notes": "Google's 2022 claim counts spam, phishing and scam messages detected across Google Messages. No protocol split, traffic denominator, error rate or implied comparison with WhatsApp or other services."
+		},
+		{
+			"id": "ftc_text_scam_losses_2024",
+			"category": "security",
+			"value": 470000000,
+			"unit": "USD_reported_loss",
+			"confidence": "measured",
+			"source_url": "https://www.ftc.gov/system/files/ftc_gov/pdf/spotlight-top-text-scams.pdf",
+			"date": "2025-04",
+			"date_basis": "publication_or_documented_release",
+			"notes": "U.S. Federal Trade Commission consumer reports classified by contact method. Package delivery was the most reported text-scam type. Reports undercount actual harm; transport is unspecified."
+		},
+		{
+			"id": "ftc_text_fraud_reports_2024",
+			"category": "security",
+			"value": 247000,
+			"unit": "reports_rounded",
+			"confidence": "measured",
+			"source_url": "https://www.ftc.gov/system/files/ftc_gov/pdf/spotlight-top-text-scams.pdf",
+			"date": "2025-04",
+			"date_basis": "publication_or_documented_release",
+			"notes": "Rounded figure from the 2024 chart for fraud reports listing text as the contact method. It does not distinguish SMS, RCS or app messaging."
+		},
+		{
+			"id": "ftc_most_common_reported_contact_method_2025",
+			"category": "security",
+			"value": "text",
+			"unit": "category",
+			"confidence": "measured",
+			"source_url": "https://consumer.ftc.gov/consumer-alerts/2026/05/how-are-scammers-trying-reach-you",
+			"date": "2026-05",
+			"date_basis": "publication_or_documented_release",
+			"notes": "The FTC says text led reported fraud contacts in 2025 while social media accounted for the highest reported aggregate losses. Reporting categories and underlying exposure differ."
+		},
+		{
+			"id": "spam_phishing_rate_by_app_or_protocol",
+			"category": "security",
+			"value": null,
+			"unit": "incidents_per_10000_messages",
+			"confidence": "estimate",
+			"source_url": "https://www.ftc.gov/system/files/ftc_gov/pdf/spotlight-top-text-scams.pdf",
+			"date": "2025-04",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/android-scam-and-phishing-protection/",
+					"date": "2022",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/security/scams/wp-content/uploads/2025/08/KDDI-Advanced-B2C-distribution-using-RCS-%E2%80%93-Clear-and-effective-SMS-phishing-countermeasures-3.pdf",
+					"date": "2025",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "No comparable observed rate verified for RCS versus SMS and all listed internet messengers. The available claims use different definitions, populations and denominators."
+		},
+		{
+			"id": "verified_sender_and_rich_actions",
+			"category": "business",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/7513219",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/launch/brand-verification",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/get-started/how-it-works",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "A branded agent can send supported interactions and receive events; Google documents a response indicating non-RCS reach and tells the sender to choose another channel. A verified agent can send wallet links for passes or tickets where supported."
+		},
+		{
+			"id": "read_events",
+			"category": "business",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/measure",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Agent analytics distinguish sent, delivered and read. A standard SMS delivery report is not proof of a read. An apples-to-apples open-rate comparison needs the SMS estimation method and denominator."
+		},
+		{
+			"id": "universal_sms_read_baseline",
+			"category": "business",
+			"value": null,
+			"unit": "percent",
+			"confidence": "estimate",
+			"source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/measure",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://www.infobip.com/news/telekom-deutschland-doubles-campaign-performance-rate-with-infobips-rcs-offering",
+					"date": "2022-02",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "No direct, generally comparable SMS read-rate baseline was verified. Avoid applying a blanket SMS open rate or comparing delivery to reads."
+		},
+		{
+			"id": "telekom_first_campaign_performance_multiplier",
+			"category": "business",
+			"value": 2,
+			"unit": "reported_multiplier",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.infobip.com/news/telekom-deutschland-doubles-campaign-performance-rate-with-infobips-rcs-offering",
+			"date": "2022-02",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.infobip.com/customer/telekom-deutschland",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "The August 2021 Spotify promotion compared RCS-capable recipients with a simultaneous SMS campaign. Vendor reports roughly double performance in engagement and conversions. Device eligibility selected the cohorts and randomization was not documented."
+		},
+		{
+			"id": "telekom_second_campaign_open_rate_lift",
+			"category": "business",
+			"value": 26,
+			"unit": "relative_percent_lift",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.infobip.com/news/telekom-deutschland-doubles-campaign-performance-rate-with-infobips-rcs-offering",
+			"date": "2022-02",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.infobip.com/customer/telekom-deutschland",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Vendor-reported relative uplift in a second iteration with copy and flow improvements. SMS-open instrumentation and denominators are unpublished in the cited sources."
+		},
+		{
+			"id": "telekom_second_campaign_engagement_lift",
+			"category": "business",
+			"value": 66,
+			"unit": "relative_percent_lift",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.infobip.com/news/telekom-deutschland-doubles-campaign-performance-rate-with-infobips-rcs-offering",
+			"date": "2022-02",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.infobip.com/customer/telekom-deutschland",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Vendor-reported relative uplift in the follow-up campaign. Channel, copy, rich actions and campaign flow vary together."
+		},
+		{
+			"id": "telekom_second_campaign_conversion_lift",
+			"category": "business",
+			"value": 120,
+			"unit": "relative_percent_lift",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.infobip.com/customer/telekom-deutschland",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Vendor case reports relative uplift in a revised campaign. Absolute rates and a controlled assignment procedure are unavailable."
+		},
+		{
+			"id": "tui_france_read_rate",
+			"category": "business",
+			"value": 70,
+			"unit": "percent",
+			"confidence": "vendor-claim",
+			"source_url": "https://sinch.com/messaging/customer-stories/tui/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Sinch reports this for the late-2024 PRIMOS tour promotion. Denominator and recipient selection are not detailed. No direct Rich SMS read-rate comparison reported."
+		},
+		{
+			"id": "tui_france_clickthrough_rate",
+			"category": "business",
+			"value": 5.5,
+			"unit": "percent",
+			"confidence": "vendor-claim",
+			"source_url": "https://sinch.com/messaging/customer-stories/tui/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Same promotion. Vendor-reported campaign result; no verified consumer-to-consumer implication."
+		},
+		{
+			"id": "tui_france_conversion_multiplier_vs_rich_sms",
+			"category": "business",
+			"value": 5,
+			"unit": "reported_multiplier",
+			"confidence": "vendor-claim",
+			"source_url": "https://sinch.com/messaging/customer-stories/tui/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "Vendor describes fivefold conversion versus Rich SMS in PRIMOS. Rich SMS is the vendor-named comparison channel; no randomization or raw counts disclosed."
+		},
+		{
+			"id": "verizon_roaming_support",
+			"category": "travel",
+			"value": true,
+			"unit": "carrier_documented_behavior",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.google.com/messages/answer/9487020",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Verizon says RCS works when roaming if there is an internet connection and warns that firewalls may affect some Wi-Fi networks. Google says mobile-data cost follows the plan. That premise does not establish a worldwide roaming policy."
+		},
+		{
+			"id": "home_line_and_travel_esim_billing",
+			"category": "travel",
+			"value": true,
+			"unit": "carrier_plan_dependency",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.apple.com/en-us/118227",
+			"date": "2026-10-22",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "With both lines enabled, iPhone can use the travel eSIM for data and still incur home-line roaming fees. SMS/MMS fallback and roaming terms apply separately. A physical SIM and an eSIM can both roam; the plan governs."
+		},
+		{
+			"id": "numbered_local_sim_or_esim",
+			"category": "travel",
+			"value": true,
+			"unit": "conditional_capability",
+			"confidence": "estimate",
+			"source_url": "https://support.apple.com/en-gb/109317",
+			"date": "2026-11-03",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://support.apple.com/en-gb/122195",
+					"date": "2026-05-25",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://support.google.com/messages/answer/9487020",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "A local physical SIM or eSIM with a number can provide its own RCS identity if the plan and phone support it. Switching to a different line sends from that line's number; contacts addressing the home number still expect the home line. No transparent transport-level migration assumed."
+		},
+		{
+			"id": "data_only_esim_own_rcs_identity",
+			"category": "travel",
+			"value": false,
+			"unit": "capability",
+			"confidence": "estimate",
+			"source_url": "https://www.airalo.com/help/help/using-managing-esims/how-can-i-receive-sms-and-calls-while-connected-with-my-data-only-esim/9416F6CUOV28",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://support.apple.com/en-gb/122195",
+					"date": "2026-05-25",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://support.google.com/messages/answer/9487020",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "An eSIM plan without an actionable phone number can supply internet data but cannot supply its own number for personal RCS registration."
+		},
+		{
+			"id": "home_rcs_over_secondary_esim_data",
+			"category": "travel",
+			"value": null,
+			"unit": "cross_device_or_carrier_guarantee",
+			"confidence": "estimate",
+			"source_url": "https://support.apple.com/en-gb/109317",
+			"date": "2026-11-03",
+			"date_basis": "publication_or_documented_release",
+			"additional_sources": [
+				{
+					"source_url": "https://support.apple.com/en-us/118227",
+					"date": "2026-10-22",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://support.google.com/messages/answer/9487020",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "Apple documents per-line RCS selection and one data line at a time. Google instructs dual-SIM users troubleshooting RCS to align the call SIM and data SIM. A working home RCS registration over secondary-line data with home roaming off is device/carrier-specific; no general guarantee or measured coverage verified."
+		},
+		{
+			"id": "native_sms_without_packet_data",
+			"category": "travel",
+			"value": true,
+			"unit": "conditional_capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://support.google.com/messages/answer/13508703",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				}
+			],
+			"notes": "SMS fallback can help when cellular texting works but internet data is poor. With no carrier messaging path, fallback may also fail. MMS has its own data requirements."
+		},
+		{
+			"id": "whatsapp_retains_number_with_local_sim",
+			"category": "travel",
+			"value": true,
+			"unit": "capability",
+			"confidence": "vendor-claim",
+			"source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"notes": "An already registered account keeps the home number when switching to a local SIM. Re-verification still requires access to the registered number. Existing contacts and groups need no identity change."
+		},
+		{
+			"id": "whatsapp_cost_and_reach_advantage",
+			"category": "travel",
+			"value": true,
+			"unit": "conditional_inference",
+			"confidence": "estimate",
+			"source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android",
+			"date": "2026-11-26",
+			"date_basis": "accessed",
+			"additional_sources": [
+				{
+					"source_url": "https://faq.whatsapp.com/3398056720476987/",
+					"date": "2026-11-26",
+					"date_basis": "accessed"
+				},
+				{
+					"source_url": "https://www.ofcom.org.uk/media-use-and-attitudes/online-habits/from-apps-to-ai-search-how-the-uk-goes-online-in-2025",
+					"date": "2025-12-10",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://blog.whatsapp.com/now-you-can-invite-anyone-to-a-whatsapp-call-no-account-needed-no-cost-no-time-limit",
+					"date": "2026-10-14",
+					"date_basis": "publication_or_documented_release"
+				}
+			],
+			"notes": "If contacts already use WhatsApp, it works over usable Wi-Fi or travel data without making the local SIM a new contact identity. Data and roaming can still cost money. Default encryption and documented guest call links strengthen this case, while local app adoption and access vary."
+		}
+	],
+	"quotes": [
+		{
+			"publisher": "GSMA",
+			"quote": "RCS will rely on Messaging Layer Security (MLS) Protocol",
+			"context": "RCC.16 v2.0, scope",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.16-v2.0.pdf",
+			"date": "2025-07",
+			"date_basis": "publication_or_documented_release"
+		},
+		{
+			"publisher": "GSMA",
+			"quote": "especially in challenging coverage conditions",
+			"context": "Reliability design goal for the client-to-operator interface",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"date": "2025-07-25",
+			"date_basis": "publication_or_documented_release"
+		},
+		{
+			"publisher": "Google",
+			"quote": "Google Messages users will know a cross-platform conversation is end-to-end encrypted when they see the same lock icon previously used in RCS chats.",
+			"context": "Android–iPhone launch",
+			"confidence": "vendor-claim",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+			"date": "2026-05-11",
+			"date_basis": "publication_or_documented_release"
+		},
+		{
+			"publisher": "Apple",
+			"quote": "Encryption is on by default and will be automatically enabled over time for new and existing RCS conversations.",
+			"context": "Eligible beta conversations",
+			"confidence": "vendor-claim",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"date": "2026-05-11",
+			"date_basis": "publication_or_documented_release"
+		},
+		{
+			"publisher": "Meta",
+			"quote": "we’re now changing private chats and calls across Messenger to be end-to-end encrypted by default.",
+			"context": "Messenger personal chats and calls",
+			"confidence": "vendor-claim",
+			"source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/",
+			"date": "2023-12",
+			"date_basis": "publication_or_documented_release"
+		},
+		{
+			"publisher": "WhatsApp",
+			"quote": "If you use a local SIM card while traveling, you can still use WhatsApp with your home number.",
+			"context": "The next sentence qualifies account re-verification",
+			"confidence": "vendor-claim",
+			"source_url": "https://faq.whatsapp.com/5315147411944059/?cms_platform=android",
+			"date": "2026-11-26",
+			"date_basis": "accessed"
+		},
+		{
+			"publisher": "Signal",
+			"quote": "Share text, voice messages, photos, videos, GIFs and files for free.",
+			"context": "Signal uses the phone's data connection",
+			"confidence": "vendor-claim",
+			"source_url": "https://signal.org/?lang=en_gb",
+			"date": "2026-11-26",
+			"date_basis": "accessed"
+		},
+		{
+			"publisher": "Telegram",
+			"quote": "All secret chats in Telegram are device-specific and are not part of the Telegram cloud.",
+			"context": "Secret Chats section",
+			"confidence": "vendor-claim",
+			"source_url": "https://telegram.org/faq",
+			"date": "2026-11-26",
+			"date_basis": "accessed"
+		}
+	]
+}
