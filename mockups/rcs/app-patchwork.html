@@ -1,0 +1,1614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leading messaging app by market</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--page: #f9f9f7;
+	--surface: #fcfcfb;
+	--ink: #0b0b0b;
+	--ink-2: #52514e;
+	--muted: #6f6d68;
+	--grid: #e1e0d9;
+	--axis: #c3c2b7;
+	--ring: rgba(11, 11, 11, 0.1);
+	--s1: #1baf7a;
+	--s2: #2a78d6;
+	--s3: #eb6834;
+	--other: #d9d7cf;
+	--on-fill: #0b0b0b;
+	--on-other: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--page: #0d0d0d;
+		--surface: #1a1a19;
+		--ink: #ffffff;
+		--ink-2: #c3c2b7;
+		--muted: #a3a199;
+		--grid: #2c2c2a;
+		--axis: #383835;
+		--ring: rgba(255, 255, 255, 0.1);
+		--s1: #199e70;
+		--s2: #3987e5;
+		--s3: #d95926;
+		--other: #4a4945;
+		--on-fill: #0b0b0b;
+		--on-other: #ffffff;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--page);
+	color: var(--ink);
+	font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main {
+	max-width: 68rem;
+	margin: 0 auto;
+	padding: 1.5rem 1rem 4rem;
+}
+h1 {
+	font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem;
+	max-width: 30ch;
+}
+h2 {
+	font-size: 0.8rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--ink-2);
+	margin: 2rem 0 0.75rem;
+}
+h2 span { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+.caption { color: var(--ink-2); max-width: 65ch; margin: 0 0 1rem; }
+.legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	margin: 1rem 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.85rem;
+	color: var(--ink-2);
+}
+.legend li { display: flex; align-items: center; gap: 0.4rem; }
+.swatch { width: 1.1rem; height: 0.8rem; flex: none; }
+.chart { background: var(--surface); border-radius: 12px; box-shadow: 0 0 0 1px var(--ring); padding: 1rem; }
+.chart > h2:first-child, .chart > section:first-child h2 { margin-top: 0; }
+@media (max-width: 40rem) { .chart { padding: 0.75rem 0.5rem; } }
+footer { margin-top: 2rem; font-size: 0.85rem; color: var(--ink-2); max-width: 75ch; }
+footer h3 { font-size: 0.85rem; margin: 1.25rem 0 0.25rem; color: var(--ink); }
+footer ul { margin: 0; padding-left: 1.1rem; }
+a { color: inherit; text-underline-offset: 2px; overflow-wrap: anywhere; }
+[data-tip] { cursor: default; }
+[data-tip]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+#tip {
+	position: fixed;
+	z-index: 10;
+	max-width: min(22rem, calc(100vw - 1rem));
+	padding: 0.5rem 0.65rem;
+	border-radius: 8px;
+	background: var(--ink);
+	color: var(--page);
+	font-size: 0.8rem;
+	line-height: 1.4;
+	white-space: pre-line;
+	pointer-events: none;
+}
+details { margin-top: 1.5rem; }
+summary { cursor: pointer; font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 0.8rem; margin-top: 0.75rem; min-width: 40rem; }
+th, td { text-align: left; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--grid); vertical-align: top; }
+td.n { font-variant-numeric: tabular-nums; }
+
+.region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.25rem, 1fr)); gap: 4px; }
+.tile { position: relative; min-height: 5.25rem; padding: 0.45rem 0.5rem; border-radius: 8px; overflow: hidden; }
+.tile > svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tile > * { position: relative; }
+.tile .country { display: block; font-size: 0.75rem; line-height: 1.2; }
+.tile .app { display: block; font-weight: 700; font-size: 0.85rem; line-height: 1.2; margin-top: 0.15rem; }
+.tile .share { display: block; font-size: 0.8rem; font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
+.tile .flag { display: block; font-size: 0.7rem; margin-top: 0.1rem; }
+.tile.fill { color: var(--on-fill); }
+.tile.fill.other { color: var(--on-other); }
+.tile.hatch span, .tile.unknown span { width: fit-content; background: var(--surface); padding: 0 3px; border-radius: 3px; }
+.tile.hatch { border: 2px solid var(--c); background: var(--surface); }
+.tile.unknown { color: var(--ink-2); border: 1.5px dashed var(--muted); }
+.stat { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.stat b { font-size: 1.5rem; display: block; line-height: 1.1; }
+.stat li { color: var(--ink-2); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-s1" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s1)"/></pattern>
+		<pattern id="hatch-s2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s2)"/></pattern>
+		<pattern id="hatch-s3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s3)"/></pattern>
+		<pattern id="hatch-other" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--other)"/></pattern>
+	</defs>
+</svg>
+<main>
+<h1>Cross a border and the default chat app changes: 10 different apps lead across 74 markets</h1>
+<p class="caption">Leading messaging app in each market, grouped by region. WhatsApp leads in 42 of 74, but Messenger, Telegram, LINE, Viber, KakaoTalk, WeChat, Zalo, MAX and Snapchat each lead somewhere. The percentage is the leading app’s share where a figure exists (55 of 74 markets).</p>
+<ul class="stat">
+	<li><b>10</b>different leading apps</li>
+	<li><b>42 / 74</b>markets led by WhatsApp</li>
+	<li><b>19</b>markets without a share figure</li>
+</ul>
+<ul class="legend">
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--s1)" stroke="none" stroke-width="1.5" /></svg>WhatsApp · 42</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--s2)" stroke="none" stroke-width="1.5" /></svg>Facebook Messenger · 12</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--s3)" stroke="none" stroke-width="1.5" /></svg>Telegram · 6</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--other)" stroke="none" stroke-width="1.5" /></svg>Other app, named on tile · 13</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="url(#hatch-s1)" stroke="var(--s1)" stroke-width="1.5" /></svg>Hatched = ranking is an estimate</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>Dashed = no reliable ranking</li>
+</ul>
+<div class="chart"><h2>Europe <span>· 32 markets · 5 leading apps</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Austria: WhatsApp
+88.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Austria: WhatsApp 88.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Austria</span><span class="app">WhatsApp</span><span class="share">88.1%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Belgium: WhatsApp
+78.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Belgium: WhatsApp 78.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Belgium</span><span class="app">WhatsApp</span><span class="share">78.3%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Croatia: WhatsApp
+88.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Croatia: WhatsApp 88.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Croatia</span><span class="app">WhatsApp</span><span class="share">88.8%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Czechia: WhatsApp
+75% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Czechia: WhatsApp 75% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Czechia</span><span class="app">WhatsApp</span><span class="share">75%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Finland: WhatsApp
+Share: not available
+Basis: Traficom identifies WhatsApp among Finland’s most used services. Its earlier regulator survey placed WhatsApp first. Current comparable usage figures unavailable.
+Confidence: estimate
+Source: traficom.fi" aria-label="Finland: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Finland</span><span class="app">WhatsApp</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="France: WhatsApp
+67.9% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="France: WhatsApp 67.9% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">France</span><span class="app">WhatsApp</span><span class="share">67.9%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Germany: WhatsApp
+86.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Germany: WhatsApp 86.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Germany</span><span class="app">WhatsApp</span><span class="share">86.3%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Ireland: WhatsApp
+87.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Ireland: WhatsApp 87.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Ireland</span><span class="app">WhatsApp</span><span class="share">87.5%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Italy: WhatsApp
+90% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Italy: WhatsApp 90% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Italy</span><span class="app">WhatsApp</span><span class="share">90%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Latvia: WhatsApp
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Latvia: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Latvia</span><span class="app">WhatsApp</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Netherlands: WhatsApp
+83% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Netherlands: WhatsApp 83% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Netherlands</span><span class="app">WhatsApp</span><span class="share">83%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Portugal: WhatsApp
+91.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Portugal: WhatsApp 91.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Portugal</span><span class="app">WhatsApp</span><span class="share">91.3%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Romania: WhatsApp
+87.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Romania: WhatsApp 87.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Romania</span><span class="app">WhatsApp</span><span class="share">87.3%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Slovakia: WhatsApp
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Slovakia: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Slovakia</span><span class="app">WhatsApp</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Slovenia: WhatsApp
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Slovenia: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Slovenia</span><span class="app">WhatsApp</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Spain: WhatsApp
+90.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Spain: WhatsApp 90.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Spain</span><span class="app">WhatsApp</span><span class="share">90.7%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Switzerland: WhatsApp
+85.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Switzerland: WhatsApp 85.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Switzerland</span><span class="app">WhatsApp</span><span class="share">85.8%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Türkiye: WhatsApp
+89% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Türkiye: WhatsApp 89% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Türkiye</span><span class="app">WhatsApp</span><span class="share">89%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="United Kingdom: WhatsApp
+90% — percent of UK internet users aged 18+ who visited the app or site during the month (2025-05, measured)
+Basis: Most-visited messaging and calling service in Ofcom’s online audience panel.
+Confidence: measured
+Source: ofcom.org.uk" aria-label="United Kingdom: WhatsApp 90% — percent of UK internet users aged 18+ who visited the app or site during the month (2025-05, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">United Kingdom</span><span class="app">WhatsApp</span><span class="share">90%*</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Denmark: Facebook Messenger
+72.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Denmark: Facebook Messenger 72.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Denmark</span><span class="app">Messenger</span><span class="share">72.1%</span></div><div class="tile hatch" style="--c:var(--s2)" tabindex="0" data-tip="Estonia: Facebook Messenger
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Estonia: Facebook Messenger Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s2)"/></svg><span class="country">Estonia</span><span class="app">Messenger</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Hungary: Facebook Messenger
+82.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Hungary: Facebook Messenger 82.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Hungary</span><span class="app">Messenger</span><span class="share">82.7%</span></div><div class="tile hatch" style="--c:var(--s2)" tabindex="0" data-tip="Lithuania: Facebook Messenger
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Lithuania: Facebook Messenger Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s2)"/></svg><span class="country">Lithuania</span><span class="app">Messenger</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Norway: Facebook Messenger
+73.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Norway: Facebook Messenger 73.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Norway</span><span class="app">Messenger</span><span class="share">73.3%</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Poland: Facebook Messenger
+75.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Poland: Facebook Messenger 75.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Poland</span><span class="app">Messenger</span><span class="share">75.1%</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Sweden: Facebook Messenger
+67.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Sweden: Facebook Messenger 67.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Sweden</span><span class="app">Messenger</span><span class="share">67.1%</span></div><div class="tile hatch" style="--c:var(--s3)" tabindex="0" data-tip="Belarus: Telegram
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Belarus: Telegram Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s3)"/></svg><span class="country">Belarus</span><span class="app">Telegram</span></div><div class="tile hatch" style="--c:var(--s3)" tabindex="0" data-tip="Moldova: Telegram
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Moldova: Telegram Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s3)"/></svg><span class="country">Moldova</span><span class="app">Telegram</span></div><div class="tile fill" style="--c:var(--s3)" tabindex="0" data-tip="Ukraine: Telegram
+74% — percent of Gradus Research respondents using the app (2026, measured)
+Basis: Highest usage among messengers listed by Gradus Research.
+Confidence: measured
+Source: gradus.app" aria-label="Ukraine: Telegram 74% — percent of Gradus Research respondents using the app (2026, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s3)"/></svg><span class="country">Ukraine</span><span class="app">Telegram</span><span class="share">74%*</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Bulgaria: Viber
+83.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Bulgaria: Viber 83.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Bulgaria</span><span class="app">Viber</span><span class="share">83.8%</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Greece: Viber
+80.6% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Greece: Viber 80.6% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Greece</span><span class="app">Viber</span><span class="share">80.6%</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Russia: MAX
+Share: not available
+Basis: Mediascope mobile and desktop audience panel as reported by Vedomosti.
+Confidence: measured
+Restrictions recorded for: Instagram DMs, Signal, Telegram, Viber, WhatsApp
+Source: vedomosti.ru" aria-label="Russia: MAX Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Russia</span><span class="app">MAX</span><span class="flag">⊘ 5 apps restricted</span></div></div><h2>Asia <span>· 22 markets · 7 leading apps</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Hong Kong: WhatsApp
+69.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Hong Kong: WhatsApp 69.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Hong Kong</span><span class="app">WhatsApp</span><span class="share">69.2%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="India: WhatsApp
+87.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Restrictions recorded for: WeChat / Weixin
+Source: datareportal.com" aria-label="India: WhatsApp 87.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">India</span><span class="app">WhatsApp</span><span class="share">87.7%</span><span class="flag">⊘ WeChat / Weixin restricted</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Indonesia: WhatsApp
+92.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Indonesia: WhatsApp 92.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Indonesia</span><span class="app">WhatsApp</span><span class="share">92.7%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Israel: WhatsApp
+90.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Israel: WhatsApp 90.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Israel</span><span class="app">WhatsApp</span><span class="share">90.5%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Kuwait: WhatsApp
+90% — percent of phone users estimated reachable by service (2026, estimate)
+Basis: Highest app reach in Infobip’s business messaging market estimates.
+Confidence: estimate
+Source: infobip.com" aria-label="Kuwait: WhatsApp 90% — percent of phone users estimated reachable by service (2026, estimate)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Kuwait</span><span class="app">WhatsApp</span><span class="share">90%*</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Malaysia: WhatsApp
+84.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Malaysia: WhatsApp 84.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Malaysia</span><span class="app">WhatsApp</span><span class="share">84.4%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Pakistan: WhatsApp
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Pakistan: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Pakistan</span><span class="app">WhatsApp</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Qatar: WhatsApp
+65% — percent of phone users estimated reachable by service (2026, estimate)
+Basis: Highest app reach in Infobip’s business messaging market estimates.
+Confidence: estimate
+Source: infobip.com" aria-label="Qatar: WhatsApp 65% — percent of phone users estimated reachable by service (2026, estimate)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Qatar</span><span class="app">WhatsApp</span><span class="share">65%*</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Saudi Arabia: WhatsApp
+86.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Saudi Arabia: WhatsApp 86.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Saudi Arabia</span><span class="app">WhatsApp</span><span class="share">86.7%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Singapore: WhatsApp
+84.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Singapore: WhatsApp 84.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Singapore</span><span class="app">WhatsApp</span><span class="share">84.8%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="United Arab Emirates: WhatsApp
+84.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Restrictions recorded for: WhatsApp
+Source: datareportal.com" aria-label="United Arab Emirates: WhatsApp 84.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">United Arab Emirates</span><span class="app">WhatsApp</span><span class="share">84.1%</span><span class="flag">⊘ WhatsApp restricted</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Philippines: Facebook Messenger
+92.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Philippines: Facebook Messenger 92.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Philippines</span><span class="app">Messenger</span><span class="share">92.8%</span></div><div class="tile hatch" style="--c:var(--s3)" tabindex="0" data-tip="Cambodia: Telegram
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Cambodia: Telegram Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s3)"/></svg><span class="country">Cambodia</span><span class="app">Telegram</span></div><div class="tile hatch" style="--c:var(--s3)" tabindex="0" data-tip="Kazakhstan: Telegram
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Kazakhstan: Telegram Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s3)"/></svg><span class="country">Kazakhstan</span><span class="app">Telegram</span></div><div class="tile hatch" style="--c:var(--s3)" tabindex="0" data-tip="Uzbekistan: Telegram
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Uzbekistan: Telegram Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s3)"/></svg><span class="country">Uzbekistan</span><span class="app">Telegram</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Japan: LINE
+78.9% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Japan: LINE 78.9% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Japan</span><span class="app">LINE</span><span class="share">78.9%</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Taiwan: LINE
+80.1% — percent of Taiwanese adults selecting the app as their most-used instant messenger (2025-07-28/2025-09-01, measured)
+Basis: Most frequently used instant messenger in Taiwan Network Information Center’s single-choice survey.
+Confidence: measured
+Source: report.twnic.tw" aria-label="Taiwan: LINE 80.1% — percent of Taiwanese adults selecting the app as their most-used instant messenger (2025-07-28/2025-09-01, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Taiwan</span><span class="app">LINE</span><span class="share">80.1%*</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Thailand: LINE
+82.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Thailand: LINE 82.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Thailand</span><span class="app">LINE</span><span class="share">82.5%</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="China: WeChat / Weixin
+88.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Restrictions recorded for: Signal, Telegram, WhatsApp
+Source: datareportal.com" aria-label="China: WeChat / Weixin 88.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">China</span><span class="app">WeChat / Weixin</span><span class="share">88.8%</span><span class="flag">⊘ 3 apps restricted</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="South Korea: KakaoTalk
+98.1% — percent of surveyed mobile messenger users who use the app (2025, measured)
+Basis: Leading mobile messaging app in the Nasmedia survey.
+Confidence: measured
+Source: nasmedia.co.kr" aria-label="South Korea: KakaoTalk 98.1% — percent of surveyed mobile messenger users who use the app (2025, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">South Korea</span><span class="app">KakaoTalk</span><span class="share">98.1%*</span></div><div class="tile fill other" style="--c:var(--other)" tabindex="0" data-tip="Vietnam: Zalo
+80.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Vietnam: Zalo 80.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--other)"/></svg><span class="country">Vietnam</span><span class="app">Zalo</span><span class="share">80.8%</span></div><div class="tile unknown" tabindex="0" data-tip="Iran: no reliable ranking
+Share: not available
+Basis: A reliable current ranking across domestic and international services was unavailable.
+Confidence: none
+Restrictions recorded for: Facebook Messenger, Signal, Telegram, WhatsApp
+Source: none found" aria-label="Iran: no reliable ranking Share: not available"><span class="country">Iran</span><span class="app">No reliable ranking</span></div></div><h2>North America <span>· 7 markets · 3 leading apps</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Mexico: WhatsApp
+90.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Mexico: WhatsApp 90.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Mexico</span><span class="app">WhatsApp</span><span class="share">90.4%</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Canada: Facebook Messenger
+59.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Canada: Facebook Messenger 59.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Canada</span><span class="app">Messenger</span><span class="share">59.7%</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="United States: Facebook Messenger
+56.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey. GWI includes iMessage. A comparable all-protocol rank for native texting and over-the-top apps is unavailable.
+Confidence: measured
+Source: datareportal.com" aria-label="United States: Facebook Messenger 56.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">United States</span><span class="app">Messenger</span><span class="share">56.2%</span></div><div class="tile hatch other" style="--c:var(--other)" tabindex="0" data-tip="Dominican Republic: Snapchat
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Dominican Republic: Snapchat Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-other)"/></svg><span class="country">Dominican Republic</span><span class="app">Snapchat</span></div><div class="tile hatch other" style="--c:var(--other)" tabindex="0" data-tip="Guatemala: Snapchat
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Guatemala: Snapchat Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-other)"/></svg><span class="country">Guatemala</span><span class="app">Snapchat</span></div><div class="tile hatch other" style="--c:var(--other)" tabindex="0" data-tip="Nicaragua: Snapchat
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Nicaragua: Snapchat Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-other)"/></svg><span class="country">Nicaragua</span><span class="app">Snapchat</span></div><div class="tile hatch other" style="--c:var(--other)" tabindex="0" data-tip="Panama: Snapchat
+Share: not available
+Basis: Android app ranking reported by Similarweb. Cross-platform usage unavailable.
+Confidence: estimate
+Source: similarweb.com" aria-label="Panama: Snapchat Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-other)"/></svg><span class="country">Panama</span><span class="app">Snapchat</span></div></div><h2>South America <span>· 5 markets · 1 leading app</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Argentina: WhatsApp
+93.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Argentina: WhatsApp 93.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Argentina</span><span class="app">WhatsApp</span><span class="share">93.5%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Brazil: WhatsApp
+94.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Brazil: WhatsApp 94.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Brazil</span><span class="app">WhatsApp</span><span class="share">94.3%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Chile: WhatsApp
+90.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Chile: WhatsApp 90.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Chile</span><span class="app">WhatsApp</span><span class="share">90.8%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Colombia: WhatsApp
+93.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Colombia: WhatsApp 93.1% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Colombia</span><span class="app">WhatsApp</span><span class="share">93.1%</span></div><div class="tile hatch" style="--c:var(--s1)" tabindex="0" data-tip="Peru: WhatsApp
+Share: not available
+Basis: Published market ranking. Country-level method and survey period unspecified.
+Confidence: estimate
+Source: linkmobility.com" aria-label="Peru: WhatsApp Share: not available"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:url(#hatch-s1)"/></svg><span class="country">Peru</span><span class="app">WhatsApp</span></div></div><h2>Africa <span>· 6 markets · 1 leading app</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Egypt: WhatsApp
+80.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Egypt: WhatsApp 80.2% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Egypt</span><span class="app">WhatsApp</span><span class="share">80.2%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Ghana: WhatsApp
+97.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Ghana: WhatsApp 97.4% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Ghana</span><span class="app">WhatsApp</span><span class="share">97.4%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Kenya: WhatsApp
+72.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Kenya: WhatsApp 72.5% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Kenya</span><span class="app">WhatsApp</span><span class="share">72.5%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Morocco: WhatsApp
+96.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Morocco: WhatsApp 96.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Morocco</span><span class="app">WhatsApp</span><span class="share">96.7%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="Nigeria: WhatsApp
+96.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="Nigeria: WhatsApp 96.8% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">Nigeria</span><span class="app">WhatsApp</span><span class="share">96.8%</span></div><div class="tile fill" style="--c:var(--s1)" tabindex="0" data-tip="South Africa: WhatsApp
+93.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="South Africa: WhatsApp 93.3% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s1)"/></svg><span class="country">South Africa</span><span class="app">WhatsApp</span><span class="share">93.3%</span></div></div><h2>Oceania <span>· 2 markets · 1 leading app</span></h2><div class="region-grid"><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="Australia: Facebook Messenger
+55% — percent of Australian adults who used the service to send messages in the past seven days (2025-06, measured)
+Basis: Leading surveyed web or app service for sending messages. The regulator reports SMS separately.
+Confidence: measured
+Source: acma.gov.au" aria-label="Australia: Facebook Messenger 55% — percent of Australian adults who used the service to send messages in the past seven days (2025-06, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">Australia</span><span class="app">Messenger</span><span class="share">55%*</span></div><div class="tile fill" style="--c:var(--s2)" tabindex="0" data-tip="New Zealand: Facebook Messenger
+75.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)
+Basis: Highest past-month use among listed messaging apps in GWI survey.
+Confidence: measured
+Source: datareportal.com" aria-label="New Zealand: Facebook Messenger 75.7% — percent of internet users aged 16+ reporting use in the past month (2026-Q2, measured)"><svg class="bg" aria-hidden="true"><rect width="100%" height="100%" style="fill:var(--s2)"/></svg><span class="country">New Zealand</span><span class="app">Messenger</span><span class="share">75.7%</span></div></div></div>
+<details>
+	<summary>Table view, all 74 markets</summary>
+	<div class="table-wrap"><table>
+		<thead><tr><th>Country</th><th>Region</th><th>Leading app</th><th>Confidence</th><th>Share</th><th>Share unit</th><th>Date</th><th>Source</th></tr></thead>
+		<tbody><tr><td>Austria</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">88.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-austria">datareportal.com</a></td></tr><tr><td>Belgium</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">78.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-belgium">datareportal.com</a></td></tr><tr><td>Croatia</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">88.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-croatia">datareportal.com</a></td></tr><tr><td>Czechia</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">75%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-czechia">datareportal.com</a></td></tr><tr><td>Finland</td><td>Europe</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-11-14</td><td><a href="https://www.traficom.fi/files/media/file/Liite%201%20Kiinte%C3%A4n%20verkon%20terminointi%20-%20HMV-analyysi_7.pdf">traficom.fi</a></td></tr><tr><td>France</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">67.9%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-france">datareportal.com</a></td></tr><tr><td>Germany</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">86.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-germany">datareportal.com</a></td></tr><tr><td>Ireland</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">87.5%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-ireland">datareportal.com</a></td></tr><tr><td>Italy</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">90%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-italy">datareportal.com</a></td></tr><tr><td>Latvia</td><td>Europe</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Netherlands</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">83%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-netherlands">datareportal.com</a></td></tr><tr><td>Portugal</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">91.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-portugal">datareportal.com</a></td></tr><tr><td>Romania</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">87.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-romania">datareportal.com</a></td></tr><tr><td>Slovakia</td><td>Europe</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Slovenia</td><td>Europe</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Spain</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">90.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-spain">datareportal.com</a></td></tr><tr><td>Switzerland</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">85.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-switzerland">datareportal.com</a></td></tr><tr><td>Türkiye</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">89%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-turkey">datareportal.com</a></td></tr><tr><td>United Kingdom</td><td>Europe</td><td>WhatsApp</td><td>measured</td><td class="n">90%</td><td>percent of UK internet users aged 18+ who visited the app or site during the month</td><td>2025-05</td><td><a href="https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/online-research/online-nation/2025/online-nations-report-2025.pdf?v=409837#page=39">ofcom.org.uk</a></td></tr><tr><td>Denmark</td><td>Europe</td><td>Facebook Messenger</td><td>measured</td><td class="n">72.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-denmark">datareportal.com</a></td></tr><tr><td>Estonia</td><td>Europe</td><td>Facebook Messenger</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Hungary</td><td>Europe</td><td>Facebook Messenger</td><td>measured</td><td class="n">82.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-hungary">datareportal.com</a></td></tr><tr><td>Lithuania</td><td>Europe</td><td>Facebook Messenger</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Norway</td><td>Europe</td><td>Facebook Messenger</td><td>measured</td><td class="n">73.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-norway">datareportal.com</a></td></tr><tr><td>Poland</td><td>Europe</td><td>Facebook Messenger</td><td>measured</td><td class="n">75.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-poland">datareportal.com</a></td></tr><tr><td>Sweden</td><td>Europe</td><td>Facebook Messenger</td><td>measured</td><td class="n">67.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-sweden">datareportal.com</a></td></tr><tr><td>Belarus</td><td>Europe</td><td>Telegram</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Moldova</td><td>Europe</td><td>Telegram</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Ukraine</td><td>Europe</td><td>Telegram</td><td>measured</td><td class="n">74%</td><td>percent of Gradus Research respondents using the app</td><td>2026</td><td><a href="https://gradus.app/en/report/changes-media-consumption-ukrainians-platforms-screens-2026/">gradus.app</a></td></tr><tr><td>Bulgaria</td><td>Europe</td><td>Viber</td><td>measured</td><td class="n">83.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-bulgaria">datareportal.com</a></td></tr><tr><td>Greece</td><td>Europe</td><td>Viber</td><td>measured</td><td class="n">80.6%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-greece">datareportal.com</a></td></tr><tr><td>Russia</td><td>Europe</td><td>MAX</td><td>measured</td><td class="n">—</td><td>—</td><td>2026-06</td><td><a href="https://www.vedomosti.ru/technology/articles/2026/07/21/1215425-max-ohvatu">vedomosti.ru</a></td></tr><tr><td>Hong Kong</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">69.2%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-hong-kong">datareportal.com</a></td></tr><tr><td>India</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">87.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-india">datareportal.com</a></td></tr><tr><td>Indonesia</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">92.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-indonesia">datareportal.com</a></td></tr><tr><td>Israel</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">90.5%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-israel">datareportal.com</a></td></tr><tr><td>Kuwait</td><td>Asia</td><td>WhatsApp</td><td>estimate</td><td class="n">90%</td><td>percent of phone users estimated reachable by service</td><td>2026</td><td><a href="https://www.infobip.com/blog/most-popular-messaging-apps-by-country">infobip.com</a></td></tr><tr><td>Malaysia</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">84.4%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-malaysia">datareportal.com</a></td></tr><tr><td>Pakistan</td><td>Asia</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Qatar</td><td>Asia</td><td>WhatsApp</td><td>estimate</td><td class="n">65%</td><td>percent of phone users estimated reachable by service</td><td>2026</td><td><a href="https://www.infobip.com/blog/most-popular-messaging-apps-by-country">infobip.com</a></td></tr><tr><td>Saudi Arabia</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">86.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-saudi-arabia">datareportal.com</a></td></tr><tr><td>Singapore</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">84.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-singapore">datareportal.com</a></td></tr><tr><td>United Arab Emirates</td><td>Asia</td><td>WhatsApp</td><td>measured</td><td class="n">84.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-united-arab-emirates">datareportal.com</a></td></tr><tr><td>Philippines</td><td>Asia</td><td>Facebook Messenger</td><td>measured</td><td class="n">92.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-philippines">datareportal.com</a></td></tr><tr><td>Cambodia</td><td>Asia</td><td>Telegram</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Kazakhstan</td><td>Asia</td><td>Telegram</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Uzbekistan</td><td>Asia</td><td>Telegram</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Japan</td><td>Asia</td><td>LINE</td><td>measured</td><td class="n">78.9%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-japan">datareportal.com</a></td></tr><tr><td>Taiwan</td><td>Asia</td><td>LINE</td><td>measured</td><td class="n">80.1%</td><td>percent of Taiwanese adults selecting the app as their most-used instant messenger</td><td>2025-07-28/2025-09-01</td><td><a href="https://report.twnic.tw/2025/en/TrendAnalysis_globalCompetitiveness.html">report.twnic.tw</a></td></tr><tr><td>Thailand</td><td>Asia</td><td>LINE</td><td>measured</td><td class="n">82.5%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-thailand">datareportal.com</a></td></tr><tr><td>China</td><td>Asia</td><td>WeChat / Weixin</td><td>measured</td><td class="n">88.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-china">datareportal.com</a></td></tr><tr><td>South Korea</td><td>Asia</td><td>KakaoTalk</td><td>measured</td><td class="n">98.1%</td><td>percent of surveyed mobile messenger users who use the app</td><td>2025</td><td><a href="https://www.nasmedia.co.kr/wp-content/uploads/2025/05/2025_NPR_%EC%9A%94%EC%95%BD%EB%B3%B4%EA%B3%A0%EC%84%9C_f.pdf">nasmedia.co.kr</a></td></tr><tr><td>Vietnam</td><td>Asia</td><td>Zalo</td><td>measured</td><td class="n">80.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-vietnam">datareportal.com</a></td></tr><tr><td>Iran</td><td>Asia</td><td>—</td><td>—</td><td class="n">—</td><td>—</td><td>2026-11-26</td><td>—</td></tr><tr><td>Mexico</td><td>North America</td><td>WhatsApp</td><td>measured</td><td class="n">90.4%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-mexico">datareportal.com</a></td></tr><tr><td>Canada</td><td>North America</td><td>Facebook Messenger</td><td>measured</td><td class="n">59.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-canada">datareportal.com</a></td></tr><tr><td>United States</td><td>North America</td><td>Facebook Messenger</td><td>measured</td><td class="n">56.2%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-united-states-of-america">datareportal.com</a></td></tr><tr><td>Dominican Republic</td><td>North America</td><td>Snapchat</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Guatemala</td><td>North America</td><td>Snapchat</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Nicaragua</td><td>North America</td><td>Snapchat</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Panama</td><td>North America</td><td>Snapchat</td><td>estimate</td><td class="n">—</td><td>—</td><td>2025-03-24</td><td><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a></td></tr><tr><td>Argentina</td><td>South America</td><td>WhatsApp</td><td>measured</td><td class="n">93.5%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-argentina">datareportal.com</a></td></tr><tr><td>Brazil</td><td>South America</td><td>WhatsApp</td><td>measured</td><td class="n">94.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-brazil">datareportal.com</a></td></tr><tr><td>Chile</td><td>South America</td><td>WhatsApp</td><td>measured</td><td class="n">90.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-chile">datareportal.com</a></td></tr><tr><td>Colombia</td><td>South America</td><td>WhatsApp</td><td>measured</td><td class="n">93.1%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-colombia">datareportal.com</a></td></tr><tr><td>Peru</td><td>South America</td><td>WhatsApp</td><td>estimate</td><td class="n">—</td><td>—</td><td>2026-01-14</td><td><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a></td></tr><tr><td>Egypt</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">80.2%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-egypt">datareportal.com</a></td></tr><tr><td>Ghana</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">97.4%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-ghana">datareportal.com</a></td></tr><tr><td>Kenya</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">72.5%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-kenya">datareportal.com</a></td></tr><tr><td>Morocco</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">96.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-morocco">datareportal.com</a></td></tr><tr><td>Nigeria</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">96.8%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-nigeria">datareportal.com</a></td></tr><tr><td>South Africa</td><td>Africa</td><td>WhatsApp</td><td>measured</td><td class="n">93.3%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-south-africa">datareportal.com</a></td></tr><tr><td>Australia</td><td>Oceania</td><td>Facebook Messenger</td><td>measured</td><td class="n">55%</td><td>percent of Australian adults who used the service to send messages in the past seven days</td><td>2025-06</td><td><a href="https://www.acma.gov.au/sites/default/files/2026-02/How%20we%20communicate%20-%20Executive%20summary%20and%20key%20findings.pdf">acma.gov.au</a></td></tr><tr><td>New Zealand</td><td>Oceania</td><td>Facebook Messenger</td><td>measured</td><td class="n">75.7%</td><td>percent of internet users aged 16+ reporting use in the past month</td><td>2026-Q2</td><td><a href="https://datareportal.com/reports/digital-2027-new-zealand">datareportal.com</a></td></tr></tbody>
+	</table></div>
+</details>
+<footer>
+	<h3>How to read the percentages</h3>
+	<p>Unmarked figures: percent of internet users aged 16+ who used the app in the past month (GWI survey, Q2 2026, via DataReportal Digital 2027). Figures marked * use a different base: Australia (adults messaging in the past seven days, 2025), United Kingdom (adults 18+ visiting in the month, 2025), South Korea (surveyed messenger users, 2025), Taiwan (most-used messenger, 2025), Ukraine (Gradus respondents, 2026), Kuwait and Qatar (estimated business-messaging reach, Infobip). Hover or focus a tile for the exact unit.</p>
+	<h3>Data gaps</h3>
+	<p>19 markets have a leading app but no comparable share. Hatched tiles rest on Android-only app rankings or published rankings with unspecified methods. Iran has no reliable current ranking. App audiences overlap, so shares do not add up, and default SMS/RCS texting is excluded from these rankings. ⊘ marks markets with recorded blocks or calling restrictions (dated observations, not a full list).</p>
+	<h3>Sources (leading-app ranking, markets per publisher)</h3>
+	<ul><li><a href="https://datareportal.com/reports/digital-2027-austria">datareportal.com</a> · 48 markets</li><li><a href="https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/">similarweb.com</a> · 9 markets</li><li><a href="https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe">linkmobility.com</a> · 7 markets</li><li><a href="https://www.infobip.com/blog/most-popular-messaging-apps-by-country">infobip.com</a> · 2 markets</li><li><a href="https://www.traficom.fi/files/media/file/Liite%201%20Kiinte%C3%A4n%20verkon%20terminointi%20-%20HMV-analyysi_7.pdf">traficom.fi</a> · 1 market</li><li><a href="https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/online-research/online-nation/2025/online-nations-report-2025.pdf?v=409837#page=39">ofcom.org.uk</a> · 1 market</li><li><a href="https://gradus.app/en/report/changes-media-consumption-ukrainians-platforms-screens-2026/">gradus.app</a> · 1 market</li><li><a href="https://www.vedomosti.ru/technology/articles/2026/07/21/1215425-max-ohvatu">vedomosti.ru</a> · 1 market</li><li><a href="https://report.twnic.tw/2025/en/TrendAnalysis_globalCompetitiveness.html">report.twnic.tw</a> · 1 market</li><li><a href="https://www.nasmedia.co.kr/wp-content/uploads/2025/05/2025_NPR_%EC%9A%94%EC%95%BD%EB%B3%B4%EA%B3%A0%EC%84%9C_f.pdf">nasmedia.co.kr</a> · 1 market</li><li><a href="https://www.acma.gov.au/sites/default/files/2026-02/How%20we%20communicate%20-%20Executive%20summary%20and%20key%20findings.pdf">acma.gov.au</a> · 1 market</li></ul>
+	<p>Each market’s exact report link is in the table view.</p>
+	<p>Data: research/rcs/messaging-by-country.json, research cutoff 2026-11-26.</p>
+</footer>
+</main>
+<div id="tip" role="tooltip" hidden></div>
+<script type="application/json" id="data">
+[
+	{
+		"iso": "AT",
+		"country": "Austria",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-austria",
+		"date": "2026-Q2",
+		"share": 88.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-austria",
+		"restricted_apps": null
+	},
+	{
+		"iso": "BE",
+		"country": "Belgium",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-belgium",
+		"date": "2026-Q2",
+		"share": 78.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-belgium",
+		"restricted_apps": null
+	},
+	{
+		"iso": "HR",
+		"country": "Croatia",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-croatia",
+		"date": "2026-Q2",
+		"share": 88.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-croatia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CZ",
+		"country": "Czechia",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-czechia",
+		"date": "2026-Q2",
+		"share": 75.0,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-czechia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "FI",
+		"country": "Finland",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Traficom identifies WhatsApp among Finland’s most used services. Its earlier regulator survey placed WhatsApp first. Current comparable usage figures unavailable.",
+		"source_url": "https://www.traficom.fi/files/media/file/Liite%201%20Kiinte%C3%A4n%20verkon%20terminointi%20-%20HMV-analyysi_7.pdf",
+		"date": "2025-11-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "FR",
+		"country": "France",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-france",
+		"date": "2026-Q2",
+		"share": 67.9,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-france",
+		"restricted_apps": null
+	},
+	{
+		"iso": "DE",
+		"country": "Germany",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-germany",
+		"date": "2026-Q2",
+		"share": 86.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-germany",
+		"restricted_apps": null
+	},
+	{
+		"iso": "IE",
+		"country": "Ireland",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-ireland",
+		"date": "2026-Q2",
+		"share": 87.5,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-ireland",
+		"restricted_apps": null
+	},
+	{
+		"iso": "IT",
+		"country": "Italy",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-italy",
+		"date": "2026-Q2",
+		"share": 90.0,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-italy",
+		"restricted_apps": null
+	},
+	{
+		"iso": "LV",
+		"country": "Latvia",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "NL",
+		"country": "Netherlands",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-netherlands",
+		"date": "2026-Q2",
+		"share": 83.0,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-netherlands",
+		"restricted_apps": null
+	},
+	{
+		"iso": "PT",
+		"country": "Portugal",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-portugal",
+		"date": "2026-Q2",
+		"share": 91.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-portugal",
+		"restricted_apps": null
+	},
+	{
+		"iso": "RO",
+		"country": "Romania",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-romania",
+		"date": "2026-Q2",
+		"share": 87.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-romania",
+		"restricted_apps": null
+	},
+	{
+		"iso": "SK",
+		"country": "Slovakia",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "SI",
+		"country": "Slovenia",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "ES",
+		"country": "Spain",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-spain",
+		"date": "2026-Q2",
+		"share": 90.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-spain",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CH",
+		"country": "Switzerland",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-switzerland",
+		"date": "2026-Q2",
+		"share": 85.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-switzerland",
+		"restricted_apps": null
+	},
+	{
+		"iso": "TR",
+		"country": "Türkiye",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-turkey",
+		"date": "2026-Q2",
+		"share": 89.0,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-turkey",
+		"restricted_apps": null
+	},
+	{
+		"iso": "GB",
+		"country": "United Kingdom",
+		"region": "Europe",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Most-visited messaging and calling service in Ofcom’s online audience panel.",
+		"source_url": "https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/online-research/online-nation/2025/online-nations-report-2025.pdf?v=409837#page=39",
+		"date": "2025-05",
+		"share": 90,
+		"share_unit": "percent of UK internet users aged 18+ who visited the app or site during the month",
+		"share_confidence": "measured",
+		"share_source_url": "https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/online-research/online-nation/2025/online-nations-report-2025.pdf?v=409837#page=39",
+		"restricted_apps": null
+	},
+	{
+		"iso": "DK",
+		"country": "Denmark",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-denmark",
+		"date": "2026-Q2",
+		"share": 72.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-denmark",
+		"restricted_apps": null
+	},
+	{
+		"iso": "EE",
+		"country": "Estonia",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "HU",
+		"country": "Hungary",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-hungary",
+		"date": "2026-Q2",
+		"share": 82.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-hungary",
+		"restricted_apps": null
+	},
+	{
+		"iso": "LT",
+		"country": "Lithuania",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "NO",
+		"country": "Norway",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-norway",
+		"date": "2026-Q2",
+		"share": 73.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-norway",
+		"restricted_apps": null
+	},
+	{
+		"iso": "PL",
+		"country": "Poland",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-poland",
+		"date": "2026-Q2",
+		"share": 75.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-poland",
+		"restricted_apps": null
+	},
+	{
+		"iso": "SE",
+		"country": "Sweden",
+		"region": "Europe",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-sweden",
+		"date": "2026-Q2",
+		"share": 67.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-sweden",
+		"restricted_apps": null
+	},
+	{
+		"iso": "BY",
+		"country": "Belarus",
+		"region": "Europe",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "MD",
+		"country": "Moldova",
+		"region": "Europe",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "UA",
+		"country": "Ukraine",
+		"region": "Europe",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "measured",
+		"basis": "Highest usage among messengers listed by Gradus Research.",
+		"source_url": "https://gradus.app/en/report/changes-media-consumption-ukrainians-platforms-screens-2026/",
+		"date": "2026",
+		"share": 74,
+		"share_unit": "percent of Gradus Research respondents using the app",
+		"share_confidence": "measured",
+		"share_source_url": "https://gradus.app/en/report/changes-media-consumption-ukrainians-platforms-screens-2026/",
+		"restricted_apps": null
+	},
+	{
+		"iso": "BG",
+		"country": "Bulgaria",
+		"region": "Europe",
+		"leading_app": "Viber",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-bulgaria",
+		"date": "2026-Q2",
+		"share": 83.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-bulgaria",
+		"restricted_apps": null
+	},
+	{
+		"iso": "GR",
+		"country": "Greece",
+		"region": "Europe",
+		"leading_app": "Viber",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-greece",
+		"date": "2026-Q2",
+		"share": 80.6,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-greece",
+		"restricted_apps": null
+	},
+	{
+		"iso": "RU",
+		"country": "Russia",
+		"region": "Europe",
+		"leading_app": "MAX",
+		"leading_app_confidence": "measured",
+		"basis": "Mediascope mobile and desktop audience panel as reported by Vedomosti.",
+		"source_url": "https://www.vedomosti.ru/technology/articles/2026/07/21/1215425-max-ohvatu",
+		"date": "2026-06",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": "Instagram DMs, Signal, Telegram, Viber, WhatsApp"
+	},
+	{
+		"iso": "HK",
+		"country": "Hong Kong",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-hong-kong",
+		"date": "2026-Q2",
+		"share": 69.2,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-hong-kong",
+		"restricted_apps": null
+	},
+	{
+		"iso": "IN",
+		"country": "India",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-india",
+		"date": "2026-Q2",
+		"share": 87.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-india",
+		"restricted_apps": "WeChat / Weixin"
+	},
+	{
+		"iso": "ID",
+		"country": "Indonesia",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-indonesia",
+		"date": "2026-Q2",
+		"share": 92.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-indonesia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "IL",
+		"country": "Israel",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-israel",
+		"date": "2026-Q2",
+		"share": 90.5,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-israel",
+		"restricted_apps": null
+	},
+	{
+		"iso": "KW",
+		"country": "Kuwait",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Highest app reach in Infobip’s business messaging market estimates.",
+		"source_url": "https://www.infobip.com/blog/most-popular-messaging-apps-by-country",
+		"date": "2026",
+		"share": 90,
+		"share_unit": "percent of phone users estimated reachable by service",
+		"share_confidence": "estimate",
+		"share_source_url": "https://www.infobip.com/blog/most-popular-messaging-apps-by-country",
+		"restricted_apps": null
+	},
+	{
+		"iso": "MY",
+		"country": "Malaysia",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-malaysia",
+		"date": "2026-Q2",
+		"share": 84.4,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-malaysia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "PK",
+		"country": "Pakistan",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "QA",
+		"country": "Qatar",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Highest app reach in Infobip’s business messaging market estimates.",
+		"source_url": "https://www.infobip.com/blog/most-popular-messaging-apps-by-country",
+		"date": "2026",
+		"share": 65,
+		"share_unit": "percent of phone users estimated reachable by service",
+		"share_confidence": "estimate",
+		"share_source_url": "https://www.infobip.com/blog/most-popular-messaging-apps-by-country",
+		"restricted_apps": null
+	},
+	{
+		"iso": "SA",
+		"country": "Saudi Arabia",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-saudi-arabia",
+		"date": "2026-Q2",
+		"share": 86.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-saudi-arabia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "SG",
+		"country": "Singapore",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-singapore",
+		"date": "2026-Q2",
+		"share": 84.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-singapore",
+		"restricted_apps": null
+	},
+	{
+		"iso": "AE",
+		"country": "United Arab Emirates",
+		"region": "Asia",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-united-arab-emirates",
+		"date": "2026-Q2",
+		"share": 84.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-united-arab-emirates",
+		"restricted_apps": "WhatsApp"
+	},
+	{
+		"iso": "PH",
+		"country": "Philippines",
+		"region": "Asia",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-philippines",
+		"date": "2026-Q2",
+		"share": 92.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-philippines",
+		"restricted_apps": null
+	},
+	{
+		"iso": "KH",
+		"country": "Cambodia",
+		"region": "Asia",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "KZ",
+		"country": "Kazakhstan",
+		"region": "Asia",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "UZ",
+		"country": "Uzbekistan",
+		"region": "Asia",
+		"leading_app": "Telegram",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "JP",
+		"country": "Japan",
+		"region": "Asia",
+		"leading_app": "LINE",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-japan",
+		"date": "2026-Q2",
+		"share": 78.9,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-japan",
+		"restricted_apps": null
+	},
+	{
+		"iso": "TW",
+		"country": "Taiwan",
+		"region": "Asia",
+		"leading_app": "LINE",
+		"leading_app_confidence": "measured",
+		"basis": "Most frequently used instant messenger in Taiwan Network Information Center’s single-choice survey.",
+		"source_url": "https://report.twnic.tw/2025/en/TrendAnalysis_globalCompetitiveness.html",
+		"date": "2025-07-28/2025-09-01",
+		"share": 80.1,
+		"share_unit": "percent of Taiwanese adults selecting the app as their most-used instant messenger",
+		"share_confidence": "measured",
+		"share_source_url": "https://report.twnic.tw/2025/en/TrendAnalysis_globalCompetitiveness.html",
+		"restricted_apps": null
+	},
+	{
+		"iso": "TH",
+		"country": "Thailand",
+		"region": "Asia",
+		"leading_app": "LINE",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-thailand",
+		"date": "2026-Q2",
+		"share": 82.5,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-thailand",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CN",
+		"country": "China",
+		"region": "Asia",
+		"leading_app": "WeChat / Weixin",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-china",
+		"date": "2026-Q2",
+		"share": 88.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-china",
+		"restricted_apps": "Signal, Telegram, WhatsApp"
+	},
+	{
+		"iso": "KR",
+		"country": "South Korea",
+		"region": "Asia",
+		"leading_app": "KakaoTalk",
+		"leading_app_confidence": "measured",
+		"basis": "Leading mobile messaging app in the Nasmedia survey.",
+		"source_url": "https://www.nasmedia.co.kr/wp-content/uploads/2025/05/2025_NPR_%EC%9A%94%EC%95%BD%EB%B3%B4%EA%B3%A0%EC%84%9C_f.pdf",
+		"date": "2025",
+		"share": 98.1,
+		"share_unit": "percent of surveyed mobile messenger users who use the app",
+		"share_confidence": "measured",
+		"share_source_url": "https://www.nasmedia.co.kr/wp-content/uploads/2025/05/2025_NPR_%EC%9A%94%EC%95%BD%EB%B3%B4%EA%B3%A0%EC%84%9C_f.pdf",
+		"restricted_apps": null
+	},
+	{
+		"iso": "VN",
+		"country": "Vietnam",
+		"region": "Asia",
+		"leading_app": "Zalo",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-vietnam",
+		"date": "2026-Q2",
+		"share": 80.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-vietnam",
+		"restricted_apps": null
+	},
+	{
+		"iso": "IR",
+		"country": "Iran",
+		"region": "Asia",
+		"leading_app": null,
+		"leading_app_confidence": null,
+		"basis": "A reliable current ranking across domestic and international services was unavailable.",
+		"source_url": null,
+		"date": "2026-11-26",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": "Facebook Messenger, Signal, Telegram, WhatsApp"
+	},
+	{
+		"iso": "MX",
+		"country": "Mexico",
+		"region": "North America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-mexico",
+		"date": "2026-Q2",
+		"share": 90.4,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-mexico",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CA",
+		"country": "Canada",
+		"region": "North America",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-canada",
+		"date": "2026-Q2",
+		"share": 59.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-canada",
+		"restricted_apps": null
+	},
+	{
+		"iso": "US",
+		"country": "United States",
+		"region": "North America",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey. GWI includes iMessage. A comparable all-protocol rank for native texting and over-the-top apps is unavailable.",
+		"source_url": "https://datareportal.com/reports/digital-2027-united-states-of-america",
+		"date": "2026-Q2",
+		"share": 56.2,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-united-states-of-america",
+		"restricted_apps": null
+	},
+	{
+		"iso": "DO",
+		"country": "Dominican Republic",
+		"region": "North America",
+		"leading_app": "Snapchat",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "GT",
+		"country": "Guatemala",
+		"region": "North America",
+		"leading_app": "Snapchat",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "NI",
+		"country": "Nicaragua",
+		"region": "North America",
+		"leading_app": "Snapchat",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "PA",
+		"country": "Panama",
+		"region": "North America",
+		"leading_app": "Snapchat",
+		"leading_app_confidence": "estimate",
+		"basis": "Android app ranking reported by Similarweb. Cross-platform usage unavailable.",
+		"source_url": "https://www.similarweb.com/blog/research/apps/worldwide-messaging-apps/",
+		"date": "2025-03-24",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "AR",
+		"country": "Argentina",
+		"region": "South America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-argentina",
+		"date": "2026-Q2",
+		"share": 93.5,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-argentina",
+		"restricted_apps": null
+	},
+	{
+		"iso": "BR",
+		"country": "Brazil",
+		"region": "South America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-brazil",
+		"date": "2026-Q2",
+		"share": 94.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-brazil",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CL",
+		"country": "Chile",
+		"region": "South America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-chile",
+		"date": "2026-Q2",
+		"share": 90.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-chile",
+		"restricted_apps": null
+	},
+	{
+		"iso": "CO",
+		"country": "Colombia",
+		"region": "South America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-colombia",
+		"date": "2026-Q2",
+		"share": 93.1,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-colombia",
+		"restricted_apps": null
+	},
+	{
+		"iso": "PE",
+		"country": "Peru",
+		"region": "South America",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "estimate",
+		"basis": "Published market ranking. Country-level method and survey period unspecified.",
+		"source_url": "https://www.linkmobility.com/blog/the-most-popular-messaging-apps-across-the-globe",
+		"date": "2026-01-14",
+		"share": null,
+		"share_unit": null,
+		"share_confidence": null,
+		"share_source_url": null,
+		"restricted_apps": null
+	},
+	{
+		"iso": "EG",
+		"country": "Egypt",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-egypt",
+		"date": "2026-Q2",
+		"share": 80.2,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-egypt",
+		"restricted_apps": null
+	},
+	{
+		"iso": "GH",
+		"country": "Ghana",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-ghana",
+		"date": "2026-Q2",
+		"share": 97.4,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-ghana",
+		"restricted_apps": null
+	},
+	{
+		"iso": "KE",
+		"country": "Kenya",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-kenya",
+		"date": "2026-Q2",
+		"share": 72.5,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-kenya",
+		"restricted_apps": null
+	},
+	{
+		"iso": "MA",
+		"country": "Morocco",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-morocco",
+		"date": "2026-Q2",
+		"share": 96.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-morocco",
+		"restricted_apps": null
+	},
+	{
+		"iso": "NG",
+		"country": "Nigeria",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-nigeria",
+		"date": "2026-Q2",
+		"share": 96.8,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-nigeria",
+		"restricted_apps": null
+	},
+	{
+		"iso": "ZA",
+		"country": "South Africa",
+		"region": "Africa",
+		"leading_app": "WhatsApp",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-south-africa",
+		"date": "2026-Q2",
+		"share": 93.3,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-south-africa",
+		"restricted_apps": null
+	},
+	{
+		"iso": "AU",
+		"country": "Australia",
+		"region": "Oceania",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Leading surveyed web or app service for sending messages. The regulator reports SMS separately.",
+		"source_url": "https://www.acma.gov.au/sites/default/files/2026-02/How%20we%20communicate%20-%20Executive%20summary%20and%20key%20findings.pdf",
+		"date": "2025-06",
+		"share": 55,
+		"share_unit": "percent of Australian adults who used the service to send messages in the past seven days",
+		"share_confidence": "measured",
+		"share_source_url": "https://www.acma.gov.au/sites/default/files/2026-02/How%20we%20communicate%20-%20Executive%20summary%20and%20key%20findings.pdf",
+		"restricted_apps": null
+	},
+	{
+		"iso": "NZ",
+		"country": "New Zealand",
+		"region": "Oceania",
+		"leading_app": "Facebook Messenger",
+		"leading_app_confidence": "measured",
+		"basis": "Highest past-month use among listed messaging apps in GWI survey.",
+		"source_url": "https://datareportal.com/reports/digital-2027-new-zealand",
+		"date": "2026-Q2",
+		"share": 75.7,
+		"share_unit": "percent of internet users aged 16+ reporting use in the past month",
+		"share_confidence": "measured",
+		"share_source_url": "https://datareportal.com/reports/digital-2027-new-zealand",
+		"restricted_apps": null
+	}
+]
+</script>
+<script>
+const tip = document.getElementById('tip');
+function place(el) {
+	tip.textContent = el.dataset.tip;
+	tip.hidden = false;
+	const r = el.getBoundingClientRect();
+	const t = tip.getBoundingClientRect();
+	const left = Math.min(Math.max(8, r.left + r.width / 2 - t.width / 2), innerWidth - t.width - 8);
+	const top = r.top - t.height - 8 > 8 ? r.top - t.height - 8 : r.bottom + 8;
+	tip.style.left = left + 'px';
+	tip.style.top = top + 'px';
+}
+function hide() { tip.hidden = true; }
+document.addEventListener('pointerover', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('focusin', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('scroll', hide, { passive: true });
+</script>
+</body>
+</html>
