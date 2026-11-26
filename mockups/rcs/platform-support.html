@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>RCS platform support</title>
+	<style>
+:root {
+	color-scheme: light dark;
+	--surface: #f7f6f3;
+	--surface-2: #ecebe6;
+	--ink: #1c1917;
+	--ink-2: #57534e;
+	--rule: #dcdad3;
+	--bar: #2a78d6;
+	--bar-soft: #86b6ef;
+	--live: #0ca30c;
+	--partial: #fab219;
+	--gap: #8a857c;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--surface: #1a1a19;
+		--surface-2: #262624;
+		--ink: #f5f5f4;
+		--ink-2: #c3c2b7;
+		--rule: #3a3a37;
+		--bar: #3987e5;
+		--bar-soft: #184f95;
+		--gap: #8f8b82;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--surface);
+	color: var(--ink);
+	font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+h1, h2, .year {
+	font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, serif;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+}
+h1 { font-size: clamp(30px, 7vw, 48px); margin: 8px 0 16px; text-wrap: balance; }
+h2 { font-size: 24px; margin: 48px 0 12px; }
+.eyebrow { font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); margin: 0; }
+.caption { color: var(--ink-2); max-width: 62ch; margin: 0 0 24px; }
+.muted { color: var(--ink-2); }
+small, .small { font-size: 13px; line-height: 1.45; }
+a { color: inherit; text-underline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--ink-2); margin: 0 0 24px; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.gaps { margin-top: 48px; padding: 16px 20px; border: 1px dashed var(--gap); border-radius: 10px; }
+.gaps h2 { margin-top: 0; font-size: 20px; }
+.gaps ul, .sources ul { padding-left: 18px; margin: 0; }
+.sources li { font-size: 13px; line-height: 1.45; margin: 4px 0; overflow-wrap: anywhere; }
+details { margin-top: 32px; }
+summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; font-size: 13px; width: 100%; }
+table.data th, table.data td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+svg { display: block; overflow: visible; }
+
+.lanes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 8px 0 0; }
+@media (min-width: 640px) { .lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.lane h2 { margin: 0 0 8px; font-size: 22px; }
+.lane h2 small { display: block; font-family: system-ui, sans-serif; letter-spacing: 0; color: var(--ink-2); font-weight: 400; }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.steps li svg { margin-top: 4px; }
+.steps .when { display: block; font-size: 13px; color: var(--ink-2); }
+.steps .platform { font-size: 13px; color: var(--ink-2); }
+.tile { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--surface-2); }
+.tile b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.tile.gap { background: none; border: 1px dashed var(--gap); }
+.tile.gap b { color: var(--ink-2); }
+.between { margin-top: 32px; padding: 16px 0 0; border-top: 2px solid var(--ink); }
+.between h2 { margin: 0 0 8px; font-size: 22px; }
+.carriers { list-style: none; margin: 16px 0 0; padding: 0; }
+.carriers li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: center; padding: 4px 0; }
+.carriers .name { font-size: 14px; font-weight: 600; }
+.carriers .bar { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.carriers .bar svg { flex: none; min-width: 0; }
+.carriers .bar span { flex: none; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-bar" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="5" height="5" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="5" style="stroke:var(--bar)" stroke-width="2.4"/>
+		</pattern>
+		<pattern id="hatch-ink" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--ink-2)" stroke-width="1.6"/>
+		</pattern>
+		<pattern id="hatch-live" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--live)" stroke-width="2"/>
+		</pattern>
+		<pattern id="hatch-partial" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--partial)" stroke-width="2"/>
+		</pattern>
+	</defs>
+</svg>
+<main>
+<p class="eyebrow">RCS platform support, 26 Nov 2026</p>
+<h1>Both phones speak RCS now. Encryption between them is in beta on 31 of the 50 iPhone carrier brands counted here.</h1>
+<p class="caption">Android has had RCS through Google Messages since 2020. iPhone added it with iOS 18 in 2024, but only on carriers Apple lists. Messages between the two can now be end-to-end encrypted, in a beta that depends on the iPhone’s carrier.</p>
+<ul class="legend" aria-label="Confidence key"><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar)"/></svg>Measured</li><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>Vendor claim</li><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>Estimate</li></ul>
+<div class="lanes">
+	<section class="lane">
+		<h2>Android<small>Google Messages, carrier or Google-hosted</small></h2>
+		<ol class="steps"><li title="Service can be Google-hosted or carrier-provided. Eligibility depends on device, region and service provider."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">19 Nov 2020 · <span class="platform">Google Messages</span></span>RCS through Google or the carrier <a class="small muted" href="https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/">Google</a></div></li><li title="RCS defaults on for eligible Google Messages users unless previously disabled. This setting is independent of which app is the default texting app."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">8 Aug 2023 · <span class="platform">Google Messages</span></span>RCS on by default <a class="small muted" href="https://support.google.com/messages/thread/229405182?hl=en">Google</a></div></li><li title="Samsung’s end-of-service notice is US-only. Android 11 and older are exempt. South Korea’s carrier Galaxy service has separate evidence."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">6 Jul 2026 · <span class="platform">Samsung Messages</span></span>Samsung Messages retired in the US <a class="small muted" href="https://www.samsung.com/us/apps/samsung-messages/">Samsung</a></div></li></ol>
+		<div class="tile" title="Public Google Play threshold. Cumulative downloads are separate from devices, active users and default app status."><b>At least 10 billion</b>Google Play downloads of Google Messages. Vendor claim; downloads are not devices or users.</div>
+		<div class="tile gap" title="No representative global default-app share was verified. Preloads, Play downloads and Android market share do not provide the denominator."><b>Unknown</b>Share of Android phones with Google Messages as the default app</div>
+	</section>
+	<section class="lane">
+		<h2>iPhone<small>Messages app, carrier must support it</small></h2>
+		<ol class="steps"><li title="Native personal RCS on an eligible carrier plan. Supports richer media and groups. Minimum version can be higher on individual carriers."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">16 Sep 2024 · <span class="platform">iOS 18+</span></span>Native RCS on supported carriers <a class="small muted" href="https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/">Apple</a></div></li><li title="Apple documents selection of a default texting app for SMS, MMS and RCS, and a separate RCS Business Messages setting. Business messaging first appeared in iOS 18.1."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">May 2026 · <span class="platform">iOS 26</span></span>Pick any default texting app <a class="small muted" href="https://support.apple.com/en-gb/122195">Apple</a></div></li><li title="Apple documents Tapbacks and inline replies over RCS, plus end-to-end encryption when both ends support it."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">Sep 2026 · <span class="platform">iOS 27</span></span>Tapbacks and inline replies over RCS <a class="small muted" href="https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27">Apple</a></div></li></ol>
+		<div class="tile" title="Measured from Apple carrier directories"><b>50 carrier brands</b>listed for iPhone RCS across 12 of the 20 markets in this data</div>
+	</section>
+</div>
+<section class="between">
+	<h2>Between iPhone and Android</h2>
+	<ol class="steps"><li title="Messaging Layer Security-based interoperable encryption rollout began in beta, on by default for eligible chats. Requires a supporting iPhone carrier and a current Google Messages app. A lock indicates encryption for that conversation."><svg width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg><div><span class="when">11 May 2026 · <span class="platform">iOS 26.5 and Google Messages</span></span>End-to-end encrypted chats, in beta, on by default <a class="small muted" href="https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/">Apple</a></div></li></ol>
+	<div class="tile gap" title="Apple and Google describe a gradual, eligible-carrier rollout. No rollout completion or traffic share was verified."><b>Unknown</b>Share of iPhone–Android chats that are actually encrypted</div>
+</section>
+<h2>iPhone RCS carriers by market</h2>
+<p class="caption">Carrier brands Apple lists for RCS. Dark part: also listed for the encrypted beta.</p>
+<ul class="legend" aria-label="Bar key">
+	<li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar)"/></svg>Encrypted beta listed</li>
+	<li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar-soft)"/></svg>RCS only</li>
+	<li>Solid: counted from Apple’s directory</li>
+</ul>
+<ul class="carriers"><li><span class="name">Canada</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 1.0000)" role="img" aria-label="Canada: 13 carrier brands listed for iPhone RCS, 12 listed for the encryption beta. Encrypted: Bell, Chatr, Fido, Freedom Mobile, Koodo, Lucky Mobile, Public Mobile, Rogers, SaskTel, Telus, Videotron, Virgin Mobile."><title>Canada: 13 carrier brands listed for iPhone RCS, 12 listed for the encryption beta. Encrypted: Bell, Chatr, Fido, Freedom Mobile, Koodo, Lucky Mobile, Public Mobile, Rogers, SaskTel, Telus, Videotron, Virgin Mobile.</title><rect x="0" y="2" width="92.308%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/><rect x="92.308%" y="2" width="7.692%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>12 of 13</span></span></li><li><span class="name">Spain</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.5385)" role="img" aria-label="Spain: 7 carrier brands listed for iPhone RCS, 4 listed for the encryption beta. Encrypted: O2, Orange, Pepephone, Yoigo."><title>Spain: 7 carrier brands listed for iPhone RCS, 4 listed for the encryption beta. Encrypted: O2, Orange, Pepephone, Yoigo.</title><rect x="0" y="2" width="57.143%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/><rect x="57.143%" y="2" width="42.857%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>4 of 7</span></span></li><li><span class="name">United Kingdom</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.4615)" role="img" aria-label="United Kingdom: 6 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: 3, BT, EE."><title>United Kingdom: 6 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: 3, BT, EE.</title><rect x="0" y="2" width="50.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/><rect x="50.000%" y="2" width="50.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>3 of 6</span></span></li><li><span class="name">Germany</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.3077)" role="img" aria-label="Germany: 4 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: 1&amp;1, O2, Telekom."><title>Germany: 4 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: 1&amp;1, O2, Telekom.</title><rect x="0" y="2" width="75.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/><rect x="75.000%" y="2" width="25.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>3 of 4</span></span></li><li><span class="name">France</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.3077)" role="img" aria-label="France: 4 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none."><title>France: 4 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none.</title><rect x="0.000%" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>0 of 4</span></span></li><li><span class="name">Japan</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.2308)" role="img" aria-label="Japan: 3 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: au, NTT DOCOMO, SoftBank."><title>Japan: 3 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: au, NTT DOCOMO, SoftBank.</title><rect x="0" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/></svg><span>3 of 3</span></span></li><li><span class="name">United States</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.2308)" role="img" aria-label="United States: 3 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: AT&amp;T, T-Mobile USA, Verizon Wireless."><title>United States: 3 carrier brands listed for iPhone RCS, 3 listed for the encryption beta. Encrypted: AT&amp;T, T-Mobile USA, Verizon Wireless.</title><rect x="0" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/></svg><span>3 of 3 selected</span></span></li><li><span class="name">China mainland</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.2308)" role="img" aria-label="China mainland: 3 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none."><title>China mainland: 3 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none.</title><rect x="0.000%" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>0 of 3</span></span></li><li><span class="name">South Korea</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.2308)" role="img" aria-label="South Korea: 3 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none."><title>South Korea: 3 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none.</title><rect x="0.000%" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>0 of 3</span></span></li><li><span class="name">Brazil</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.1538)" role="img" aria-label="Brazil: 2 carrier brands listed for iPhone RCS, 2 listed for the encryption beta. Encrypted: TIM, Vivo."><title>Brazil: 2 carrier brands listed for iPhone RCS, 2 listed for the encryption beta. Encrypted: TIM, Vivo.</title><rect x="0" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/></svg><span>2 of 2</span></span></li><li><span class="name">Singapore</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.0769)" role="img" aria-label="Singapore: 1 carrier brands listed for iPhone RCS, 1 listed for the encryption beta. Encrypted: Singtel."><title>Singapore: 1 carrier brands listed for iPhone RCS, 1 listed for the encryption beta. Encrypted: Singtel.</title><rect x="0" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar);stroke:var(--surface)" stroke-width="2"/></svg><span>1 of 1</span></span></li><li><span class="name">India</span><span class="bar"><svg height="18" style="width:calc((100% - 96px) * 0.0769)" role="img" aria-label="India: 1 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none."><title>India: 1 carrier brands listed for iPhone RCS, 0 listed for the encryption beta. Encrypted: none.</title><rect x="0.000%" y="2" width="100.000%" height="14" rx="3" style="fill:var(--bar-soft);stroke:var(--surface)" stroke-width="2"/></svg><span>0 of 1</span></span></li></ul>
+<p class="small muted">No iPhone RCS carrier listed: Australia, Indonesia, Italy, Mexico, South Africa, Thailand, Türkiye, United Arab Emirates.</p>
+<section class="gaps"><h2>What this data cannot tell you</h2><ul><li>Nobody publishes how many Android phones use Google Messages as their texting app. Play downloads are cumulative and count reinstalls.</li><li>There is no figure for how many iPhone–Android chats are encrypted. Apple and Google describe a gradual rollout; look for the lock in each conversation.</li><li>Carrier counts are brand names, not networks or subscribers. The US row counts only 3 selected national brands; Apple lists more.</li><li>Carrier lists and release notes can lag. A feature in the standard is not proof that your carrier has switched it on.</li></ul></section>
+<section class="sources"><h2>Sources</h2><ul><li><a href="https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/">Google</a> <span class="muted">blog.google/products-and-platforms/products/messages/helping-yo…</span></li><li><a href="https://support.google.com/messages/thread/229405182?hl=en">Google</a> <span class="muted">support.google.com/messages/thread/229405182</span></li><li><a href="https://www.samsung.com/us/apps/samsung-messages/">Samsung</a> <span class="muted">samsung.com/us/apps/samsung-messages</span></li><li><a href="https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/">Apple</a> <span class="muted">apple.com/newsroom/2024/09/ios-18-is-available-today-making-iph…</span></li><li><a href="https://support.apple.com/en-gb/122195">Apple</a> <span class="muted">support.apple.com/en-gb/122195</span></li><li><a href="https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/">Apple</a> <span class="muted">apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-b…</span></li><li><a href="https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27">Apple</a> <span class="muted">support.apple.com/guide/iphone/imessage-overview-iph4e9799206/2…</span></li><li><a href="https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/">GSMA</a> <span class="muted">gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-…</span></li><li><a href="https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/">Google</a> <span class="muted">blog.google/products-and-platforms/platforms/android/android-io…</span></li><li><a href="https://play.google.com/store/apps/details/?hl=en-US&amp;id=com.google.android.apps.messaging">Google Play</a> <span class="muted">play.google.com/store/apps/details</span></li><li><a href="https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/">Google</a> <span class="muted">blog.google/products-and-platforms/platforms/android/mwc23-conn…</span></li><li><a href="https://support.apple.com/en-us/109526">Apple</a> <span class="muted">support.apple.com/en-us/109526</span></li><li><a href="https://support.apple.com/it-it/108048">Apple</a> <span class="muted">support.apple.com/it-it/108048</span></li><li><a href="https://support.apple.com/en-us/108048">Apple</a> <span class="muted">support.apple.com/en-us/108048</span></li><li><a href="https://support.apple.com/en-au/109510">Apple</a> <span class="muted">support.apple.com/en-au/109510</span></li><li><a href="https://support.apple.com/en-us/109520">Apple</a> <span class="muted">support.apple.com/en-us/109520</span></li><li><a href="https://support.apple.com/en-ie/118609">Apple</a> <span class="muted">support.apple.com/en-ie/118609</span></li></ul></section>
+<p class="small muted">Data as of 2026-11-26.</p>
+</main>
+<script type="application/json" id="chart-data">
+{
+	"as_of": "2026-11-26",
+	"platform_features": [
+		{
+			"platform": "Android / Google Messages",
+			"date": "2020-11-19",
+			"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+			"confidence": "vendor-claim",
+			"note": "Service can be Google-hosted or carrier-provided. Eligibility depends on device, region and service provider."
+		},
+		{
+			"platform": "Android / Google Messages",
+			"date": "2023-08-08",
+			"source_url": "https://support.google.com/messages/thread/229405182?hl=en",
+			"confidence": "vendor-claim",
+			"note": "RCS defaults on for eligible Google Messages users unless previously disabled. This setting is independent of which app is the default texting app."
+		},
+		{
+			"platform": "Android / Samsung Messages",
+			"date": "2026-07-06",
+			"source_url": "https://www.samsung.com/us/apps/samsung-messages/",
+			"confidence": "vendor-claim",
+			"note": "Samsung’s end-of-service notice is US-only. Android 11 and older are exempt. South Korea’s carrier Galaxy service has separate evidence."
+		},
+		{
+			"platform": "iPhone / iOS 18+",
+			"date": "2024-09-16",
+			"source_url": "https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/",
+			"confidence": "vendor-claim",
+			"note": "Native personal RCS on an eligible carrier plan. Supports richer media and groups. Minimum version can be higher on individual carriers."
+		},
+		{
+			"platform": "iPhone / iOS 26",
+			"date": "2026-05",
+			"source_url": "https://support.apple.com/en-gb/122195",
+			"confidence": "vendor-claim",
+			"note": "Apple documents selection of a default texting app for SMS, MMS and RCS, and a separate RCS Business Messages setting. Business messaging first appeared in iOS 18.1."
+		},
+		{
+			"platform": "iPhone / iOS 26.5 and Google Messages",
+			"date": "2026-05-11",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": "vendor-claim",
+			"note": "Messaging Layer Security-based interoperable encryption rollout began in beta, on by default for eligible chats. Requires a supporting iPhone carrier and a current Google Messages app. A lock indicates encryption for that conversation.",
+			"source_urls": [
+				"https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/",
+				"https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/"
+			]
+		},
+		{
+			"platform": "iPhone / iOS 27",
+			"date": "2026-09",
+			"source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27",
+			"confidence": "vendor-claim",
+			"note": "Apple documents Tapbacks and inline replies over RCS, plus end-to-end encryption when both ends support it."
+		}
+	],
+	"device_support": [
+		{
+			"geography": "Worldwide",
+			"metric": "android_devices_with_google_messages_as_default_share",
+			"value": null,
+			"unit": "percent of active Android devices",
+			"date": "2026-11-26",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No representative global default-app share was verified. Preloads, Play downloads and Android market share do not provide the denominator."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "cross_platform_encrypted_rcs_conversation_share",
+			"value": null,
+			"unit": "percent of RCS conversations",
+			"date": "2026-11-26",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "Apple and Google describe a gradual, eligible-carrier rollout. No rollout completion or traffic share was verified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "google_messages_play_downloads",
+			"value": 10000000000,
+			"unit": "downloads",
+			"date": "2026-11-26",
+			"source_url": "https://play.google.com/store/apps/details/?hl=en-US&id=com.google.android.apps.messaging",
+			"confidence": "vendor-claim",
+			"kind": "snapshot",
+			"qualifier": "gte",
+			"note": "Public Google Play threshold. Cumulative downloads are separate from devices, active users and default app status."
+		}
+	],
+	"markets_iphone": [
+		{
+			"country": "United States",
+			"value": 3,
+			"unit": "selected carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109526",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"AT&T",
+				"T-Mobile USA",
+				"Verizon Wireless"
+			],
+			"encryption_beta_carriers": [
+				"AT&T",
+				"T-Mobile USA",
+				"Verizon Wireless"
+			],
+			"note": "Selected national carrier brands from Apple’s directory. Apple also lists other brands. Value counts this named subset only."
+		},
+		{
+			"country": "United Kingdom",
+			"value": 6,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"giffgaff",
+				"O2",
+				"Tesco Mobile",
+				"3",
+				"BT",
+				"EE"
+			],
+			"encryption_beta_carriers": [
+				"3",
+				"BT",
+				"EE"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Spain",
+			"value": 7,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/it-it/108048",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Masmovil",
+				"Movistar",
+				"Vodafone",
+				"O2",
+				"Orange",
+				"Pepephone",
+				"Yoigo"
+			],
+			"encryption_beta_carriers": [
+				"O2",
+				"Orange",
+				"Pepephone",
+				"Yoigo"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Germany",
+			"value": 4,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Vodafone",
+				"1&1",
+				"O2",
+				"Telekom"
+			],
+			"encryption_beta_carriers": [
+				"1&1",
+				"O2",
+				"Telekom"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "France",
+			"value": 4,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Bouygues Telecom",
+				"Free Mobile",
+				"Orange",
+				"SFR"
+			],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Italy",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/it-it/108048",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "India",
+			"value": 1,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-ie/118609",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Reliance Jio"
+			],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Brazil",
+			"value": 2,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109520",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"TIM",
+				"Vivo"
+			],
+			"encryption_beta_carriers": [
+				"TIM",
+				"Vivo"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Mexico",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109520",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Japan",
+			"value": 3,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"au",
+				"NTT DOCOMO",
+				"SoftBank"
+			],
+			"encryption_beta_carriers": [
+				"au",
+				"NTT DOCOMO",
+				"SoftBank"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "South Korea",
+			"value": 3,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"LG U+",
+				"KT",
+				"SK Telecom"
+			],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Australia",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Indonesia",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Thailand",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Türkiye",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/108048",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "United Arab Emirates",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-ie/118609",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "South Africa",
+			"value": 0,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-mide/109518",
+			"confidence": "measured",
+			"status": "none_listed",
+			"carriers": [],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "China mainland",
+			"value": 3,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"China Mobile",
+				"China Telecom",
+				"China Unicom"
+			],
+			"encryption_beta_carriers": [],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Singapore",
+			"value": 1,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-au/109510",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Singtel"
+			],
+			"encryption_beta_carriers": [
+				"Singtel"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		},
+		{
+			"country": "Canada",
+			"value": 13,
+			"unit": "carrier brands listed with iPhone RCS",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/109526",
+			"confidence": "measured",
+			"status": "listed",
+			"carriers": [
+				"Tbaytel",
+				"Bell",
+				"Chatr",
+				"Fido",
+				"Freedom Mobile",
+				"Koodo",
+				"Lucky Mobile",
+				"Public Mobile",
+				"Rogers",
+				"SaskTel",
+				"Telus",
+				"Videotron",
+				"Virgin Mobile"
+			],
+			"encryption_beta_carriers": [
+				"Bell",
+				"Chatr",
+				"Fido",
+				"Freedom Mobile",
+				"Koodo",
+				"Lucky Mobile",
+				"Public Mobile",
+				"Rogers",
+				"SaskTel",
+				"Telus",
+				"Videotron",
+				"Virgin Mobile"
+			],
+			"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+		}
+	]
+}
+</script>
+</body>
+</html>
