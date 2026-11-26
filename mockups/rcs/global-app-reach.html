@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global monthly users per messaging app</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--page: #f9f9f7;
+	--surface: #fcfcfb;
+	--ink: #0b0b0b;
+	--ink-2: #52514e;
+	--muted: #6f6d68;
+	--grid: #e1e0d9;
+	--axis: #c3c2b7;
+	--ring: rgba(11, 11, 11, 0.1);
+	--s1: #1baf7a;
+	--s2: #2a78d6;
+	--s3: #eb6834;
+	--other: #d9d7cf;
+	--on-fill: #0b0b0b;
+	--on-other: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--page: #0d0d0d;
+		--surface: #1a1a19;
+		--ink: #ffffff;
+		--ink-2: #c3c2b7;
+		--muted: #a3a199;
+		--grid: #2c2c2a;
+		--axis: #383835;
+		--ring: rgba(255, 255, 255, 0.1);
+		--s1: #199e70;
+		--s2: #3987e5;
+		--s3: #d95926;
+		--other: #4a4945;
+		--on-fill: #0b0b0b;
+		--on-other: #ffffff;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--page);
+	color: var(--ink);
+	font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main {
+	max-width: 68rem;
+	margin: 0 auto;
+	padding: 1.5rem 1rem 4rem;
+}
+h1 {
+	font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem;
+	max-width: 30ch;
+}
+h2 {
+	font-size: 0.8rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--ink-2);
+	margin: 2rem 0 0.75rem;
+}
+h2 span { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+.caption { color: var(--ink-2); max-width: 65ch; margin: 0 0 1rem; }
+.legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	margin: 1rem 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.85rem;
+	color: var(--ink-2);
+}
+.legend li { display: flex; align-items: center; gap: 0.4rem; }
+.swatch { width: 1.1rem; height: 0.8rem; flex: none; }
+.chart { background: var(--surface); border-radius: 12px; box-shadow: 0 0 0 1px var(--ring); padding: 1rem; }
+.chart > h2:first-child, .chart > section:first-child h2 { margin-top: 0; }
+@media (max-width: 40rem) { .chart { padding: 0.75rem 0.5rem; } }
+footer { margin-top: 2rem; font-size: 0.85rem; color: var(--ink-2); max-width: 75ch; }
+footer h3 { font-size: 0.85rem; margin: 1.25rem 0 0.25rem; color: var(--ink); }
+footer ul { margin: 0; padding-left: 1.1rem; }
+a { color: inherit; text-underline-offset: 2px; overflow-wrap: anywhere; }
+[data-tip] { cursor: default; }
+[data-tip]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+#tip {
+	position: fixed;
+	z-index: 10;
+	max-width: min(22rem, calc(100vw - 1rem));
+	padding: 0.5rem 0.65rem;
+	border-radius: 8px;
+	background: var(--ink);
+	color: var(--page);
+	font-size: 0.8rem;
+	line-height: 1.4;
+	white-space: pre-line;
+	pointer-events: none;
+}
+details { margin-top: 1.5rem; }
+summary { cursor: pointer; font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 0.8rem; margin-top: 0.75rem; min-width: 40rem; }
+th, td { text-align: left; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--grid); vertical-align: top; }
+td.n { font-variant-numeric: tabular-nums; }
+
+.rows { display: grid; gap: 0.6rem; }
+.row { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr; gap: 0.25rem 0.75rem; align-items: center; }
+.row .name { font-weight: 600; font-size: 0.9rem; }
+.row .value { font-size: 0.8rem; color: var(--ink-2); grid-column: 2; }
+.row .value b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.row svg { display: block; width: 100%; height: 18px; overflow: visible; }
+.nocount { font-size: 0.8rem; color: var(--ink-2); border: 1.5px dashed var(--muted); border-radius: 6px; padding: 0.1rem 0.5rem; width: fit-content; }
+.axis { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr; gap: 0 0.75rem; font-size: 0.7rem; color: var(--muted); }
+.axis svg { width: 100%; height: 16px; overflow: visible; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.75rem; }
+.card { background: var(--surface); box-shadow: 0 0 0 1px var(--ring); border-radius: 10px; padding: 0.75rem; font-size: 0.85rem; }
+.card b { display: block; font-size: 1.15rem; }
+.card .unit { color: var(--ink); }
+.card .meta { color: var(--muted); font-size: 0.75rem; }
+.card .conf { display: flex; align-items: center; gap: 0.35rem; color: var(--ink-2); font-size: 0.75rem; margin-top: 0.25rem; }
+@media (max-width: 40rem) {
+	.row, .axis { grid-template-columns: 1fr; }
+	.row .value { grid-column: 1; }
+	.axis span { display: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-s1" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s1)"/></pattern>
+		<pattern id="hatch-s2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s2)"/></pattern>
+		<pattern id="hatch-s3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s3)"/></pattern>
+		<pattern id="hatch-other" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--other)"/></pattern>
+	</defs>
+</svg>
+<main>
+<h1>WhatsApp reports more than 3 billion monthly users. RCS has no verified monthly count at all.</h1>
+<p class="caption">Latest company-reported monthly active users or accounts per messaging app. iMessage, Google Messages, RCS, Viber, Instagram DMs and SMS publish no current monthly user count, so they are shown as unknown, not as zero. Most bars count all activity in the app, not only messaging.</p>
+<ul class="legend">
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="color-mix(in oklab, var(--s2) 35%, var(--surface))" stroke="var(--s2)" stroke-width="1.5" /></svg>Vendor claim (company disclosure)</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="url(#hatch-s2)" stroke="var(--s2)" stroke-width="1.5" /></svg>Estimate</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>No current verified count</li>
+</ul>
+<div class="chart">
+	<div class="axis"><span></span><svg aria-hidden="true"><text x="0.0%" y="12" text-anchor="start" fill="var(--muted)">0</text><text x="33.33333333333333%" y="12" text-anchor="middle" fill="var(--muted)">1 billion</text><text x="66.66666666666666%" y="12" text-anchor="middle" fill="var(--muted)">2 billion</text><text x="100.0%" y="12" text-anchor="end" fill="var(--muted)">3 billion</text></svg></div>
+	<div class="rows"><div class="row" tabindex="0" data-tip="WhatsApp: more than 3 billion monthly active users
+Date: 2025-04-30 · vendor claim
+Meta earnings call milestone.
+Source: s21.q4cdn.com"><span class="name">WhatsApp</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 100.0%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 100.0%)" stroke-width="1.5"/></svg><span class="value"><b>more than 3 billion</b> monthly active users · 2025-04-30 · vendor claim</span></div><div class="row" tabindex="0" data-tip="WeChat / Weixin: 1.449 billion monthly active accounts
+Date: 2026-09-30 · vendor claim
+Combined Weixin and WeChat accounts. Includes other activity such as Moments and games.
+Source: tencent.com"><span class="name">WeChat / Weixin</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 48.3%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 48.3%)" stroke-width="1.5"/></svg><span class="value"><b>1.449 billion</b> monthly active accounts · 2026-09-30 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Facebook Messenger: more than 1 billion monthly active users
+Date: 2025-04-30 · vendor claim
+Meta earnings call milestone.
+Source: s21.q4cdn.com"><span class="name">Facebook Messenger</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 33.33333333333333%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 33.33333333333333%)" stroke-width="1.5"/></svg><span class="value"><b>more than 1 billion</b> monthly active users · 2025-04-30 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Telegram: more than 1 billion monthly active users
+Date: 2025-03-19 · vendor claim
+Founder described the count as significantly above this floor.
+Source: t.me"><span class="name">Telegram</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 33.33333333333333%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 33.33333333333333%)" stroke-width="1.5"/></svg><span class="value"><b>more than 1 billion</b> monthly active users · 2025-03-19 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Snapchat: 977 million monthly active users
+Date: 2026-Q3 · vendor claim
+Quarter average. Covers all Snapchat activity.
+Source: investor.snap.com"><span class="name">Snapchat</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 32.56666666666666%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 32.56666666666666%)" stroke-width="1.5"/></svg><span class="value"><b>977 million</b> monthly active users · 2026-Q3 · vendor claim</span></div><div class="row" tabindex="0" data-tip="QQ: 533 million monthly active mobile accounts
+Date: 2026-09-30 · vendor claim
+Mobile device metric. Includes non-messaging QQ activity.
+Source: tencent.com"><span class="name">QQ</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 17.766666666666666%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 17.766666666666666%)" stroke-width="1.5"/></svg><span class="value"><b>533 million</b> monthly active mobile accounts · 2026-09-30 · vendor claim</span></div><div class="row" tabindex="0" data-tip="LINE: 193 million monthly active users
+Date: 2026-03-31 · vendor claim
+Worldwide app figure. Includes activity outside chat.
+Source: lycorp.co.jp"><span class="name">LINE</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 6.433333333333334%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 6.433333333333334%)" stroke-width="1.5"/></svg><span class="value"><b>193 million</b> monthly active users · 2026-03-31 · vendor claim</span></div><div class="row" tabindex="0" data-tip="MAX: more than 109 million monthly active users
+Date: 2026-10 · vendor claim
+VK&#x27;s service-wide monthly audience.
+Source: vk.company.ru"><span class="name">MAX</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 3.6333333333333337%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 3.6333333333333337%)" stroke-width="1.5"/></svg><span class="value"><b>more than 109 million</b> monthly active users · 2026-10 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Zalo: 82.6 million monthly active users
+Date: 2026-09-30 · vendor claim
+VNG platform-wide monthly figure. Geographic split undisclosed.
+Source: ir.vng.com.vn"><span class="name">Zalo</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 2.7533333333333334%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 2.7533333333333334%)" stroke-width="1.5"/></svg><span class="value"><b>82.6 million</b> monthly active users · 2026-09-30 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Signal: about 70 million monthly active users
+Date: 2026-02-01 · estimate
+CNN&#x27;s estimate in its interview introduction. The methodology and developer count were undisclosed.
+Source: prod.transcripts.cnn.com"><span class="name">Signal</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 2.3333333333333335%)" height="16" rx="4" style="fill:url(#hatch-s2);stroke:var(--s2);width:max(4px, 2.3333333333333335%)" stroke-width="1.5"/></svg><span class="value"><b>about 70 million</b> monthly active users · 2026-02-01 · estimate</span></div><div class="row" tabindex="0" data-tip="KakaoTalk: 54.944 million monthly active users
+Date: 2026-Q3 · vendor claim
+Average of monthly values across the quarter. Includes South Korea.
+Source: t1.kakaocdn.net"><span class="name">KakaoTalk</span><svg aria-hidden="true"><line x1="0.0%" x2="0.0%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="33.33333333333333%" x2="33.33333333333333%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="66.66666666666666%" x2="66.66666666666666%" y1="-4" y2="22" stroke="var(--grid)"/><line x1="100.0%" x2="100.0%" y1="-4" y2="22" stroke="var(--grid)"/><rect x="0" y="1" width="max(4px, 1.8314666666666666%)" height="16" rx="4" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2);width:max(4px, 1.8314666666666666%)" stroke-width="1.5"/></svg><span class="value"><b>54.944 million</b> monthly active users · 2026-Q3 · vendor claim</span></div><div class="row" tabindex="0" data-tip="Instagram DMs: no current verified monthly count
+Meta disclosed Instagram-wide monthly activity. The number of people using direct messages was undisclosed.
+Checked: s21.q4cdn.com"><span class="name">Instagram DMs</span><span class="nocount">No current verified count — not zero</span></div><div class="row" tabindex="0" data-tip="Viber: no current verified monthly count
+Rakuten&#x27;s latest disclosed total is registrations. A current global monthly activity count was unavailable.
+Checked: global.rakuten.com"><span class="name">Viber</span><span class="nocount">No current verified count — not zero</span></div><div class="row" tabindex="0" data-tip="iMessage: no current verified monthly count
+Apple&#x27;s global monthly user count is undisclosed. The available device totals and estimates based on default app availability cannot establish how many people used iMessage.
+Checked: support.apple.com"><span class="name">iMessage</span><span class="nocount">No current verified count — not zero</span></div><div class="row" tabindex="0" data-tip="Apple Messages: no current verified monthly count
+Apple does not disclose monthly active users of the client across iMessage, RCS and SMS/MMS.
+Checked: support.apple.com"><span class="name">Apple Messages</span><span class="nocount">No current verified count — not zero</span></div><div class="row" tabindex="0" data-tip="Google Messages: no current verified monthly count
+A current global app-wide monthly user count was unavailable.
+Checked: blog.google"><span class="name">Google Messages</span><span class="nocount">No current verified count — not zero</span></div><div class="row rcs" tabindex="0" data-tip="RCS: no current verified monthly count
+A current, observed global monthly active user count covering all RCS clients and carriers was unavailable.
+Checked: blog.google"><span class="name">RCS</span><span class="nocount">No current verified count — not zero</span></div><div class="row" tabindex="0" data-tip="SMS/MMS: no current verified monthly count
+SMS and MMS are carrier protocols. A current, deduplicated global monthly user count was unavailable.
+Checked: support.apple.com"><span class="name">SMS/MMS</span><span class="nocount">No current verified count — not zero</span></div></div>
+</div>
+<h2>Other numbers people quote <span>· different measures, not monthly users, not on the axis above</span></h2>
+<p class="caption">Forecasts, registrations, device counts, enabled subsets and message volumes. Each answers a different question, so none of them can stand in for a monthly user count.</p>
+<div class="cards"><div class="card"><b>3 billion</b><span class="unit">monthly active users</span><div class="meta">Instagram DMs · 2025-10-29 · <a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf">s21.q4cdn.com</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2)" stroke-width="1.5"/></svg>vendor claim</div><div class="meta">Whole Instagram platform, including non-messaging activity.</div></div><div class="card"><b>1.67 billion</b><span class="unit">registered users</span><div class="meta">Viber · 2026-09-30 · <a href="https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39">global.rakuten.com</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2)" stroke-width="1.5"/></svg>vendor claim</div><div class="meta">Rakuten Viber registrations.</div></div><div class="card"><b>more than 2.5 billion</b><span class="unit">active Apple devices</span><div class="meta">iMessage · 2026-01-29 · <a href="https://www.apple.com/newsroom/2026/01/apple-reports-first-quarter-results/">apple.com</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2)" stroke-width="1.5"/></svg>vendor claim</div><div class="meta">Installed base across Apple devices. People can own several devices.</div></div><div class="card"><b>more than 1 billion</b><span class="unit">monthly active Google Messages users with RCS enabled</span><div class="meta">Google Messages · 2023-11-30 · <a href="https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/">blog.google</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2)" stroke-width="1.5"/></svg>vendor claim</div><div class="meta">Historical milestone for the enabled subset. The announcement does not specify whether users sent RCS in the month.</div></div><div class="card"><b>more than 3.8 billion</b><span class="unit">projected global active RCS users</span><div class="meta">RCS · 2026-12-31 · <a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">gsmaservices.com</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:url(#hatch-s2);stroke:var(--s2)" stroke-width="1.5"/></svg>estimate</div><div class="meta">End-of-2026 industry forecast cited by GSMA. Activity window unspecified.</div></div><div class="card"><b>more than 1 billion</b><span class="unit">RCS messages sent per day in the United States</span><div class="meta">RCS · 2025-05-13 · <a href="https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/">blog.google</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:color-mix(in oklab, var(--s2) 35%, var(--surface));stroke:var(--s2)" stroke-width="1.5"/></svg>vendor claim</div><div class="meta">Google&#x27;s U.S. message volume milestone. Geography is the United States.</div></div><div class="card"><b>nearly 2.2 trillion</b><span class="unit">SMS and MMS messages in the United States per year</span><div class="meta">SMS/MMS · 2024 · <a href="https://api.ctia.org/wp-content/uploads/2025/09/2025-Annual-Survey-Highlights.pdf">api.ctia.org</a></div><div class="conf"><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" style="fill:var(--s2)" stroke-width="1.5"/></svg>measured</div><div class="meta">CTIA annual carrier survey, published in 2025.</div></div></div>
+<footer>
+	<h3>Data gaps</h3>
+	<p>Units differ: WeChat and QQ report accounts, not people; Snapchat and KakaoTalk report quarter averages; “more than” figures are milestone floors. Signal’s figure is a media estimate with an undisclosed method. Apple does not publish iMessage users, Rakuten publishes only Viber registrations, Meta reports Instagram as a whole, and no source counts RCS users across all clients and carriers. The GSMA 3.8 billion RCS figure is a forecast for the end of 2026 with an unspecified activity window.</p>
+	<h3>Sources (monthly counts and the pages checked for missing counts)</h3>
+	<ul><li><a href="https://support.apple.com/en-us/104972">support.apple.com/en-us/104972</a> · 3</li><li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf">s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf</a> · 2</li><li><a href="https://www.tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf">tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf</a> · 2</li><li><a href="https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf">s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf</a> · 1</li><li><a href="https://t.me/s/durov/404">t.me/s/durov/404</a> · 1</li><li><a href="https://investor.snap.com/news/news-details/2026/Snap-Inc--Announces-Third-Quarter-2026-Financial-Results/default.aspx">investor.snap.com/news/news-details/2026/Snap-Inc--Announces-Third-Quarter-2026-Financial-Results/default.aspx</a> · 1</li><li><a href="https://www.lycorp.co.jp/ja/company/global/">lycorp.co.jp/ja/company/global/</a> · 1</li><li><a href="https://vk.company.ru/ru/investors/info/12477/">vk.company.ru/ru/investors/info/12477/</a> · 1</li><li><a href="https://ir.vng.com.vn/vi/financials/earnings-release/q3-2026">ir.vng.com.vn/vi/financials/earnings-release/q3-2026</a> · 1</li><li><a href="https://prod.transcripts.cnn.com/show/fzgps/date/2026-02-01/segment/01">prod.transcripts.cnn.com/show/fzgps/date/2026-02-01/segment/01</a> · 1</li><li><a href="https://t1.kakaocdn.net/kakaocorp/admin/ir/event/6126.pdf#page=14">t1.kakaocdn.net/kakaocorp/admin/ir/event/6126.pdf</a> · 1</li><li><a href="https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39">global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf</a> · 1</li><li><a href="https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/">blog.google/products-and-platforms/platforms/android/billion-rcs-messages/</a> · 1</li><li><a href="https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/">blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/</a> · 1</li></ul>
+	<p>Data: research/rcs/messaging-global.json, research cutoff 2026-11-26.</p>
+</footer>
+</main>
+<div id="tip" role="tooltip" hidden></div>
+<script type="application/json" id="data">
+[
+	{
+		"app": "WhatsApp",
+		"monthly": {
+			"value": 3000000000,
+			"unit": "monthly active users",
+			"date": "2025-04-30",
+			"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf",
+			"confidence": "vendor-claim",
+			"qualifier": "more_than",
+			"note": "Meta earnings call milestone."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Facebook Messenger",
+		"monthly": {
+			"value": 1000000000,
+			"unit": "monthly active users",
+			"date": "2025-04-30",
+			"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf",
+			"confidence": "vendor-claim",
+			"qualifier": "more_than",
+			"note": "Meta earnings call milestone."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Instagram DMs",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf",
+			"confidence": null,
+			"note": "Meta disclosed Instagram-wide monthly activity. The number of people using direct messages was undisclosed."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 3000000000,
+				"unit": "monthly active users",
+				"date": "2025-10-29",
+				"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf",
+				"confidence": "vendor-claim",
+				"note": "Whole Instagram platform, including non-messaging activity."
+			}
+		]
+	},
+	{
+		"app": "WeChat / Weixin",
+		"monthly": {
+			"value": 1449000000,
+			"unit": "monthly active accounts",
+			"date": "2026-09-30",
+			"source_url": "https://www.tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf",
+			"confidence": "vendor-claim",
+			"note": "Combined Weixin and WeChat accounts. Includes other activity such as Moments and games."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Telegram",
+		"monthly": {
+			"value": 1000000000,
+			"unit": "monthly active users",
+			"date": "2025-03-19",
+			"source_url": "https://t.me/s/durov/404",
+			"confidence": "vendor-claim",
+			"qualifier": "more_than",
+			"note": "Founder described the count as significantly above this floor."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Snapchat",
+		"monthly": {
+			"value": 977000000,
+			"unit": "monthly active users",
+			"date": "2026-Q3",
+			"source_url": "https://investor.snap.com/news/news-details/2026/Snap-Inc--Announces-Third-Quarter-2026-Financial-Results/default.aspx",
+			"confidence": "vendor-claim",
+			"note": "Quarter average. Covers all Snapchat activity."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "QQ",
+		"monthly": {
+			"value": 533000000,
+			"unit": "monthly active mobile accounts",
+			"date": "2026-09-30",
+			"source_url": "https://www.tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf",
+			"confidence": "vendor-claim",
+			"note": "Mobile device metric. Includes non-messaging QQ activity."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "LINE",
+		"monthly": {
+			"value": 193000000,
+			"unit": "monthly active users",
+			"date": "2026-03-31",
+			"source_url": "https://www.lycorp.co.jp/ja/company/global/",
+			"confidence": "vendor-claim",
+			"note": "Worldwide app figure. Includes activity outside chat."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "MAX",
+		"monthly": {
+			"value": 109000000,
+			"unit": "monthly active users",
+			"date": "2026-10",
+			"source_url": "https://vk.company.ru/ru/investors/info/12477/",
+			"confidence": "vendor-claim",
+			"qualifier": "more_than",
+			"note": "VK's service-wide monthly audience."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Zalo",
+		"monthly": {
+			"value": 82600000,
+			"unit": "monthly active users",
+			"date": "2026-09-30",
+			"source_url": "https://ir.vng.com.vn/vi/financials/earnings-release/q3-2026",
+			"confidence": "vendor-claim",
+			"note": "VNG platform-wide monthly figure. Geographic split undisclosed."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Signal",
+		"monthly": {
+			"value": 70000000,
+			"unit": "monthly active users",
+			"date": "2026-02-01",
+			"source_url": "https://prod.transcripts.cnn.com/show/fzgps/date/2026-02-01/segment/01",
+			"confidence": "estimate",
+			"qualifier": "approximately",
+			"note": "CNN's estimate in its interview introduction. The methodology and developer count were undisclosed."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "KakaoTalk",
+		"monthly": {
+			"value": 54944000,
+			"unit": "monthly active users",
+			"date": "2026-Q3",
+			"source_url": "https://t1.kakaocdn.net/kakaocorp/admin/ir/event/6126.pdf#page=14",
+			"confidence": "vendor-claim",
+			"note": "Average of monthly values across the quarter. Includes South Korea."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Viber",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39",
+			"confidence": null,
+			"note": "Rakuten's latest disclosed total is registrations. A current global monthly activity count was unavailable."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 1670000000,
+				"unit": "registered users",
+				"date": "2026-09-30",
+				"source_url": "https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39",
+				"confidence": "vendor-claim",
+				"note": "Rakuten Viber registrations."
+			}
+		]
+	},
+	{
+		"app": "iMessage",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/104972",
+			"confidence": null,
+			"note": "Apple's global monthly user count is undisclosed. The available device totals and estimates based on default app availability cannot establish how many people used iMessage."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 2500000000,
+				"unit": "active Apple devices",
+				"date": "2026-01-29",
+				"source_url": "https://www.apple.com/newsroom/2026/01/apple-reports-first-quarter-results/",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Installed base across Apple devices. People can own several devices."
+			}
+		]
+	},
+	{
+		"app": "Apple Messages",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/104972",
+			"confidence": null,
+			"note": "Apple does not disclose monthly active users of the client across iMessage, RCS and SMS/MMS."
+		},
+		"other_measures_not_comparable": []
+	},
+	{
+		"app": "Google Messages",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+			"confidence": null,
+			"note": "A current global app-wide monthly user count was unavailable."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 1000000000,
+				"unit": "monthly active Google Messages users with RCS enabled",
+				"date": "2023-11-30",
+				"source_url": "https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Historical milestone for the enabled subset. The announcement does not specify whether users sent RCS in the month."
+			}
+		]
+	},
+	{
+		"app": "RCS",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+			"confidence": null,
+			"note": "A current, observed global monthly active user count covering all RCS clients and carriers was unavailable."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 3800000000,
+				"unit": "projected global active RCS users",
+				"date": "2026-12-31",
+				"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+				"confidence": "estimate",
+				"qualifier": "more_than",
+				"note": "End-of-2026 industry forecast cited by GSMA. Activity window unspecified."
+			},
+			{
+				"value": 1000000000,
+				"unit": "RCS messages sent per day in the United States",
+				"date": "2025-05-13",
+				"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Google's U.S. message volume milestone. Geography is the United States."
+			}
+		]
+	},
+	{
+		"app": "SMS/MMS",
+		"monthly": {
+			"value": null,
+			"unit": "monthly active users",
+			"date": "2026-11-26",
+			"source_url": "https://support.apple.com/en-us/104972",
+			"confidence": null,
+			"note": "SMS and MMS are carrier protocols. A current, deduplicated global monthly user count was unavailable."
+		},
+		"other_measures_not_comparable": [
+			{
+				"value": 2200000000000,
+				"unit": "SMS and MMS messages in the United States per year",
+				"date": "2024",
+				"source_url": "https://api.ctia.org/wp-content/uploads/2025/09/2025-Annual-Survey-Highlights.pdf",
+				"confidence": "measured",
+				"qualifier": "nearly",
+				"note": "CTIA annual carrier survey, published in 2025."
+			}
+		]
+	}
+]
+</script>
+<script>
+const tip = document.getElementById('tip');
+function place(el) {
+	tip.textContent = el.dataset.tip;
+	tip.hidden = false;
+	const r = el.getBoundingClientRect();
+	const t = tip.getBoundingClientRect();
+	const left = Math.min(Math.max(8, r.left + r.width / 2 - t.width / 2), innerWidth - t.width - 8);
+	const top = r.top - t.height - 8 > 8 ? r.top - t.height - 8 : r.bottom + 8;
+	tip.style.left = left + 'px';
+	tip.style.top = top + 'px';
+}
+function hide() { tip.hidden = true; }
+document.addEventListener('pointerover', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('focusin', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('scroll', hide, { passive: true });
+</script>
+</body>
+</html>
