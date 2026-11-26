@@ -1,0 +1,1294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iOS vs Android share and RCS availability by market</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--page: #f9f9f7;
+	--surface: #fcfcfb;
+	--ink: #0b0b0b;
+	--ink-2: #52514e;
+	--muted: #6f6d68;
+	--grid: #e1e0d9;
+	--axis: #c3c2b7;
+	--ring: rgba(11, 11, 11, 0.1);
+	--s1: #1baf7a;
+	--s2: #2a78d6;
+	--s3: #eb6834;
+	--other: #d9d7cf;
+	--on-fill: #0b0b0b;
+	--on-other: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--page: #0d0d0d;
+		--surface: #1a1a19;
+		--ink: #ffffff;
+		--ink-2: #c3c2b7;
+		--muted: #a3a199;
+		--grid: #2c2c2a;
+		--axis: #383835;
+		--ring: rgba(255, 255, 255, 0.1);
+		--s1: #199e70;
+		--s2: #3987e5;
+		--s3: #d95926;
+		--other: #4a4945;
+		--on-fill: #0b0b0b;
+		--on-other: #ffffff;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--page);
+	color: var(--ink);
+	font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main {
+	max-width: 68rem;
+	margin: 0 auto;
+	padding: 1.5rem 1rem 4rem;
+}
+h1 {
+	font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem;
+	max-width: 30ch;
+}
+h2 {
+	font-size: 0.8rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--ink-2);
+	margin: 2rem 0 0.75rem;
+}
+h2 span { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+.caption { color: var(--ink-2); max-width: 65ch; margin: 0 0 1rem; }
+.legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	margin: 1rem 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.85rem;
+	color: var(--ink-2);
+}
+.legend li { display: flex; align-items: center; gap: 0.4rem; }
+.swatch { width: 1.1rem; height: 0.8rem; flex: none; }
+.chart { background: var(--surface); border-radius: 12px; box-shadow: 0 0 0 1px var(--ring); padding: 1rem; }
+.chart > h2:first-child, .chart > section:first-child h2 { margin-top: 0; }
+@media (max-width: 40rem) { .chart { padding: 0.75rem 0.5rem; } }
+footer { margin-top: 2rem; font-size: 0.85rem; color: var(--ink-2); max-width: 75ch; }
+footer h3 { font-size: 0.85rem; margin: 1.25rem 0 0.25rem; color: var(--ink); }
+footer ul { margin: 0; padding-left: 1.1rem; }
+a { color: inherit; text-underline-offset: 2px; overflow-wrap: anywhere; }
+[data-tip] { cursor: default; }
+[data-tip]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+#tip {
+	position: fixed;
+	z-index: 10;
+	max-width: min(22rem, calc(100vw - 1rem));
+	padding: 0.5rem 0.65rem;
+	border-radius: 8px;
+	background: var(--ink);
+	color: var(--page);
+	font-size: 0.8rem;
+	line-height: 1.4;
+	white-space: pre-line;
+	pointer-events: none;
+}
+details { margin-top: 1.5rem; }
+summary { cursor: pointer; font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 0.8rem; margin-top: 0.75rem; min-width: 40rem; }
+th, td { text-align: left; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--grid); vertical-align: top; }
+td.n { font-variant-numeric: tabular-nums; }
+
+.rows { display: grid; gap: 0.35rem; }
+.row { display: grid; grid-template-columns: minmax(9rem, 12rem) 1fr minmax(11rem, 16rem); gap: 0.15rem 0.75rem; align-items: center; font-size: 0.85rem; padding: 0.15rem 0; }
+.row .name { font-weight: 600; }
+.row svg { display: block; width: 100%; height: 14px; }
+.row .rcs { font-size: 0.8rem; color: var(--ink-2); }
+.row .nums { display: block; font-weight: 400; font-size: 0.75rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.row .nums b { color: var(--ink); font-weight: 600; }
+.group { margin-top: 0.5rem; }
+.group + .group { margin-top: 1.5rem; }
+.group p { margin: -0.4rem 0 0.75rem; font-size: 0.85rem; color: var(--ink-2); max-width: 65ch; }
+.icon { font-weight: 700; color: var(--ink); }
+.stat { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.stat b { font-size: 1.5rem; display: block; line-height: 1.1; }
+.stat li { color: var(--ink-2); font-size: 0.85rem; }
+@media (max-width: 40rem) {
+	.row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-s1" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s1)"/></pattern>
+		<pattern id="hatch-s2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s2)"/></pattern>
+		<pattern id="hatch-s3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--s3)"/></pattern>
+		<pattern id="hatch-other" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.5" height="6" style="fill:var(--other)"/></pattern>
+	</defs>
+</svg>
+<main>
+<h1>iPhone-to-Android RCS works on listed carriers in just 12 of 74 markets. The rest are unlisted or unchecked.</h1>
+<p class="caption">Each bar shows how a country’s phones split between iOS and Android. Every iPhone–Android conversation needs RCS on both ends. Apple’s carrier directory confirms iPhone RCS on named carriers in 12 markets, lists none in 8, and the other 54 markets have not been checked.</p>
+<ul class="stat">
+	<li><b>12</b>markets with iPhone RCS carriers listed</li>
+	<li><b>8</b>researched, no iPhone RCS carrier listed</li>
+	<li><b>54</b>not yet researched</li>
+</ul>
+<ul class="legend">
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--s2)" stroke="none" stroke-width="1.5" /></svg>iOS share</li>
+	<li><svg class="swatch" viewBox="0 0 18 13" aria-hidden="true"><rect x="1" y="1" width="16" height="11" rx="3" fill="var(--s1)" stroke="none" stroke-width="1.5" /></svg>Android share</li>
+	<li>Gap between bars = other operating systems</li>
+</ul>
+<div class="chart">
+<section class="group"><h2>iPhone RCS carriers listed <span>· 12 markets</span></h2><p>Apple lists at least one local carrier with iPhone RCS. RCS still needs both people to have it enabled, and only listed carriers qualify.</p><div class="rows"><div class="row" tabindex="0" data-tip="Canada: iOS 64.74%, Android 35.26%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Tbaytel, Bell, Chatr, Fido, Freedom Mobile, Koodo, Lucky Mobile, Public Mobile, Rogers, SaskTel, Telus, Videotron, Virgin Mobile
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/109526 (2026-11-26)"><span class="name">Canada<span class="nums"><b>iOS 64.74%</b> · Android 35.26%</span></span><svg aria-hidden="true"><rect x="0" width="64.74%" height="14" rx="4" style="fill:var(--s2)"/><rect x="64.74000000000001%" width="35.26%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 13 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="Japan: iOS 53.8%, Android 46.18%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: au, NTT DOCOMO, SoftBank
+Android RCS confirmed
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">Japan<span class="nums"><b>iOS 53.8%</b> · Android 46.18%</span></span><svg aria-hidden="true"><rect x="0" width="53.8%" height="14" rx="4" style="fill:var(--s2)"/><rect x="53.82%" width="46.18%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 3 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="United States: iOS 51.96%, Android 48.02%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: AT&amp;T, T-Mobile USA, Verizon Wireless
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/109526 (2026-11-26)"><span class="name">United States<span class="nums"><b>iOS 51.96%</b> · Android 48.02%</span></span><svg aria-hidden="true"><rect x="0" width="51.96%" height="14" rx="4" style="fill:var(--s2)"/><rect x="51.98%" width="48.02%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 3 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="United Kingdom: iOS 50.14%, Android 49.85%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: giffgaff, O2, Tesco Mobile, 3, BT, EE
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/108048 (2026-11-26)"><span class="name">United Kingdom<span class="nums"><b>iOS 50.14%</b> · Android 49.85%</span></span><svg aria-hidden="true"><rect x="0" width="50.14%" height="14" rx="4" style="fill:var(--s2)"/><rect x="50.15%" width="49.85%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 6 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="Singapore: iOS 42.41%, Android 57.52%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Singtel
+Android RCS confirmed
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">Singapore<span class="nums"><b>iOS 42.41%</b> · Android 57.52%</span></span><svg aria-hidden="true"><rect x="0" width="42.41%" height="14" rx="4" style="fill:var(--s2)"/><rect x="42.48%" width="57.52%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 1 carrier listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="South Korea: iOS 39.32%, Android 60.67%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: LG U+, KT, SK Telecom
+Android RCS confirmed
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">South Korea<span class="nums"><b>iOS 39.32%</b> · Android 60.67%</span></span><svg aria-hidden="true"><rect x="0" width="39.32%" height="14" rx="4" style="fill:var(--s2)"/><rect x="39.33%" width="60.67%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 3 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="France: iOS 35.83%, Android 64.15%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Bouygues Telecom, Free Mobile, Orange, SFR
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/108048 (2026-11-26)"><span class="name">France<span class="nums"><b>iOS 35.83%</b> · Android 64.15%</span></span><svg aria-hidden="true"><rect x="0" width="35.83%" height="14" rx="4" style="fill:var(--s2)"/><rect x="35.849999999999994%" width="64.15%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 4 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="China: iOS 30.49%, Android 69.46%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: China Mobile, China Telecom, China Unicom
+Android RCS via carrier ecosystem
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">China<span class="nums"><b>iOS 30.49%</b> · Android 69.46%</span></span><svg aria-hidden="true"><rect x="0" width="30.49%" height="14" rx="4" style="fill:var(--s2)"/><rect x="30.540000000000006%" width="69.46%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 3 carriers listed<br>Android RCS via carrier ecosystem</span></div><div class="row" tabindex="0" data-tip="Germany: iOS 27.7%, Android 72.29%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Vodafone, 1&amp;1, O2, Telekom
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/108048 (2026-11-26)"><span class="name">Germany<span class="nums"><b>iOS 27.7%</b> · Android 72.29%</span></span><svg aria-hidden="true"><rect x="0" width="27.7%" height="14" rx="4" style="fill:var(--s2)"/><rect x="27.709999999999994%" width="72.29%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 4 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="Spain: iOS 27.25%, Android 72.75%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Masmovil, Movistar, Vodafone, O2, Orange, Pepephone, Yoigo
+Android RCS documented in the past
+Apple directory: support.apple.com/it-it/108048 (2026-11-26)"><span class="name">Spain<span class="nums"><b>iOS 27.25%</b> · Android 72.75%</span></span><svg aria-hidden="true"><rect x="0" width="27.25%" height="14" rx="4" style="fill:var(--s2)"/><rect x="27.25%" width="72.75%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 7 carriers listed<br>Android RCS documented in the past</span></div><div class="row" tabindex="0" data-tip="Brazil: iOS 26.23%, Android 73.76%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: TIM, Vivo
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/109520 (2026-11-26)"><span class="name">Brazil<span class="nums"><b>iOS 26.23%</b> · Android 73.76%</span></span><svg aria-hidden="true"><rect x="0" width="26.23%" height="14" rx="4" style="fill:var(--s2)"/><rect x="26.239999999999995%" width="73.76%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 2 carriers listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="India: iOS 5.1%, Android 94.84%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple lists iPhone RCS for: Reliance Jio
+Android RCS confirmed
+Apple directory: support.apple.com/en-ie/118609 (2026-11-26)"><span class="name">India<span class="nums"><b>iOS 5.1%</b> · Android 94.84%</span></span><svg aria-hidden="true"><rect x="0" width="5.1%" height="14" rx="4" style="fill:var(--s2)"/><rect x="5.159999999999997%" width="94.84%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">✓</span> iPhone RCS: 1 carrier listed<br>Android RCS confirmed</span></div></div></section>
+<section class="group"><h2>Researched, no iPhone RCS carrier listed <span>· 8 markets</span></h2><p>Apple’s directory lists no local carrier with iPhone RCS. iPhone users here fall back to SMS or a third-party app when texting Android.</p><div class="rows"><div class="row" tabindex="0" data-tip="Australia: iOS 62.09%, Android 37.9%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS confirmed
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">Australia<span class="nums"><b>iOS 62.09%</b> · Android 37.9%</span></span><svg aria-hidden="true"><rect x="0" width="62.09%" height="14" rx="4" style="fill:var(--s2)"/><rect x="62.1%" width="37.9%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="Italy: iOS 38.04%, Android 61.95%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS documented in the past
+Apple directory: support.apple.com/it-it/108048 (2026-11-26)"><span class="name">Italy<span class="nums"><b>iOS 38.04%</b> · Android 61.95%</span></span><svg aria-hidden="true"><rect x="0" width="38.04%" height="14" rx="4" style="fill:var(--s2)"/><rect x="38.05%" width="61.95%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS documented in the past</span></div><div class="row" tabindex="0" data-tip="Mexico: iOS 25.89%, Android 74.1%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS confirmed
+Apple directory: support.apple.com/en-us/109520 (2026-11-26)"><span class="name">Mexico<span class="nums"><b>iOS 25.89%</b> · Android 74.1%</span></span><svg aria-hidden="true"><rect x="0" width="25.89%" height="14" rx="4" style="fill:var(--s2)"/><rect x="25.900000000000006%" width="74.1%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="Thailand: iOS 24.31%, Android 75.65%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS announced in the past
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">Thailand<span class="nums"><b>iOS 24.31%</b> · Android 75.65%</span></span><svg aria-hidden="true"><rect x="0" width="24.31%" height="14" rx="4" style="fill:var(--s2)"/><rect x="24.349999999999994%" width="75.65%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS announced in the past</span></div><div class="row" tabindex="0" data-tip="Türkiye: iOS 23.22%, Android 76.78%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS documented in the past
+Apple directory: support.apple.com/en-us/108048 (2026-11-26)"><span class="name">Türkiye<span class="nums"><b>iOS 23.22%</b> · Android 76.78%</span></span><svg aria-hidden="true"><rect x="0" width="23.22%" height="14" rx="4" style="fill:var(--s2)"/><rect x="23.22%" width="76.78%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS documented in the past</span></div><div class="row" tabindex="0" data-tip="Indonesia: iOS 21.28%, Android 78.68%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS confirmed
+Apple directory: support.apple.com/en-au/109510 (2026-11-26)"><span class="name">Indonesia<span class="nums"><b>iOS 21.28%</b> · Android 78.68%</span></span><svg aria-hidden="true"><rect x="0" width="21.28%" height="14" rx="4" style="fill:var(--s2)"/><rect x="21.319999999999993%" width="78.68%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS confirmed</span></div><div class="row" tabindex="0" data-tip="United Arab Emirates: iOS 19.29%, Android 80.69%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS unverified
+Apple directory: support.apple.com/en-ie/118609 (2026-11-26)"><span class="name">United Arab Emirates<span class="nums"><b>iOS 19.29%</b> · Android 80.69%</span></span><svg aria-hidden="true"><rect x="0" width="19.29%" height="14" rx="4" style="fill:var(--s2)"/><rect x="19.310000000000002%" width="80.69%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS unverified</span></div><div class="row" tabindex="0" data-tip="South Africa: iOS 18.21%, Android 81.78%
+percent of mobile web page views, 2026-10 (StatCounter)
+Apple’s carrier directory lists no iPhone RCS carrier here
+Android RCS documented in the past
+Apple directory: support.apple.com/en-mide/109518 (2026-11-26)"><span class="name">South Africa<span class="nums"><b>iOS 18.21%</b> · Android 81.78%</span></span><svg aria-hidden="true"><rect x="0" width="18.21%" height="14" rx="4" style="fill:var(--s2)"/><rect x="18.22%" width="81.78%" height="14" rx="4" style="fill:var(--s1)"/></svg><span class="rcs"><span class="icon">–</span> iPhone RCS: no carrier listed<br>Android RCS documented in the past</span></div></div></section>
+<section class="group"><h2>Not researched for RCS <span>· 54 markets</span></h2><p>No carrier or device check exists in this dataset. Unknown, not unavailable.</p><div class="rows"><div class="row" tabindex="0" data-tip="Denmark: iOS 67.06%, Android 32.92%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Denmark<span class="nums"><b>iOS 67.06%</b> · Android 32.92%</span></span><svg aria-hidden="true"><rect x="0" width="67.06%" height="14" rx="4" style="fill:var(--s2)"/><rect x="67.08%" width="32.92%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Switzerland: iOS 56.23%, Android 43.76%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Switzerland<span class="nums"><b>iOS 56.23%</b> · Android 43.76%</span></span><svg aria-hidden="true"><rect x="0" width="56.23%" height="14" rx="4" style="fill:var(--s2)"/><rect x="56.24%" width="43.76%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Sweden: iOS 55.59%, Android 44.4%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Sweden<span class="nums"><b>iOS 55.59%</b> · Android 44.4%</span></span><svg aria-hidden="true"><rect x="0" width="55.59%" height="14" rx="4" style="fill:var(--s2)"/><rect x="55.6%" width="44.4%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Norway: iOS 51.74%, Android 48.25%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Norway<span class="nums"><b>iOS 51.74%</b> · Android 48.25%</span></span><svg aria-hidden="true"><rect x="0" width="51.74%" height="14" rx="4" style="fill:var(--s2)"/><rect x="51.75%" width="48.25%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Taiwan: iOS 51.63%, Android 48.36%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Taiwan<span class="nums"><b>iOS 51.63%</b> · Android 48.36%</span></span><svg aria-hidden="true"><rect x="0" width="51.63%" height="14" rx="4" style="fill:var(--s2)"/><rect x="51.64%" width="48.36%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="New Zealand: iOS 49.29%, Android 50.7%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">New Zealand<span class="nums"><b>iOS 49.29%</b> · Android 50.7%</span></span><svg aria-hidden="true"><rect x="0" width="49.29%" height="14" rx="4" style="fill:var(--s2)"/><rect x="49.3%" width="50.7%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Ireland: iOS 48.09%, Android 51.9%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Ireland<span class="nums"><b>iOS 48.09%</b> · Android 51.9%</span></span><svg aria-hidden="true"><rect x="0" width="48.09%" height="14" rx="4" style="fill:var(--s2)"/><rect x="48.1%" width="51.9%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Austria: iOS 47.42%, Android 52.58%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Austria<span class="nums"><b>iOS 47.42%</b> · Android 52.58%</span></span><svg aria-hidden="true"><rect x="0" width="47.42%" height="14" rx="4" style="fill:var(--s2)"/><rect x="47.42%" width="52.58%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Hong Kong: iOS 46.44%, Android 53.55%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Hong Kong<span class="nums"><b>iOS 46.44%</b> · Android 53.55%</span></span><svg aria-hidden="true"><rect x="0" width="46.44%" height="14" rx="4" style="fill:var(--s2)"/><rect x="46.45%" width="53.55%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Belgium: iOS 45.35%, Android 54.63%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Belgium<span class="nums"><b>iOS 45.35%</b> · Android 54.63%</span></span><svg aria-hidden="true"><rect x="0" width="45.35%" height="14" rx="4" style="fill:var(--s2)"/><rect x="45.37%" width="54.63%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Saudi Arabia: iOS 42.03%, Android 57.96%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Saudi Arabia<span class="nums"><b>iOS 42.03%</b> · Android 57.96%</span></span><svg aria-hidden="true"><rect x="0" width="42.03%" height="14" rx="4" style="fill:var(--s2)"/><rect x="42.04%" width="57.96%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Dominican Republic: iOS 41.7%, Android 58.29%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Dominican Republic<span class="nums"><b>iOS 41.7%</b> · Android 58.29%</span></span><svg aria-hidden="true"><rect x="0" width="41.7%" height="14" rx="4" style="fill:var(--s2)"/><rect x="41.71%" width="58.29%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Lithuania: iOS 39.66%, Android 60.33%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Lithuania<span class="nums"><b>iOS 39.66%</b> · Android 60.33%</span></span><svg aria-hidden="true"><rect x="0" width="39.66%" height="14" rx="4" style="fill:var(--s2)"/><rect x="39.67%" width="60.33%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Ukraine: iOS 39.36%, Android 60.62%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Ukraine<span class="nums"><b>iOS 39.36%</b> · Android 60.62%</span></span><svg aria-hidden="true"><rect x="0" width="39.36%" height="14" rx="4" style="fill:var(--s2)"/><rect x="39.38%" width="60.62%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Poland: iOS 38.96%, Android 61.02%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Poland<span class="nums"><b>iOS 38.96%</b> · Android 61.02%</span></span><svg aria-hidden="true"><rect x="0" width="38.96%" height="14" rx="4" style="fill:var(--s2)"/><rect x="38.98%" width="61.02%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Kuwait: iOS 38.52%, Android 61.46%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Kuwait<span class="nums"><b>iOS 38.52%</b> · Android 61.46%</span></span><svg aria-hidden="true"><rect x="0" width="38.52%" height="14" rx="4" style="fill:var(--s2)"/><rect x="38.54%" width="61.46%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Estonia: iOS 38.38%, Android 61.61%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Estonia<span class="nums"><b>iOS 38.38%</b> · Android 61.61%</span></span><svg aria-hidden="true"><rect x="0" width="38.38%" height="14" rx="4" style="fill:var(--s2)"/><rect x="38.39%" width="61.61%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Vietnam: iOS 38.27%, Android 61.71%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Vietnam<span class="nums"><b>iOS 38.27%</b> · Android 61.71%</span></span><svg aria-hidden="true"><rect x="0" width="38.27%" height="14" rx="4" style="fill:var(--s2)"/><rect x="38.29%" width="61.71%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Malaysia: iOS 36.85%, Android 63.14%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Malaysia<span class="nums"><b>iOS 36.85%</b> · Android 63.14%</span></span><svg aria-hidden="true"><rect x="0" width="36.85%" height="14" rx="4" style="fill:var(--s2)"/><rect x="36.86%" width="63.14%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Cambodia: iOS 36.48%, Android 63.45%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Cambodia<span class="nums"><b>iOS 36.48%</b> · Android 63.45%</span></span><svg aria-hidden="true"><rect x="0" width="36.48%" height="14" rx="4" style="fill:var(--s2)"/><rect x="36.55%" width="63.45%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Slovenia: iOS 35.75%, Android 64.25%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Slovenia<span class="nums"><b>iOS 35.75%</b> · Android 64.25%</span></span><svg aria-hidden="true"><rect x="0" width="35.75%" height="14" rx="4" style="fill:var(--s2)"/><rect x="35.75%" width="64.25%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Czechia: iOS 33.09%, Android 66.74%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Czechia<span class="nums"><b>iOS 33.09%</b> · Android 66.74%</span></span><svg aria-hidden="true"><rect x="0" width="33.09%" height="14" rx="4" style="fill:var(--s2)"/><rect x="33.260000000000005%" width="66.74%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Kazakhstan: iOS 32.47%, Android 67.52%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Kazakhstan<span class="nums"><b>iOS 32.47%</b> · Android 67.52%</span></span><svg aria-hidden="true"><rect x="0" width="32.47%" height="14" rx="4" style="fill:var(--s2)"/><rect x="32.480000000000004%" width="67.52%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Finland: iOS 31.95%, Android 68.04%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Finland<span class="nums"><b>iOS 31.95%</b> · Android 68.04%</span></span><svg aria-hidden="true"><rect x="0" width="31.95%" height="14" rx="4" style="fill:var(--s2)"/><rect x="31.959999999999994%" width="68.04%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Netherlands: iOS 31.55%, Android 68.44%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Netherlands<span class="nums"><b>iOS 31.55%</b> · Android 68.44%</span></span><svg aria-hidden="true"><rect x="0" width="31.55%" height="14" rx="4" style="fill:var(--s2)"/><rect x="31.560000000000002%" width="68.44%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Panama: iOS 31.14%, Android 68.86%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Panama<span class="nums"><b>iOS 31.14%</b> · Android 68.86%</span></span><svg aria-hidden="true"><rect x="0" width="31.14%" height="14" rx="4" style="fill:var(--s2)"/><rect x="31.14%" width="68.86%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Latvia: iOS 30.05%, Android 69.95%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Latvia<span class="nums"><b>iOS 30.05%</b> · Android 69.95%</span></span><svg aria-hidden="true"><rect x="0" width="30.05%" height="14" rx="4" style="fill:var(--s2)"/><rect x="30.049999999999997%" width="69.95%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Ghana: iOS 29.6%, Android 70.36%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Ghana<span class="nums"><b>iOS 29.6%</b> · Android 70.36%</span></span><svg aria-hidden="true"><rect x="0" width="29.6%" height="14" rx="4" style="fill:var(--s2)"/><rect x="29.64%" width="70.36%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Belarus: iOS 29.43%, Android 70.47%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Belarus<span class="nums"><b>iOS 29.43%</b> · Android 70.47%</span></span><svg aria-hidden="true"><rect x="0" width="29.43%" height="14" rx="4" style="fill:var(--s2)"/><rect x="29.53%" width="70.47%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Moldova: iOS 29.28%, Android 70.71%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Moldova<span class="nums"><b>iOS 29.28%</b> · Android 70.71%</span></span><svg aria-hidden="true"><rect x="0" width="29.28%" height="14" rx="4" style="fill:var(--s2)"/><rect x="29.290000000000006%" width="70.71%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Portugal: iOS 29.24%, Android 70.76%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Portugal<span class="nums"><b>iOS 29.24%</b> · Android 70.76%</span></span><svg aria-hidden="true"><rect x="0" width="29.24%" height="14" rx="4" style="fill:var(--s2)"/><rect x="29.239999999999995%" width="70.76%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Greece: iOS 29.2%, Android 70.79%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Greece<span class="nums"><b>iOS 29.2%</b> · Android 70.79%</span></span><svg aria-hidden="true"><rect x="0" width="29.2%" height="14" rx="4" style="fill:var(--s2)"/><rect x="29.209999999999994%" width="70.79%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Israel: iOS 28.73%, Android 71.27%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Israel<span class="nums"><b>iOS 28.73%</b> · Android 71.27%</span></span><svg aria-hidden="true"><rect x="0" width="28.73%" height="14" rx="4" style="fill:var(--s2)"/><rect x="28.730000000000004%" width="71.27%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Russia: iOS 27.83%, Android 72.15%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Russia<span class="nums"><b>iOS 27.83%</b> · Android 72.15%</span></span><svg aria-hidden="true"><rect x="0" width="27.83%" height="14" rx="4" style="fill:var(--s2)"/><rect x="27.849999999999994%" width="72.15%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Croatia: iOS 27.37%, Android 72.62%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Croatia<span class="nums"><b>iOS 27.37%</b> · Android 72.62%</span></span><svg aria-hidden="true"><rect x="0" width="27.37%" height="14" rx="4" style="fill:var(--s2)"/><rect x="27.379999999999995%" width="72.62%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Morocco: iOS 26.74%, Android 73.24%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Morocco<span class="nums"><b>iOS 26.74%</b> · Android 73.24%</span></span><svg aria-hidden="true"><rect x="0" width="26.74%" height="14" rx="4" style="fill:var(--s2)"/><rect x="26.760000000000005%" width="73.24%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Hungary: iOS 26.58%, Android 73.41%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Hungary<span class="nums"><b>iOS 26.58%</b> · Android 73.41%</span></span><svg aria-hidden="true"><rect x="0" width="26.58%" height="14" rx="4" style="fill:var(--s2)"/><rect x="26.590000000000003%" width="73.41%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Colombia: iOS 26.32%, Android 73.68%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Colombia<span class="nums"><b>iOS 26.32%</b> · Android 73.68%</span></span><svg aria-hidden="true"><rect x="0" width="26.32%" height="14" rx="4" style="fill:var(--s2)"/><rect x="26.319999999999993%" width="73.68%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Romania: iOS 26.17%, Android 73.8%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Romania<span class="nums"><b>iOS 26.17%</b> · Android 73.8%</span></span><svg aria-hidden="true"><rect x="0" width="26.17%" height="14" rx="4" style="fill:var(--s2)"/><rect x="26.200000000000003%" width="73.8%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Slovakia: iOS 25.62%, Android 74.37%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Slovakia<span class="nums"><b>iOS 25.62%</b> · Android 74.37%</span></span><svg aria-hidden="true"><rect x="0" width="25.62%" height="14" rx="4" style="fill:var(--s2)"/><rect x="25.629999999999995%" width="74.37%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Guatemala: iOS 25.13%, Android 74.86%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Guatemala<span class="nums"><b>iOS 25.13%</b> · Android 74.86%</span></span><svg aria-hidden="true"><rect x="0" width="25.13%" height="14" rx="4" style="fill:var(--s2)"/><rect x="25.14%" width="74.86%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Bulgaria: iOS 22.4%, Android 77.59%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Bulgaria<span class="nums"><b>iOS 22.4%</b> · Android 77.59%</span></span><svg aria-hidden="true"><rect x="0" width="22.4%" height="14" rx="4" style="fill:var(--s2)"/><rect x="22.409999999999997%" width="77.59%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Chile: iOS 20.72%, Android 79.28%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Chile<span class="nums"><b>iOS 20.72%</b> · Android 79.28%</span></span><svg aria-hidden="true"><rect x="0" width="20.72%" height="14" rx="4" style="fill:var(--s2)"/><rect x="20.72%" width="79.28%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Qatar: iOS 18.86%, Android 81.13%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Qatar<span class="nums"><b>iOS 18.86%</b> · Android 81.13%</span></span><svg aria-hidden="true"><rect x="0" width="18.86%" height="14" rx="4" style="fill:var(--s2)"/><rect x="18.870000000000005%" width="81.13%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Nicaragua: iOS 17.95%, Android 82.04%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Nicaragua<span class="nums"><b>iOS 17.95%</b> · Android 82.04%</span></span><svg aria-hidden="true"><rect x="0" width="17.95%" height="14" rx="4" style="fill:var(--s2)"/><rect x="17.959999999999994%" width="82.04%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Uzbekistan: iOS 17.93%, Android 82.06%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Uzbekistan<span class="nums"><b>iOS 17.93%</b> · Android 82.06%</span></span><svg aria-hidden="true"><rect x="0" width="17.93%" height="14" rx="4" style="fill:var(--s2)"/><rect x="17.939999999999998%" width="82.06%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Egypt: iOS 17.85%, Android 82.13%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Egypt<span class="nums"><b>iOS 17.85%</b> · Android 82.13%</span></span><svg aria-hidden="true"><rect x="0" width="17.85%" height="14" rx="4" style="fill:var(--s2)"/><rect x="17.870000000000005%" width="82.13%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Peru: iOS 17.33%, Android 82.66%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Peru<span class="nums"><b>iOS 17.33%</b> · Android 82.66%</span></span><svg aria-hidden="true"><rect x="0" width="17.33%" height="14" rx="4" style="fill:var(--s2)"/><rect x="17.340000000000003%" width="82.66%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Argentina: iOS 14.22%, Android 85.77%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Argentina<span class="nums"><b>iOS 14.22%</b> · Android 85.77%</span></span><svg aria-hidden="true"><rect x="0" width="14.22%" height="14" rx="4" style="fill:var(--s2)"/><rect x="14.230000000000004%" width="85.77%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Philippines: iOS 13.71%, Android 86.28%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Philippines<span class="nums"><b>iOS 13.71%</b> · Android 86.28%</span></span><svg aria-hidden="true"><rect x="0" width="13.71%" height="14" rx="4" style="fill:var(--s2)"/><rect x="13.719999999999999%" width="86.28%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Nigeria: iOS 13.31%, Android 86.58%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Nigeria<span class="nums"><b>iOS 13.31%</b> · Android 86.58%</span></span><svg aria-hidden="true"><rect x="0" width="13.31%" height="14" rx="4" style="fill:var(--s2)"/><rect x="13.420000000000002%" width="86.58%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Iran: iOS 9.3%, Android 90.68%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Iran<span class="nums"><b>iOS 9.3%</b> · Android 90.68%</span></span><svg aria-hidden="true"><rect x="0" width="9.3%" height="14" rx="4" style="fill:var(--s2)"/><rect x="9.319999999999993%" width="90.68%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Pakistan: iOS 8.38%, Android 91.57%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Pakistan<span class="nums"><b>iOS 8.38%</b> · Android 91.57%</span></span><svg aria-hidden="true"><rect x="0" width="8.38%" height="14" rx="4" style="fill:var(--s2)"/><rect x="8.430000000000007%" width="91.57%" height="14" rx="4" style="fill:var(--s1)"/></svg></div><div class="row" tabindex="0" data-tip="Kenya: iOS 4.74%, Android 94.91%
+percent of mobile web page views, 2026-10 (StatCounter)"><span class="name">Kenya<span class="nums"><b>iOS 4.74%</b> · Android 94.91%</span></span><svg aria-hidden="true"><rect x="0" width="4.74%" height="14" rx="4" style="fill:var(--s2)"/><rect x="5.090000000000003%" width="94.91%" height="14" rx="4" style="fill:var(--s1)"/></svg></div></div></section>
+</div>
+<footer>
+	<h3>Data gaps</h3>
+	<p>Operating-system shares are StatCounter mobile web page views for October 2026, not device counts or people; other systems and rounding make up the remainder. iPhone RCS status comes from Apple’s carrier directory on 2026-11-26: a listed carrier supports it, but a traveler on another carrier or roaming may not get it (no roaming inference is made). The United States count covers selected national carriers only. Android status labels describe documented Google Messages or carrier RCS, not activation rates. 54 markets have no RCS research, including iPhone-majority markets such as Denmark, Switzerland, Sweden, Norway, Taiwan, Australia.</p>
+	<h3>Sources</h3>
+	<ul>
+		<li><a href="https://gs.statcounter.com/os-market-share/mobile">StatCounter mobile OS market share</a>, October 2026, CC BY-SA 3.0 (74 country pages, linked in the table data)</li>
+		<li><a href="https://support.apple.com/en-au/109510">Apple carrier support · /en-au/109510</a> · 7 markets</li><li><a href="https://support.apple.com/en-us/108048">Apple carrier support · /en-us/108048</a> · 4 markets</li><li><a href="https://support.apple.com/en-us/109526">Apple carrier support · /en-us/109526</a> · 2 markets</li><li><a href="https://support.apple.com/it-it/108048">Apple carrier support · /it-it/108048</a> · 2 markets</li><li><a href="https://support.apple.com/en-ie/118609">Apple carrier support · /en-ie/118609</a> · 2 markets</li><li><a href="https://support.apple.com/en-us/109520">Apple carrier support · /en-us/109520</a> · 2 markets</li><li><a href="https://support.apple.com/en-mide/109518">Apple carrier support · /en-mide/109518</a> · 1 markets</li>
+	</ul>
+	<p>Data: research/rcs/messaging-by-country.json and research/rcs/adoption.json, research cutoff 2026-11-26.</p>
+</footer>
+</main>
+<div id="tip" role="tooltip" hidden></div>
+<script type="application/json" id="data">
+[
+	{
+		"iso": "CA",
+		"country": "Canada",
+		"ios_share": 64.74,
+		"android_share": 35.26,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/canada/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 13,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/109526",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "JP",
+		"country": "Japan",
+		"ios_share": 53.8,
+		"android_share": 46.18,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/japan/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 3,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "US",
+		"country": "United States",
+		"ios_share": 51.96,
+		"android_share": 48.02,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/united-states-of-america/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 3,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/109526",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "GB",
+		"country": "United Kingdom",
+		"ios_share": 50.14,
+		"android_share": 49.85,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/united-kingdom/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 6,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/108048",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "SG",
+		"country": "Singapore",
+		"ios_share": 42.41,
+		"android_share": 57.52,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/singapore/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 1,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "KR",
+		"country": "South Korea",
+		"ios_share": 39.32,
+		"android_share": 60.67,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/south-korea/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 3,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "FR",
+		"country": "France",
+		"ios_share": 35.83,
+		"android_share": 64.15,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/france/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 4,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/108048",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "CN",
+		"country": "China",
+		"ios_share": 30.49,
+		"android_share": 69.46,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/china/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 3,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "carrier_ecosystem"
+	},
+	{
+		"iso": "DE",
+		"country": "Germany",
+		"ios_share": 27.7,
+		"android_share": 72.29,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/germany/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 4,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/108048",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "ES",
+		"country": "Spain",
+		"ios_share": 27.25,
+		"android_share": 72.75,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/spain/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 7,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/it-it/108048",
+		"android_rcs_status": "documented_historically"
+	},
+	{
+		"iso": "BR",
+		"country": "Brazil",
+		"ios_share": 26.23,
+		"android_share": 73.76,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/brazil/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 2,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/109520",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "IN",
+		"country": "India",
+		"ios_share": 5.1,
+		"android_share": 94.84,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/india/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 1,
+		"iphone_rcs_status": "listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-ie/118609",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "AU",
+		"country": "Australia",
+		"ios_share": 62.09,
+		"android_share": 37.9,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/australia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "IT",
+		"country": "Italy",
+		"ios_share": 38.04,
+		"android_share": 61.95,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/italy/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/it-it/108048",
+		"android_rcs_status": "documented_historically"
+	},
+	{
+		"iso": "MX",
+		"country": "Mexico",
+		"ios_share": 25.89,
+		"android_share": 74.1,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/mexico/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/109520",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "TH",
+		"country": "Thailand",
+		"ios_share": 24.31,
+		"android_share": 75.65,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/thailand/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "announced_historically"
+	},
+	{
+		"iso": "TR",
+		"country": "Türkiye",
+		"ios_share": 23.22,
+		"android_share": 76.78,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/turkey/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-us/108048",
+		"android_rcs_status": "documented_historically"
+	},
+	{
+		"iso": "ID",
+		"country": "Indonesia",
+		"ios_share": 21.28,
+		"android_share": 78.68,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/indonesia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-au/109510",
+		"android_rcs_status": "confirmed"
+	},
+	{
+		"iso": "AE",
+		"country": "United Arab Emirates",
+		"ios_share": 19.29,
+		"android_share": 80.69,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/united-arab-emirates/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-ie/118609",
+		"android_rcs_status": "unverified"
+	},
+	{
+		"iso": "ZA",
+		"country": "South Africa",
+		"ios_share": 18.21,
+		"android_share": 81.78,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/south-africa/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": 0,
+		"iphone_rcs_status": "none_listed",
+		"iphone_rcs_source_url": "https://support.apple.com/en-mide/109518",
+		"android_rcs_status": "documented_historically"
+	},
+	{
+		"iso": "DK",
+		"country": "Denmark",
+		"ios_share": 67.06,
+		"android_share": 32.92,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/denmark/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "CH",
+		"country": "Switzerland",
+		"ios_share": 56.23,
+		"android_share": 43.76,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/switzerland/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "SE",
+		"country": "Sweden",
+		"ios_share": 55.59,
+		"android_share": 44.4,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/sweden/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "NO",
+		"country": "Norway",
+		"ios_share": 51.74,
+		"android_share": 48.25,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/norway/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "TW",
+		"country": "Taiwan",
+		"ios_share": 51.63,
+		"android_share": 48.36,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/taiwan/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "NZ",
+		"country": "New Zealand",
+		"ios_share": 49.29,
+		"android_share": 50.7,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/new-zealand/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "IE",
+		"country": "Ireland",
+		"ios_share": 48.09,
+		"android_share": 51.9,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/ireland/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "AT",
+		"country": "Austria",
+		"ios_share": 47.42,
+		"android_share": 52.58,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/austria/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "HK",
+		"country": "Hong Kong",
+		"ios_share": 46.44,
+		"android_share": 53.55,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/hong-kong/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "BE",
+		"country": "Belgium",
+		"ios_share": 45.35,
+		"android_share": 54.63,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/belgium/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "SA",
+		"country": "Saudi Arabia",
+		"ios_share": 42.03,
+		"android_share": 57.96,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/saudi-arabia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "DO",
+		"country": "Dominican Republic",
+		"ios_share": 41.7,
+		"android_share": 58.29,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/dominican-republic/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "LT",
+		"country": "Lithuania",
+		"ios_share": 39.66,
+		"android_share": 60.33,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/lithuania/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "UA",
+		"country": "Ukraine",
+		"ios_share": 39.36,
+		"android_share": 60.62,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/ukraine/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PL",
+		"country": "Poland",
+		"ios_share": 38.96,
+		"android_share": 61.02,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/poland/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "KW",
+		"country": "Kuwait",
+		"ios_share": 38.52,
+		"android_share": 61.46,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/kuwait/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "EE",
+		"country": "Estonia",
+		"ios_share": 38.38,
+		"android_share": 61.61,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/estonia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "VN",
+		"country": "Vietnam",
+		"ios_share": 38.27,
+		"android_share": 61.71,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/viet-nam/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "MY",
+		"country": "Malaysia",
+		"ios_share": 36.85,
+		"android_share": 63.14,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/malaysia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "KH",
+		"country": "Cambodia",
+		"ios_share": 36.48,
+		"android_share": 63.45,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/cambodia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "SI",
+		"country": "Slovenia",
+		"ios_share": 35.75,
+		"android_share": 64.25,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/slovenia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "CZ",
+		"country": "Czechia",
+		"ios_share": 33.09,
+		"android_share": 66.74,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/czech-republic/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "KZ",
+		"country": "Kazakhstan",
+		"ios_share": 32.47,
+		"android_share": 67.52,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/kazakhstan/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "FI",
+		"country": "Finland",
+		"ios_share": 31.95,
+		"android_share": 68.04,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/finland/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "NL",
+		"country": "Netherlands",
+		"ios_share": 31.55,
+		"android_share": 68.44,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/netherlands/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PA",
+		"country": "Panama",
+		"ios_share": 31.14,
+		"android_share": 68.86,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/panama/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "LV",
+		"country": "Latvia",
+		"ios_share": 30.05,
+		"android_share": 69.95,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/latvia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "GH",
+		"country": "Ghana",
+		"ios_share": 29.6,
+		"android_share": 70.36,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/ghana/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "BY",
+		"country": "Belarus",
+		"ios_share": 29.43,
+		"android_share": 70.47,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/belarus/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "MD",
+		"country": "Moldova",
+		"ios_share": 29.28,
+		"android_share": 70.71,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/moldova/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PT",
+		"country": "Portugal",
+		"ios_share": 29.24,
+		"android_share": 70.76,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/portugal/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "GR",
+		"country": "Greece",
+		"ios_share": 29.2,
+		"android_share": 70.79,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/greece/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "IL",
+		"country": "Israel",
+		"ios_share": 28.73,
+		"android_share": 71.27,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/israel/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "RU",
+		"country": "Russia",
+		"ios_share": 27.83,
+		"android_share": 72.15,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/russian-federation/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "HR",
+		"country": "Croatia",
+		"ios_share": 27.37,
+		"android_share": 72.62,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/croatia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "MA",
+		"country": "Morocco",
+		"ios_share": 26.74,
+		"android_share": 73.24,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/morocco/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "HU",
+		"country": "Hungary",
+		"ios_share": 26.58,
+		"android_share": 73.41,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/hungary/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "CO",
+		"country": "Colombia",
+		"ios_share": 26.32,
+		"android_share": 73.68,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/colombia/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "RO",
+		"country": "Romania",
+		"ios_share": 26.17,
+		"android_share": 73.8,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/romania/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "SK",
+		"country": "Slovakia",
+		"ios_share": 25.62,
+		"android_share": 74.37,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/slovakia-%28slovak-republic%29/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "GT",
+		"country": "Guatemala",
+		"ios_share": 25.13,
+		"android_share": 74.86,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/guatemala/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "BG",
+		"country": "Bulgaria",
+		"ios_share": 22.4,
+		"android_share": 77.59,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/bulgaria/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "CL",
+		"country": "Chile",
+		"ios_share": 20.72,
+		"android_share": 79.28,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/chile/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "QA",
+		"country": "Qatar",
+		"ios_share": 18.86,
+		"android_share": 81.13,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/qatar/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "NI",
+		"country": "Nicaragua",
+		"ios_share": 17.95,
+		"android_share": 82.04,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/nicaragua/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "UZ",
+		"country": "Uzbekistan",
+		"ios_share": 17.93,
+		"android_share": 82.06,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/uzbekistan/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "EG",
+		"country": "Egypt",
+		"ios_share": 17.85,
+		"android_share": 82.13,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/egypt/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PE",
+		"country": "Peru",
+		"ios_share": 17.33,
+		"android_share": 82.66,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/peru/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "AR",
+		"country": "Argentina",
+		"ios_share": 14.22,
+		"android_share": 85.77,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/argentina/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PH",
+		"country": "Philippines",
+		"ios_share": 13.71,
+		"android_share": 86.28,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/philippines/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "NG",
+		"country": "Nigeria",
+		"ios_share": 13.31,
+		"android_share": 86.58,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/nigeria/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "IR",
+		"country": "Iran",
+		"ios_share": 9.3,
+		"android_share": 90.68,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/iran/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "PK",
+		"country": "Pakistan",
+		"ios_share": 8.38,
+		"android_share": 91.57,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/pakistan/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	},
+	{
+		"iso": "KE",
+		"country": "Kenya",
+		"ios_share": 4.74,
+		"android_share": 94.91,
+		"os_unit": "percent of mobile web page views",
+		"os_date": "2026-10",
+		"os_source_url": "https://gs.statcounter.com/os-market-share/mobile/kenya/#monthly-202610-202610",
+		"iphone_rcs_carriers_listed": null,
+		"iphone_rcs_status": null,
+		"iphone_rcs_source_url": null,
+		"android_rcs_status": null
+	}
+]
+</script>
+<script>
+const tip = document.getElementById('tip');
+function place(el) {
+	tip.textContent = el.dataset.tip;
+	tip.hidden = false;
+	const r = el.getBoundingClientRect();
+	const t = tip.getBoundingClientRect();
+	const left = Math.min(Math.max(8, r.left + r.width / 2 - t.width / 2), innerWidth - t.width - 8);
+	const top = r.top - t.height - 8 > 8 ? r.top - t.height - 8 : r.bottom + 8;
+	tip.style.left = left + 'px';
+	tip.style.top = top + 'px';
+}
+function hide() { tip.hidden = true; }
+document.addEventListener('pointerover', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('focusin', (e) => {
+	const el = e.target.closest('[data-tip]');
+	el ? place(el) : hide();
+});
+document.addEventListener('scroll', hide, { passive: true });
+</script>
+</body>
+</html>
