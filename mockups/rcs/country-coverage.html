@@ -74,8 +74,12 @@ table.matrix { border-collapse: collapse; width: 100%; font-size: 14px; }
 .matrix .market small { display: block; font-weight: 400; color: var(--ink-2); }
 .cell { display: flex; gap: 6px; align-items: flex-start; }
 .cell svg { flex: none; margin-top: 2px; }
+.cell span { min-width: 0; overflow-wrap: anywhere; }
 .cell small { display: block; color: var(--ink-2); }
-.matrix td { width: 25%; }
+.matrix .market { width: 20%; }
+.matrix td:nth-child(2) { width: 24%; }
+.matrix td:nth-child(3) { width: 31%; }
+.matrix td:nth-child(4) { width: 25%; }
 @media (max-width: 480px) { .matrix .market small { display: none; } .matrix { font-size: 13px; } .matrix th, .matrix td { padding: 8px 3px; } .cell { flex-direction: column; gap: 2px; } }
 </style>
 </head>
