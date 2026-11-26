@@ -1,0 +1,293 @@
+{
+	"as_of": "2026-11-26",
+	"apps": [
+		{
+			"app": "WhatsApp",
+			"mau": {
+				"value": 3000000000,
+				"unit": "monthly active users",
+				"date": "2025-04-30",
+				"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Meta earnings call milestone."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Facebook Messenger",
+			"mau": {
+				"value": 1000000000,
+				"unit": "monthly active users",
+				"date": "2025-04-30",
+				"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q1/Transcripts/META-Q1-2025-Earnings-Call-Transcript-1.pdf",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Meta earnings call milestone."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Instagram DMs",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf",
+				"confidence": null,
+				"note": "Meta disclosed Instagram-wide monthly activity. The number of people using direct messages was undisclosed."
+			},
+			"related_metrics": [
+				{
+					"value": 3000000000,
+					"unit": "monthly active users",
+					"date": "2025-10-29",
+					"source_url": "https://s21.q4cdn.com/399680738/files/doc_financials/2025/q3/META-Q3-2025-Earnings-Call-Transcript.pdf",
+					"confidence": "vendor-claim",
+					"note": "Whole Instagram platform, including non-messaging activity."
+				}
+			]
+		},
+		{
+			"app": "WeChat / Weixin",
+			"mau": {
+				"value": 1449000000,
+				"unit": "monthly active accounts",
+				"date": "2026-09-30",
+				"source_url": "https://www.tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf",
+				"confidence": "vendor-claim",
+				"note": "Combined Weixin and WeChat accounts. Includes other activity such as Moments and games."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Telegram",
+			"mau": {
+				"value": 1000000000,
+				"unit": "monthly active users",
+				"date": "2025-03-19",
+				"source_url": "https://t.me/s/durov/404",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "Founder described the count as significantly above this floor."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Snapchat",
+			"mau": {
+				"value": 977000000,
+				"unit": "monthly active users",
+				"date": "2026-Q3",
+				"source_url": "https://investor.snap.com/news/news-details/2026/Snap-Inc--Announces-Third-Quarter-2026-Financial-Results/default.aspx",
+				"confidence": "vendor-claim",
+				"note": "Quarter average. Covers all Snapchat activity."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "QQ",
+			"mau": {
+				"value": 533000000,
+				"unit": "monthly active mobile accounts",
+				"date": "2026-09-30",
+				"source_url": "https://www.tencent.com/wp-content/uploads/2026/11/Tencent-Announces-2026-Third-Quarter-Results.pdf",
+				"confidence": "vendor-claim",
+				"note": "Mobile device metric. Includes non-messaging QQ activity."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "LINE",
+			"mau": {
+				"value": 193000000,
+				"unit": "monthly active users",
+				"date": "2026-03-31",
+				"source_url": "https://www.lycorp.co.jp/ja/company/global/",
+				"confidence": "vendor-claim",
+				"note": "Worldwide app figure. Includes activity outside chat."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "MAX",
+			"mau": {
+				"value": 109000000,
+				"unit": "monthly active users",
+				"date": "2026-10",
+				"source_url": "https://vk.company.ru/ru/investors/info/12477/",
+				"confidence": "vendor-claim",
+				"qualifier": "more_than",
+				"note": "VK's service-wide monthly audience."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Zalo",
+			"mau": {
+				"value": 82600000,
+				"unit": "monthly active users",
+				"date": "2026-09-30",
+				"source_url": "https://ir.vng.com.vn/vi/financials/earnings-release/q3-2026",
+				"confidence": "vendor-claim",
+				"note": "VNG platform-wide monthly figure. Geographic split undisclosed."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Signal",
+			"mau": {
+				"value": 70000000,
+				"unit": "monthly active users",
+				"date": "2026-02-01",
+				"source_url": "https://prod.transcripts.cnn.com/show/fzgps/date/2026-02-01/segment/01",
+				"confidence": "estimate",
+				"qualifier": "approximately",
+				"note": "CNN's estimate in its interview introduction. The methodology and developer count were undisclosed."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "KakaoTalk",
+			"mau": {
+				"value": 54944000,
+				"unit": "monthly active users",
+				"date": "2026-Q3",
+				"source_url": "https://t1.kakaocdn.net/kakaocorp/admin/ir/event/6126.pdf#page=14",
+				"confidence": "vendor-claim",
+				"note": "Average of monthly values across the quarter. Includes South Korea."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Viber",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39",
+				"confidence": null,
+				"note": "Rakuten's latest disclosed total is registrations. A current global monthly activity count was unavailable."
+			},
+			"related_metrics": [
+				{
+					"value": 1670000000,
+					"unit": "registered users",
+					"date": "2026-09-30",
+					"source_url": "https://global.rakuten.com/corp/investors/assets/doc/documents/26Q3PPT_E.pdf#page=39",
+					"confidence": "vendor-claim",
+					"note": "Rakuten Viber registrations."
+				}
+			]
+		},
+		{
+			"app": "iMessage",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/104972",
+				"confidence": null,
+				"note": "Apple's global monthly user count is undisclosed. The available device totals and estimates based on default app availability cannot establish how many people used iMessage."
+			},
+			"related_metrics": [
+				{
+					"value": 2500000000,
+					"unit": "active Apple devices",
+					"date": "2026-01-29",
+					"source_url": "https://www.apple.com/newsroom/2026/01/apple-reports-first-quarter-results/",
+					"confidence": "vendor-claim",
+					"qualifier": "more_than",
+					"note": "Installed base across Apple devices. People can own several devices."
+				}
+			]
+		},
+		{
+			"app": "Apple Messages",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/104972",
+				"confidence": null,
+				"note": "Apple does not disclose monthly active users of the client across iMessage, RCS and SMS/MMS."
+			},
+			"related_metrics": []
+		},
+		{
+			"app": "Google Messages",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+				"confidence": null,
+				"note": "A current global app-wide monthly user count was unavailable."
+			},
+			"related_metrics": [
+				{
+					"value": 1000000000,
+					"unit": "monthly active Google Messages users with RCS enabled",
+					"date": "2023-11-30",
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/",
+					"confidence": "vendor-claim",
+					"qualifier": "more_than",
+					"note": "Historical milestone for the enabled subset. The announcement does not specify whether users sent RCS in the month."
+				}
+			]
+		},
+		{
+			"app": "RCS",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/",
+				"confidence": null,
+				"note": "A current, observed global monthly active user count covering all RCS clients and carriers was unavailable."
+			},
+			"related_metrics": [
+				{
+					"value": 3800000000,
+					"unit": "projected global active RCS users",
+					"date": "2026-12-31",
+					"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+					"confidence": "estimate",
+					"qualifier": "more_than",
+					"note": "End-of-2026 industry forecast cited by GSMA. Activity window unspecified."
+				},
+				{
+					"value": 1000000000,
+					"unit": "RCS messages sent per day in the United States",
+					"date": "2025-05-13",
+					"source_url": "https://blog.google/products-and-platforms/platforms/android/billion-rcs-messages/",
+					"confidence": "vendor-claim",
+					"qualifier": "more_than",
+					"note": "Google's U.S. message volume milestone. Geography is the United States."
+				}
+			]
+		},
+		{
+			"app": "SMS/MMS",
+			"mau": {
+				"value": null,
+				"unit": "monthly active users",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/104972",
+				"confidence": null,
+				"note": "SMS and MMS are carrier protocols. A current, deduplicated global monthly user count was unavailable."
+			},
+			"related_metrics": [
+				{
+					"value": 2200000000000,
+					"unit": "SMS and MMS messages in the United States per year",
+					"date": "2024",
+					"source_url": "https://api.ctia.org/wp-content/uploads/2025/09/2025-Annual-Survey-Highlights.pdf",
+					"confidence": "measured",
+					"qualifier": "nearly",
+					"note": "CTIA annual carrier survey, published in 2025."
+				}
+			]
+		}
+	]
+}
