@@ -389,7 +389,7 @@ def build_patchwork() -> str:
 		f'<td>{a(r["source_url"], host(r["source_url"]))}</td></tr>'
 		for r in rows
 	)
-	body = f"""<h1>Cross a border and the default chat app changes: {distinct} different apps lead across {len(countries)} markets</h1>
+	body = f"""<h1>{distinct} apps lead in {len(leading)} of {len(countries)} researched markets</h1>
 <p class="caption">Leading messaging app in each market, grouped by region. WhatsApp leads in {app_counts['WhatsApp']} of {len(countries)}, but Messenger, Telegram, LINE, Viber, KakaoTalk, WeChat, Zalo, MAX and Snapchat each lead somewhere. The percentage is the leading app’s share where a figure exists ({with_share} of {len(countries)} markets).</p>
 <ul class="stat">
 	<li><b>{distinct}</b>different leading apps</li>
@@ -409,7 +409,7 @@ def build_patchwork() -> str:
 	<h3>How to read the percentages</h3>
 	<p>Unmarked figures: percent of internet users aged 16+ who used the app in the past month (GWI survey, Q2 2026, via DataReportal Digital 2027). Figures marked * use a different base: Australia (adults messaging in the past seven days, 2025), United Kingdom (adults 18+ visiting in the month, 2025), South Korea (surveyed messenger users, 2025), Taiwan (most-used messenger, 2025), Ukraine (Gradus respondents, 2026), Kuwait and Qatar (estimated business-messaging reach, Infobip). Hover or focus a tile for the exact unit.</p>
 	<h3>Data gaps</h3>
-	<p>{len(countries) - with_share} markets have a leading app but no comparable share. Hatched tiles rest on Android-only app rankings or published rankings with unspecified methods. Iran has no reliable current ranking. App audiences overlap, so shares do not add up, and default SMS/RCS texting is excluded from these rankings. ⊘ marks markets with recorded blocks or calling restrictions (dated observations, not a full list).</p>
+	<p>{len(countries) - with_share} markets lack a share figure, including one without a reliable ranking. Hatched tiles rest on Android-only app rankings or published rankings with unspecified methods. Iran has no reliable current ranking. App audiences overlap, so shares do not add up, and default SMS/RCS texting is excluded from these rankings. ⊘ marks markets with recorded blocks or calling restrictions (dated observations, not a full list).</p>
 	<h3>Sources (leading-app ranking, markets per publisher)</h3>
 	{publisher_list([r['source_url'] for r in rows])}
 	<p>Each market’s exact report link is in the table view.</p>
@@ -643,8 +643,8 @@ def build_split() -> str:
 		return f'<section class="{cls}"><h2>{title} <span>· {len(members)} markets</span></h2><p>{note}</p><div class="rows">{"".join(html)}</div></section>'
 
 	iphone_majority = [c['country_name'] for c, _ in unresearched + unlisted if c['ios_share']['value'] > 50]
-	body = f"""<h1>iPhone-to-Android RCS works on listed carriers in just {len(listed)} of {len(countries)} markets. The rest are unlisted or unchecked.</h1>
-<p class="caption">Each bar shows how a country’s phones split between iOS and Android. Every iPhone–Android conversation needs RCS on both ends. Apple’s carrier directory confirms iPhone RCS on named carriers in {len(listed)} markets, lists none in {len(unlisted)}, and the other {len(unresearched)} markets have not been checked.</p>
+	body = f"""<h1>Apple lists iPhone RCS carriers in {len(listed)} of {len(countries)} markets in this dataset. Most have not been researched.</h1>
+<p class="caption">Each bar shows the iOS and Android shares of mobile web page views. Every iPhone–Android conversation needs RCS on both ends. Apple’s carrier directory confirms iPhone RCS on named carriers in {len(listed)} markets, lists none in {len(unlisted)}, and the other {len(unresearched)} markets have not been checked.</p>
 <ul class="stat">
 	<li><b>{len(listed)}</b>markets with iPhone RCS carriers listed</li>
 	<li><b>{len(unlisted)}</b>researched, no iPhone RCS carrier listed</li>
@@ -656,8 +656,8 @@ def build_split() -> str:
 	<li>Gap between bars = other operating systems</li>
 </ul>
 <div class="chart">
-{group('iPhone RCS carriers listed', 'Apple lists at least one local carrier with iPhone RCS. RCS still needs both people to have it enabled, and only listed carriers qualify.', listed)}
-{group('Researched, no iPhone RCS carrier listed', 'Apple’s directory lists no local carrier with iPhone RCS. iPhone users here fall back to SMS or a third-party app when texting Android.', unlisted)}
+{group('iPhone RCS carriers listed', 'Apple lists at least one local carrier with iPhone RCS. RCS still needs both people to have it enabled, and carrier support and eligibility can vary.', listed)}
+{group('Researched, no iPhone RCS carrier listed', 'Apple’s directory lists no local carrier with iPhone RCS. This directory is not a complete availability test.', unlisted)}
 {group('Not researched for RCS', 'No carrier or device check exists in this dataset. Unknown, not unavailable.', unresearched)}
 </div>
 <footer>
