@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>RCS adoption timeline</title>
+	<style>
+:root {
+	color-scheme: light dark;
+	--surface: #f7f6f3;
+	--surface-2: #ecebe6;
+	--ink: #1c1917;
+	--ink-2: #57534e;
+	--rule: #dcdad3;
+	--bar: #2a78d6;
+	--bar-soft: #86b6ef;
+	--live: #0ca30c;
+	--partial: #fab219;
+	--gap: #8a857c;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--surface: #1a1a19;
+		--surface-2: #262624;
+		--ink: #f5f5f4;
+		--ink-2: #c3c2b7;
+		--rule: #3a3a37;
+		--bar: #3987e5;
+		--bar-soft: #184f95;
+		--gap: #8f8b82;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--surface);
+	color: var(--ink);
+	font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+h1, h2, .year {
+	font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, serif;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+}
+h1 { font-size: clamp(30px, 7vw, 48px); margin: 8px 0 16px; text-wrap: balance; }
+h2 { font-size: 24px; margin: 48px 0 12px; }
+.eyebrow { font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); margin: 0; }
+.caption { color: var(--ink-2); max-width: 62ch; margin: 0 0 24px; }
+.muted { color: var(--ink-2); }
+small, .small { font-size: 13px; line-height: 1.45; }
+a { color: inherit; text-underline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--ink-2); margin: 0 0 24px; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.gaps { margin-top: 48px; padding: 16px 20px; border: 1px dashed var(--gap); border-radius: 10px; }
+.gaps h2 { margin-top: 0; font-size: 20px; }
+.gaps ul, .sources ul { padding-left: 18px; margin: 0; }
+.sources li { font-size: 13px; line-height: 1.45; margin: 4px 0; overflow-wrap: anywhere; }
+details { margin-top: 32px; }
+summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; font-size: 13px; width: 100%; }
+table.data th, table.data td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+svg { display: block; overflow: visible; }
+
+.year { font-size: 40px; margin: 40px 0 8px; color: var(--ink); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.row .when { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.event .what { display: flex; gap: 8px; align-items: baseline; }
+.event .what svg { flex: none; transform: translateY(2px); }
+.event.key .what { font-weight: 650; }
+.tag { font-size: 12px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 99px; padding: 0 8px; white-space: nowrap; }
+.figure .value { font-weight: 650; font-variant-numeric: tabular-nums; }
+.figure .label { color: var(--ink-2); font-size: 14px; }
+.figure svg { margin: 6px 0 2px; }
+.figure.missing .value { font-weight: 600; }
+.figure .meta { font-size: 12px; color: var(--ink-2); }
+.overview { width: 100%; max-width: 600px; height: auto; margin: 0 0 32px; font-size: 11px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.overview .strong { fill: var(--ink); font-weight: 600; }
+@media (min-width: 640px) { .row { grid-template-columns: 104px 1fr; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-bar" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="5" height="5" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="5" style="stroke:var(--bar)" stroke-width="2.4"/>
+		</pattern>
+		<pattern id="hatch-ink" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--ink-2)" stroke-width="1.6"/>
+		</pattern>
+		<pattern id="hatch-live" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--live)" stroke-width="2"/>
+		</pattern>
+		<pattern id="hatch-partial" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--partial)" stroke-width="2"/>
+		</pattern>
+	</defs>
+</svg>
+<main>
+<p class="eyebrow">RCS adoption, 2019 to 26 Nov 2026</p>
+<h1>More than 1 billion monthly Google Messages users had RCS on by 2023. Then the iPhone joined in 2024.</h1>
+<p class="caption">Each dot and bar is one published figure, drawn to the same scale (full width = 6 billion, the largest figure). The figures count different things — users, capable devices, connections — so they are not joined into one line. Forecasts and models are estimates.</p>
+<ul class="legend" aria-label="Confidence key"><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:var(--bar)"/></svg>Measured</li><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>Vendor claim</li><li><svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>Estimate</li></ul>
+<svg class="overview" viewBox="0 0 400 230" role="img" aria-label="Dot plot of published RCS user and capability figures from 2019 to 2026, rising from 300 million to 6 billion. Points are not connected because definitions differ."><line x1="34" x2="388" y1="206.0" y2="206.0" style="stroke:var(--rule)" stroke-width="1"/><text x="28" y="209.5" text-anchor="end">0B</text><line x1="34" x2="388" y1="142.0" y2="142.0" style="stroke:var(--rule)" stroke-width="1"/><text x="28" y="145.5" text-anchor="end">2B</text><line x1="34" x2="388" y1="78.0" y2="78.0" style="stroke:var(--rule)" stroke-width="1"/><text x="28" y="81.5" text-anchor="end">4B</text><line x1="34" x2="388" y1="14.0" y2="14.0" style="stroke:var(--rule)" stroke-width="1"/><text x="28" y="17.5" text-anchor="end">6B</text><text x="56.1" y="224" text-anchor="middle">2019</text><text x="100.4" y="224" text-anchor="middle">2020</text><text x="144.6" y="224" text-anchor="middle">2021</text><text x="188.9" y="224" text-anchor="middle">2022</text><text x="233.1" y="224" text-anchor="middle">2023</text><text x="277.4" y="224" text-anchor="middle">2024</text><text x="321.6" y="224" text-anchor="middle">2025</text><text x="365.9" y="224" text-anchor="middle">2026</text><line x1="286.6" x2="286.6" y1="14" y2="206" style="stroke:var(--ink-2)" stroke-width="1"/><text x="290.6" y="200" class="strong">iPhone joins</text><circle cx="72.7" cy="196.4" r="5" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"><title>300 million monthly rcs users (Nov 2019, vendor claim, Infobip via GSMA)</title></circle><circle cx="142.8" cy="170.8" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>About 1.1 billion connections able to receive rcs (Jun 2021, estimate, GSMA Intelligence)</title></circle><circle cx="188.9" cy="167.6" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>1.2 billion rcs-capable subscribers (2022, estimate, Juniper Research)</title></circle><circle cx="233.1" cy="119.6" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>2.7 billion connections able to receive rcs (2023, estimate, GSMA Intelligence)</title></circle><circle cx="233.1" cy="176.2" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>930 million active rcs users (2023, estimate, Juniper Research)</title></circle><circle cx="216.5" cy="190.0" r="5" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"><title>About 500 million monthly rcs users (27 Feb 2023, vendor claim, Google)</title></circle><circle cx="227.6" cy="180.4" r="5" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"><title>More than 800 million people with rcs (May 2023, vendor claim, Google)</title></circle><circle cx="249.7" cy="174.0" r="5" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"><title>More than 1 billion google messages monthly users with rcs on (30 Nov 2023, vendor claim, Google)</title></circle><circle cx="277.4" cy="170.8" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>1.1 billion active rcs users (2024, estimate, Juniper Research)</title></circle><circle cx="277.4" cy="184.7" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>666 million people reachable by rcs business messages (2024, estimate, Omdia)</title></circle><circle cx="321.6" cy="116.7" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>2.79 billion rcs users, incl. modeled iphone uplift (2025, estimate, Mobilesquared)</title></circle><circle cx="365.9" cy="84.4" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>3.8 billion rcs-capable subscribers (2026, estimate, Juniper Research)</title></circle><circle cx="372.9" cy="84.4" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>More than 3.8 billion active rcs users, year-end projection (2026, estimate, GSMA Industry Services)</title></circle><circle cx="367.7" cy="14.0" r="5" style="fill:var(--surface);stroke:var(--bar)" stroke-width="1.5" stroke-dasharray="3 2"><title>About 6 billion rcs-capable devices (Jul 2026, estimate, GSMA Industry Services)</title></circle><text x="80.7" y="188.4" text-anchor="start" class="strong">300 million users</text><text x="243.7" y="154.0" text-anchor="end" class="strong">&gt;1 billion Google Messages</text><text x="358.7" y="18.0" text-anchor="end" class="strong">6 billion capable devices</text></svg>
+<ul class="legend"><li><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg>Milestone (vendor announcement)</li><li><span class="tag">Global</span> Where it applies</li></ul>
+<h2 class="year">2019</h2>
+<ol class="rows">
+<li class="row event" title="Google starts broad US rollout after enabling chat features in the UK, France and Mexico.">
+	<span class="when">14 Nov 2019</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Google starts broad RCS rollout in the US <span class="tag">US</span> <a class="small muted" href="https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/">Google</a></span></div>
+</li>
+<li class="row event" title="Infobip’s snapshot. Counts launches without a Universal Profile version breakdown.">
+	<span class="when">Nov 2019</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>81 operator launches in 55 countries <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf">Infobip via GSMA</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">Nov 2019</span>
+	<div>
+		<span class="value">300 million</span> <span class="label">Monthly RCS users</span>
+		<svg width="100%" height="16" role="img" aria-label="300 million users: Monthly RCS users. Reported, vendor claim, Infobip via GSMA, Nov 2019. Infobip’s global snapshot labels these monthly users. Activity and deduplication methods are undisclosed."><title>300 million users: Monthly RCS users. Reported, vendor claim, Infobip via GSMA, Nov 2019. Infobip’s global snapshot labels these monthly users. Activity and deduplication methods are undisclosed.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="5.000%" height="12.5" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>
+		<span class="meta">Reported · Vendor claim · <a href="https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf">Infobip via GSMA</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2020</h2>
+<ol class="rows">
+<li class="row event" title="GSMA launch map headline. The operator table was updated July 8.">
+	<span class="when">Jun 2020</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>90 operator launches in 60 countries <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/">GSMA</a></span></div>
+</li>
+<li class="row event key" title="Google declares global Android rollout through carriers or Google itself, subject to device and provider eligibility. One-to-one encryption enters beta.">
+	<span class="when">19 Nov 2020</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Google Messages RCS goes global on Android <span class="tag">Global</span> <a class="small muted" href="https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/">Google</a></span></div>
+</li>
+</ol><h2 class="year">2021</h2>
+<ol class="rows">
+<li class="row event" title="Google announces end-to-end encryption for eligible one-to-one Google Messages chats.">
+	<span class="when">15 Jun 2021</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>End-to-end encryption for one-to-one Google Messages chats <span class="tag">Global</span> <a class="small muted" href="https://www.youtube.com/watch?v=oB70suAIF6A">Google (video)</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">Jun 2021</span>
+	<div>
+		<span class="value">About 1.1 billion</span> <span class="label">Connections able to receive RCS</span>
+		<svg width="100%" height="16" role="img" aria-label="About 1.1 billion connections: Connections able to receive RCS. Model, estimate, GSMA Intelligence, Jun 2021. GSMA Intelligence estimate of connections able to receive an RCS message."><title>About 1.1 billion connections: Connections able to receive RCS. Model, estimate, GSMA Intelligence, Jun 2021. GSMA Intelligence estimate of connections able to receive an RCS message.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="18.333%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Model · Estimate · <a href="https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&amp;reportId=54187">GSMA Intelligence</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2022</h2>
+<ol class="rows">
+<li class="row figure">
+	<span class="when">2022</span>
+	<div>
+		<span class="value">1.2 billion</span> <span class="label">RCS-capable subscribers</span>
+		<svg width="100%" height="16" role="img" aria-label="1.2 billion subscribers: RCS-capable subscribers. Forecast, estimate, Juniper Research, 2022. Juniper forecast published in February 2022."><title>1.2 billion subscribers: RCS-capable subscribers. Forecast, estimate, Juniper Research, 2022. Juniper forecast published in February 2022.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="20.000%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/">Juniper Research</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2023</h2>
+<ol class="rows">
+<li class="row figure">
+	<span class="when">27 Feb 2023</span>
+	<div>
+		<span class="value">About 500 million</span> <span class="label">Monthly RCS users</span>
+		<svg width="100%" height="16" role="img" aria-label="About 500 million users: Monthly RCS users. Reported, vendor claim, Google, 27 Feb 2023. Google described people using RCS each month. It did not publish a counting method."><title>About 500 million users: Monthly RCS users. Reported, vendor claim, Google, 27 Feb 2023. Google described people using RCS each month. It did not publish a counting method.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="8.333%" height="12.5" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>
+		<span class="meta">Reported · Vendor claim · <a href="https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/">Google</a></span>
+	</div>
+</li>
+<li class="row event" title="Vodafone announces Google Messages as the default on applicable Android devices and plans a Jibe Cloud migration.">
+	<span class="when">Feb 2023</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Vodafone makes Google Messages the Android default <span class="tag">Europe</span> <a class="small muted" href="https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google">Vodafone</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">May 2023</span>
+	<div>
+		<span class="value">More than 800 million</span> <span class="label">People with RCS</span>
+		<svg width="100%" height="16" role="img" aria-label="More than 800 million people: People with RCS. Reported, vendor claim, Google, May 2023. Google reported people with RCS, without specifying a monthly activity window."><title>More than 800 million people: People with RCS. Reported, vendor claim, Google, May 2023. Google reported people with RCS, without specifying a monthly activity window.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="13.333%" height="12.5" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>
+		<span class="meta">Reported · Vendor claim · <a href="https://blog.google/products-and-platforms/platforms/android/android-updates-io-2023/">Google</a></span>
+	</div>
+</li>
+<li class="row event" title="Google Messages enables RCS by default for eligible users who have not switched it off and extends end-to-end encryption to eligible Google Messages group chats.">
+	<span class="when">8 Aug 2023</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>RCS on by default in Google Messages; encrypted group chats <span class="tag">Global</span> <a class="small muted" href="https://support.google.com/messages/thread/229405182?hl=en">Google</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">30 Nov 2023</span>
+	<div>
+		<span class="value">More than 1 billion</span> <span class="label">Google Messages monthly users with RCS on</span>
+		<svg width="100%" height="16" role="img" aria-label="More than 1 billion users: Google Messages monthly users with RCS on. Reported, vendor claim, Google, 30 Nov 2023. Monthly active in Google Messages with RCS enabled. RCS send or receive activity is unspecified."><title>More than 1 billion users: Google Messages monthly users with RCS on. Reported, vendor claim, Google, 30 Nov 2023. Monthly active in Google Messages with RCS enabled. RCS send or receive activity is unspecified.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="16.667%" height="12.5" rx="3" fill="url(#hatch-bar)" style="stroke:var(--bar)" stroke-width="1.5"/></svg>
+		<span class="meta">Reported · Vendor claim · <a href="https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/">Google</a></span>
+	</div>
+</li>
+<li class="row figure">
+	<span class="when">2023</span>
+	<div>
+		<span class="value">2.7 billion</span> <span class="label">Connections able to receive RCS</span>
+		<svg width="100%" height="16" role="img" aria-label="2.7 billion connections: Connections able to receive RCS. Forecast, estimate, GSMA Intelligence, 2023. GSMA Intelligence forecast published in June 2021 for year-end 2023."><title>2.7 billion connections: Connections able to receive RCS. Forecast, estimate, GSMA Intelligence, 2023. GSMA Intelligence forecast published in June 2021 for year-end 2023.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="45.000%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&amp;reportId=54187">GSMA Intelligence</a></span>
+	</div>
+</li>
+<li class="row figure">
+	<span class="when">2023</span>
+	<div>
+		<span class="value">930 million</span> <span class="label">Active RCS users</span>
+		<svg width="100%" height="16" role="img" aria-label="930 million users: Active RCS users. Model, estimate, Juniper Research, 2023. Juniper September 2023 baseline. The release gives no monthly activity definition."><title>930 million users: Active RCS users. Model, estimate, Juniper Research, 2023. Juniper September 2023 baseline. The release gives no monthly activity definition.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="15.500%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Model · Estimate · <a href="https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/">Juniper Research</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2024</h2>
+<ol class="rows">
+<li class="row event key" title="Apple adds personal RCS to Messages with iOS 18 where carriers support it.">
+	<span class="when">16 Sep 2024</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>iPhone gets RCS with iOS 18, where carriers support it <span class="tag">Global</span> <a class="small muted" href="https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/">Apple</a></span></div>
+</li>
+<li class="row event" title="Apple adds carrier-dependent RCS Business Messaging in iOS 18.1.">
+	<span class="when">Oct 2024</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>iOS 18.1 adds RCS business messages <span class="tag">Global</span> <a class="small muted" href="https://support.apple.com/en-us/121161">Apple</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">2024</span>
+	<div>
+		<span class="value">1.1 billion</span> <span class="label">Active RCS users</span>
+		<svg width="100%" height="16" role="img" aria-label="1.1 billion users: Active RCS users. Forecast, estimate, Juniper Research, 2024. Juniper September 2023 study forecast for 2024."><title>1.1 billion users: Active RCS users. Forecast, estimate, Juniper Research, 2024. Juniper September 2023 study forecast for 2024.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="18.333%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/">Juniper Research</a></span>
+	</div>
+</li>
+<li class="row figure">
+	<span class="when">2024</span>
+	<div>
+		<span class="value">666 million</span> <span class="label">People reachable by RCS business messages</span>
+		<svg width="100%" height="16" role="img" aria-label="666 million users: People reachable by RCS business messages. Model, estimate, Omdia, 2024. Omdia’s 2024 model counts people with RCS-capable devices connected to networks that have enabled RCS business messaging."><title>666 million users: People reachable by RCS business messages. Model, estimate, Omdia, 2024. Omdia’s 2024 model counts people with RCS-capable devices connected to networks that have enabled RCS business messaging.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="11.100%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Model · Estimate · <a href="https://omdia.tech.informa.com/-/media/tech/omdia/marketing/commissioned-research/pdfs/rcs-igniting-business-messaging-with-rich-conversations.pdf?rev=8500fa80f4834d8496a473fb6ca4b014">Omdia</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2025</h2>
+<ol class="rows">
+<li class="row event" title="GSMA announces Universal Profile 3.0 specifications, including interoperable encryption based on Messaging Layer Security.">
+	<span class="when">14 Mar 2025</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Universal Profile 3.0 adds cross-platform encryption spec <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/">GSMA</a></span></div>
+</li>
+<li class="row event" title="KDDI launches iPhone RCS for au, UQ mobile and povo1.0.">
+	<span class="when">1 Apr 2025</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>KDDI (au, UQ, povo) turns on iPhone RCS in Japan <span class="tag">JP</span> <a class="small muted" href="https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html">KDDI</a></span></div>
+</li>
+<li class="row event" title="GSMA announces Universal Profile 3.1 with audio messaging and onboarding updates.">
+	<span class="when">25 Jul 2025</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Universal Profile 3.1: audio messages, onboarding <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/">GSMA</a></span></div>
+</li>
+<li class="row event" title="LG U+, KT and SK Telecom add iPhone RCS with iOS 26.">
+	<span class="when">Sep 2025</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Korea’s three carriers add iPhone RCS with iOS 26 <span class="tag">KR</span> <a class="small muted" href="https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&amp;pageNo=1">LG U+</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">2025</span>
+	<div>
+		<span class="value">2.79 billion</span> <span class="label">RCS users, incl. modeled iPhone uplift</span>
+		<svg width="100%" height="16" role="img" aria-label="2.79 billion users: RCS users, incl. modeled iPhone uplift. Forecast, estimate, Mobilesquared, 2025. September 2024 forecast including modeled iOS uplift. The public slide does not define a monthly activity window."><title>2.79 billion users: RCS users, incl. modeled iPhone uplift. Forecast, estimate, Mobilesquared, 2025. September 2024 forecast including modeled iOS uplift. The public slide does not define a monthly activity window.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="46.500%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf">Mobilesquared</a></span>
+	</div>
+</li>
+</ol><h2 class="year">2026</h2>
+<ol class="rows">
+<li class="row event" title="GSMA announces Universal Profile 4.0, including richer text, media and a path to video calls. These are specification capabilities.">
+	<span class="when">26 Mar 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Universal Profile 4.0: richer text, media, path to video <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/">GSMA</a></span></div>
+</li>
+<li class="row event key" title="Apple and Google begin a default-on cross-platform encryption beta for eligible iOS 26.5 and Google Messages users.">
+	<span class="when">11 May 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Encrypted iPhone–Android RCS begins in beta <span class="tag">Global</span> <a class="small muted" href="https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/">Apple</a></span></div>
+</li>
+<li class="row event" title="US Samsung Messages end of service takes effect for Galaxy devices running Android 12 or newer.">
+	<span class="when">6 Jul 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Samsung Messages retired in the US (Android 12+) <span class="tag">US</span> <a class="small muted" href="https://www.samsung.com/us/support/troubleshoot/TSG10010566/">Samsung</a></span></div>
+</li>
+<li class="row event" title="GSMA publishes Universal Profile 4.1 with encryption interoperability refinements.">
+	<span class="when">21 Jul 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Universal Profile 4.1 refines encryption interop <span class="tag">Global</span> <a class="small muted" href="https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rich-communication-service-rcs-july-2026-publications/">GSMA</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">Jul 2026</span>
+	<div>
+		<span class="value">About 6 billion</span> <span class="label">RCS-capable devices</span>
+		<svg width="100%" height="16" role="img" aria-label="About 6 billion devices: RCS-capable devices. Model, estimate, GSMA Industry Services, Jul 2026. GSMA Industry Services cites GSMA Intelligence and reports this approximate total. Published platform subtotals do not reconcile with the total."><title>About 6 billion devices: RCS-capable devices. Model, estimate, GSMA Industry Services, Jul 2026. GSMA Industry Services cites GSMA Intelligence and reports this approximate total. Published platform subtotals do not reconcile with the total.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="100.000%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Model · Estimate · <a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a></span>
+	</div>
+</li>
+<li class="row event" title="NTT DOCOMO starts native carrier RCS service and gradually replaces Jibe as the Android provider. Its iPhone path requires iOS 27.">
+	<span class="when">24 Aug 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>NTT DOCOMO runs its own RCS; iPhone path needs iOS 27 <span class="tag">JP</span> <a class="small muted" href="https://www.docomo.ne.jp/info/notice/page/260513_00.html">NTT DOCOMO</a></span></div>
+</li>
+<li class="row event" title="Apple documents inline replies and Tapbacks in iOS 27 RCS.">
+	<span class="when">Sep 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>iOS 27 adds Tapbacks and inline replies over RCS <span class="tag">Global</span> <a class="small muted" href="https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27">Apple</a></span></div>
+</li>
+<li class="row event" title="Telstra starts carrier RCS rollout on compatible devices.">
+	<span class="when">16 Nov 2026</span>
+	<div class="what"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="url(#hatch-ink)" style="stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Telstra starts carrier RCS rollout in Australia <span class="tag">AU</span> <a class="small muted" href="https://www.telstra.com.au/support/mobiles-devices/rich-communication-services">Telstra</a></span></div>
+</li>
+<li class="row figure">
+	<span class="when">2026</span>
+	<div>
+		<span class="value">3.8 billion</span> <span class="label">RCS-capable subscribers</span>
+		<svg width="100%" height="16" role="img" aria-label="3.8 billion subscribers: RCS-capable subscribers. Forecast, estimate, Juniper Research, 2026. Juniper’s February 2022 forecast. The release calls these RCS-capable subscribers."><title>3.8 billion subscribers: RCS-capable subscribers. Forecast, estimate, Juniper Research, 2026. Juniper’s February 2022 forecast. The release calls these RCS-capable subscribers.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="63.333%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/">Juniper Research</a></span>
+	</div>
+</li>
+<li class="row figure">
+	<span class="when">2026</span>
+	<div>
+		<span class="value">More than 3.8 billion</span> <span class="label">Active RCS users, year-end projection</span>
+		<svg width="100%" height="16" role="img" aria-label="More than 3.8 billion users: Active RCS users, year-end projection. Forecast, estimate, GSMA Industry Services, 2026. GSMA Industry Services July 2026 article describes a year-end active-user projection. The public article gives no active-user definition. Juniper’s older forecast uses the same magnitude for capable subscribers."><title>More than 3.8 billion users: Active RCS users, year-end projection. Forecast, estimate, GSMA Industry Services, 2026. GSMA Industry Services July 2026 article describes a year-end active-user projection. The public article gives no active-user definition. Juniper’s older forecast uses the same magnitude for capable subscribers.</title><rect x="0" y="1" width="100%" height="14" rx="3" style="fill:var(--surface-2)"/><rect x="0.75" y="1.75" width="63.333%" height="12.5" rx="3" style="fill:none;stroke:var(--bar)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+		<span class="meta">Forecast · Estimate · <a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a></span>
+	</div>
+</li>
+<li class="row figure missing">
+	<span class="when">26 Nov 2026</span>
+	<div>
+		<span class="value">Unknown</span> <span class="label">Current worldwide monthly RCS users, all apps</span>
+		<svg width="100%" height="16" role="img" aria-label="No verified current total"><title>No public, deduplicated 2025–2026 count with a defined monthly activity window was verified.</title><rect x="0.75" y="1.75" width="99%" height="12.5" rx="3" style="fill:none;stroke:var(--gap)" stroke-width="1" stroke-dasharray="2 4"/></svg>
+		<span class="meta">No verified count exists in the dataset</span>
+	</div>
+</li>
+</ol>
+<section class="gaps"><h2>What this data cannot tell you</h2><ul><li>There is no current, deduplicated count of people who actually use RCS each month. The dataset records this as unknown.</li><li>Google’s 2023 figures each use a different definition (monthly users, people with access, monthly Google Messages users with RCS on). They are shown as separate points, not a trend.</li><li>The 2026 figures of 3.8 billion are projections, and one counts capable subscribers rather than active users.</li><li>The last operator census in the data is from June 2020. Current operator and country counts are unknown.</li></ul></section>
+<section class="sources"><h2>Sources</h2><ul><li><a href="https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf">Infobip via GSMA</a> <span class="muted">www.gsma.com</span></li><li><a href="https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&amp;reportId=54187">GSMA Intelligence</a> <span class="muted">prod-cms.gsmaintelligence.com</span></li><li><a href="https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/">Juniper Research</a> <span class="muted">www.juniperresearch.com</span></li><li><a href="https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/">Google</a> <span class="muted">blog.google</span></li><li><a href="https://blog.google/products-and-platforms/platforms/android/android-updates-io-2023/">Google</a> <span class="muted">blog.google</span></li><li><a href="https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/">Google</a> <span class="muted">blog.google</span></li><li><a href="https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/">Juniper Research</a> <span class="muted">www.juniperresearch.com</span></li><li><a href="https://omdia.tech.informa.com/-/media/tech/omdia/marketing/commissioned-research/pdfs/rcs-igniting-business-messaging-with-rich-conversations.pdf?rev=8500fa80f4834d8496a473fb6ca4b014">Omdia</a> <span class="muted">omdia.tech.informa.com</span></li><li><a href="https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf">Mobilesquared</a> <span class="muted">www.mobilesquared.co.uk</span></li><li><a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a> <span class="muted">www.gsmaservices.com</span></li><li><a href="https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/">Google</a> <span class="muted">blog.google</span></li><li><a href="https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/">Google</a> <span class="muted">blog.google</span></li><li><a href="https://www.youtube.com/watch?v=oB70suAIF6A">Google (video)</a> <span class="muted">www.youtube.com</span></li><li><a href="https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google">Vodafone</a> <span class="muted">www.vodafone.com</span></li><li><a href="https://support.google.com/messages/thread/229405182?hl=en">Google</a> <span class="muted">support.google.com</span></li><li><a href="https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/">Apple</a> <span class="muted">www.apple.com</span></li><li><a href="https://support.apple.com/en-us/121161">Apple</a> <span class="muted">support.apple.com</span></li><li><a href="https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/">GSMA</a> <span class="muted">www.gsma.com</span></li><li><a href="https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html">KDDI</a> <span class="muted">newsroom.kddi.com</span></li><li><a href="https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/">GSMA</a> <span class="muted">www.gsma.com</span></li><li><a href="https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&amp;pageNo=1">LG U+</a> <span class="muted">www.lguplus.com</span></li><li><a href="https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/">GSMA</a> <span class="muted">www.gsma.com</span></li><li><a href="https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/">Apple</a> <span class="muted">www.apple.com</span></li><li><a href="https://www.samsung.com/us/support/troubleshoot/TSG10010566/">Samsung</a> <span class="muted">www.samsung.com</span></li><li><a href="https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rich-communication-service-rcs-july-2026-publications/">GSMA</a> <span class="muted">www.gsma.com</span></li><li><a href="https://www.docomo.ne.jp/info/notice/page/260513_00.html">NTT DOCOMO</a> <span class="muted">www.docomo.ne.jp</span></li><li><a href="https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27">Apple</a> <span class="muted">support.apple.com</span></li><li><a href="https://www.telstra.com.au/support/mobiles-devices/rich-communication-services">Telstra</a> <span class="muted">www.telstra.com.au</span></li><li><a href="https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/">GSMA</a> <span class="muted">www.gsma.com</span></li></ul></section>
+<details><summary>Data table</summary><div class="table-wrap"><table class="data">
+<thead><tr><th>Date</th><th>Figure</th><th>Value</th><th>Unit</th><th>Kind</th><th>Confidence</th><th>Source</th></tr></thead>
+<tbody><tr><td class="num">2019-11</td><td>Monthly RCS users</td><td class="num">300,000,000</td><td>users</td><td>observation</td><td>vendor-claim</td><td><a href="https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf">Infobip via GSMA</a></td></tr><tr><td class="num">2021-06</td><td>Connections able to receive RCS</td><td class="num">About 1,100,000,000</td><td>connections</td><td>model</td><td>estimate</td><td><a href="https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&amp;reportId=54187">GSMA Intelligence</a></td></tr><tr><td class="num">2022</td><td>RCS-capable subscribers</td><td class="num">1,200,000,000</td><td>subscribers</td><td>forecast</td><td>estimate</td><td><a href="https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/">Juniper Research</a></td></tr><tr><td class="num">2023-02-27</td><td>Monthly RCS users</td><td class="num">About 500,000,000</td><td>users</td><td>observation</td><td>vendor-claim</td><td><a href="https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/">Google</a></td></tr><tr><td class="num">2023-05</td><td>People with RCS</td><td class="num">More than 800,000,000</td><td>people</td><td>observation</td><td>vendor-claim</td><td><a href="https://blog.google/products-and-platforms/platforms/android/android-updates-io-2023/">Google</a></td></tr><tr><td class="num">2023</td><td>Connections able to receive RCS</td><td class="num">2,700,000,000</td><td>connections</td><td>forecast</td><td>estimate</td><td><a href="https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&amp;reportId=54187">GSMA Intelligence</a></td></tr><tr><td class="num">2023-11-30</td><td>Google Messages monthly users with RCS on</td><td class="num">More than 1,000,000,000</td><td>users</td><td>observation</td><td>vendor-claim</td><td><a href="https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/">Google</a></td></tr><tr><td class="num">2023</td><td>Active RCS users</td><td class="num">930,000,000</td><td>users</td><td>model</td><td>estimate</td><td><a href="https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/">Juniper Research</a></td></tr><tr><td class="num">2024</td><td>Active RCS users</td><td class="num">1,100,000,000</td><td>users</td><td>forecast</td><td>estimate</td><td><a href="https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/">Juniper Research</a></td></tr><tr><td class="num">2024</td><td>People reachable by RCS business messages</td><td class="num">666,000,000</td><td>users</td><td>model</td><td>estimate</td><td><a href="https://omdia.tech.informa.com/-/media/tech/omdia/marketing/commissioned-research/pdfs/rcs-igniting-business-messaging-with-rich-conversations.pdf?rev=8500fa80f4834d8496a473fb6ca4b014">Omdia</a></td></tr><tr><td class="num">2025</td><td>RCS users, incl. modeled iPhone uplift</td><td class="num">2,790,000,000</td><td>users</td><td>forecast</td><td>estimate</td><td><a href="https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf">Mobilesquared</a></td></tr><tr><td class="num">2026-07</td><td>RCS-capable devices</td><td class="num">About 6,000,000,000</td><td>devices</td><td>model</td><td>estimate</td><td><a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a></td></tr><tr><td class="num">2026</td><td>RCS-capable subscribers</td><td class="num">3,800,000,000</td><td>subscribers</td><td>forecast</td><td>estimate</td><td><a href="https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/">Juniper Research</a></td></tr><tr><td class="num">2026</td><td>Active RCS users, year-end projection</td><td class="num">More than 3,800,000,000</td><td>users</td><td>forecast</td><td>estimate</td><td><a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a></td></tr><tr><td class="num">2026-11-26</td><td>rcs_monthly_active_users_all_clients</td><td class="num">unknown</td><td>users</td><td>missing</td><td>—</td><td><a href="https://www.mobilesquared.co.uk/buy-rich-business-messaging-market-data/">Mobilesquared</a></td></tr><tr><td class="num">2026-11-26</td><td>rcs_enabled_subscribers_all_clients</td><td class="num">unknown</td><td>subscribers</td><td>missing</td><td>—</td><td><a href="https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/">GSMA Industry Services</a></td></tr></tbody></table></div></details>
+<p class="small muted">Data as of 2026-11-26. Business-messaging traffic and market-level counts are left out of this chart.</p>
+</main>
+<script type="application/json" id="chart-data">
+{
+	"as_of": "2026-11-26",
+	"global_adoption": [
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_users",
+			"value": 300000000,
+			"unit": "users",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s global snapshot labels these monthly users. Activity and deduplication methods are undisclosed."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_addressable_connections",
+			"value": 1100000000,
+			"unit": "connections",
+			"date": "2021-06",
+			"source_url": "https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&reportId=54187",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": "approx",
+			"note": "GSMA Intelligence estimate of connections able to receive an RCS message."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_subscribers",
+			"value": 1200000000,
+			"unit": "subscribers",
+			"date": "2022",
+			"source_url": "https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper forecast published in February 2022."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_users",
+			"value": 500000000,
+			"unit": "users",
+			"date": "2023-02-27",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/mwc23-connectingandroid/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "approx",
+			"note": "Google described people using RCS each month. It did not publish a counting method."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_people_with_access",
+			"value": 800000000,
+			"unit": "people",
+			"date": "2023-05",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/android-updates-io-2023/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "Google reported people with RCS, without specifying a monthly activity window."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_addressable_connections",
+			"value": 2700000000,
+			"unit": "connections",
+			"date": "2023",
+			"source_url": "https://prod-cms.gsmaintelligence.com/research-file-download?assetId=18592&reportId=54187",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "GSMA Intelligence forecast published in June 2021 for year-end 2023."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "google_messages_monthly_active_users_with_rcs_enabled",
+			"value": 1000000000,
+			"unit": "users",
+			"date": "2023-11-30",
+			"source_url": "https://blog.google/products-and-platforms/platforms/android/7-new-messages-features/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": "gt",
+			"note": "Monthly active in Google Messages with RCS enabled. RCS send or receive activity is unspecified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_juniper_2023_study",
+			"value": 930000000,
+			"unit": "users",
+			"date": "2023",
+			"source_url": "https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Juniper September 2023 baseline. The release gives no monthly activity definition."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_juniper_2023_study",
+			"value": 1100000000,
+			"unit": "users",
+			"date": "2024",
+			"source_url": "https://www.juniperresearch.com/press/rcs-active-users-to-surpass-1bn-2024/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper September 2023 study forecast for 2024."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_business_installed_base_omdia",
+			"value": 666000000,
+			"unit": "users",
+			"date": "2024",
+			"source_url": "https://omdia.tech.informa.com/-/media/tech/omdia/marketing/commissioned-research/pdfs/rcs-igniting-business-messaging-with-rich-conversations.pdf?rev=8500fa80f4834d8496a473fb6ca4b014",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": null,
+			"note": "Omdia’s 2024 model counts people with RCS-capable devices connected to networks that have enabled RCS business messaging."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_users_mobilesquared_2024_study",
+			"value": 2790000000,
+			"unit": "users",
+			"date": "2025",
+			"source_url": "https://www.mobilesquared.co.uk/wp-content/uploads/2024/09/rcs-webinar-mobilesquared-sept-2024-2.pdf",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "September 2024 forecast including modeled iOS uplift. The public slide does not define a monthly activity window."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_devices",
+			"value": 6000000000,
+			"unit": "devices",
+			"date": "2026-07",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": "estimate",
+			"kind": "model",
+			"qualifier": "approx",
+			"note": "GSMA Industry Services cites GSMA Intelligence and reports this approximate total. Published platform subtotals do not reconcile with the total."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_capable_subscribers",
+			"value": 3800000000,
+			"unit": "subscribers",
+			"date": "2026",
+			"source_url": "https://www.juniperresearch.com/press/rcs-capable-subscribers-to-reach-12-billion-globally-in-2022/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": null,
+			"note": "Juniper’s February 2022 forecast. The release calls these RCS-capable subscribers."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_active_users_gsma_industry_services",
+			"value": 3800000000,
+			"unit": "users",
+			"date": "2026",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": "estimate",
+			"kind": "forecast",
+			"qualifier": "gt",
+			"note": "GSMA Industry Services July 2026 article describes a year-end active-user projection. The public article gives no active-user definition. Juniper’s older forecast uses the same magnitude for capable subscribers."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_monthly_active_users_all_clients",
+			"value": null,
+			"unit": "users",
+			"date": "2026-11-26",
+			"source_url": "https://www.mobilesquared.co.uk/buy-rich-business-messaging-market-data/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current public, deduplicated 2025–2026 count with a defined monthly RCS activity window was verified."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "rcs_enabled_subscribers_all_clients",
+			"value": null,
+			"unit": "subscribers",
+			"date": "2026-11-26",
+			"source_url": "https://www.gsmaservices.com/service-type/network/how-operators-can-leverage-the-billion-dollar-cross-platform-rcs-opportunity-with-gsma-entitlements/",
+			"confidence": null,
+			"kind": "missing",
+			"qualifier": null,
+			"note": "No current observed total across carriers and clients was verified. Published estimates count capable devices or project subscribers."
+		}
+	],
+	"timeline": [
+		{
+			"date": "2019-11-14",
+			"geography": "US",
+			"kind": "rollout",
+			"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+			"confidence": "vendor-claim",
+			"note": "Google starts broad US rollout after enabling chat features in the UK, France and Mexico."
+		},
+		{
+			"date": "2020-11-19",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+			"confidence": "vendor-claim",
+			"note": "Google declares global Android rollout through carriers or Google itself, subject to device and provider eligibility. One-to-one encryption enters beta."
+		},
+		{
+			"date": "2021-06-15",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.youtube.com/watch?v=oB70suAIF6A",
+			"confidence": "vendor-claim",
+			"note": "Google announces end-to-end encryption for eligible one-to-one Google Messages chats."
+		},
+		{
+			"date": "2023-02",
+			"geography": "Europe",
+			"kind": "partnership",
+			"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+			"confidence": "vendor-claim",
+			"note": "Vodafone announces Google Messages as the default on applicable Android devices and plans a Jibe Cloud migration."
+		},
+		{
+			"date": "2023-08-08",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://support.google.com/messages/thread/229405182?hl=en",
+			"confidence": "vendor-claim",
+			"note": "Google Messages enables RCS by default for eligible users who have not switched it off and extends end-to-end encryption to eligible Google Messages group chats."
+		},
+		{
+			"date": "2024-09-16",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.apple.com/newsroom/2024/09/ios-18-is-available-today-making-iphone-more-personal-and-capable-than-ever/",
+			"confidence": "vendor-claim",
+			"note": "Apple adds personal RCS to Messages with iOS 18 where carriers support it."
+		},
+		{
+			"date": "2024-10",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://support.apple.com/en-us/121161",
+			"confidence": "vendor-claim",
+			"note": "Apple adds carrier-dependent RCS Business Messaging in iOS 18.1."
+		},
+		{
+			"date": "2025-03-14",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/rcs-encryption-a-leap-towards-secure-and-interoperable-messaging/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 3.0 specifications, including interoperable encryption based on Messaging Layer Security."
+		},
+		{
+			"date": "2025-04-01",
+			"geography": "JP",
+			"kind": "rollout",
+			"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html",
+			"confidence": "vendor-claim",
+			"note": "KDDI launches iPhone RCS for au, UQ mobile and povo1.0."
+		},
+		{
+			"date": "2025-07-25",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 3.1 with audio messaging and onboarding updates."
+		},
+		{
+			"date": "2025-09",
+			"geography": "KR",
+			"kind": "rollout",
+			"source_url": "https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&pageNo=1",
+			"confidence": "vendor-claim",
+			"note": "LG U+, KT and SK Telecom add iPhone RCS with iOS 26."
+		},
+		{
+			"date": "2026-03-26",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/",
+			"confidence": "vendor-claim",
+			"note": "GSMA announces Universal Profile 4.0, including richer text, media and a path to video calls. These are specification capabilities."
+		},
+		{
+			"date": "2026-05-11",
+			"geography": "Worldwide",
+			"kind": "rollout",
+			"source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/",
+			"confidence": "vendor-claim",
+			"note": "Apple and Google begin a default-on cross-platform encryption beta for eligible iOS 26.5 and Google Messages users."
+		},
+		{
+			"date": "2026-07-06",
+			"geography": "US",
+			"kind": "retirement",
+			"source_url": "https://www.samsung.com/us/support/troubleshoot/TSG10010566/",
+			"confidence": "vendor-claim",
+			"note": "US Samsung Messages end of service takes effect for Galaxy devices running Android 12 or newer."
+		},
+		{
+			"date": "2026-07-21",
+			"geography": "Worldwide",
+			"kind": "standard",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rich-communication-service-rcs-july-2026-publications/",
+			"confidence": "vendor-claim",
+			"note": "GSMA publishes Universal Profile 4.1 with encryption interoperability refinements."
+		},
+		{
+			"date": "2026-08-24",
+			"geography": "JP",
+			"kind": "rollout",
+			"source_url": "https://www.docomo.ne.jp/info/notice/page/260513_00.html",
+			"confidence": "vendor-claim",
+			"note": "NTT DOCOMO starts native carrier RCS service and gradually replaces Jibe as the Android provider. Its iPhone path requires iOS 27."
+		},
+		{
+			"date": "2026-09",
+			"geography": "Worldwide",
+			"kind": "os_features",
+			"source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27",
+			"confidence": "vendor-claim",
+			"note": "Apple documents inline replies and Tapbacks in iOS 27 RCS."
+		},
+		{
+			"date": "2026-11-16",
+			"geography": "AU",
+			"kind": "rollout",
+			"source_url": "https://www.telstra.com.au/support/mobiles-devices/rich-communication-services",
+			"confidence": "vendor-claim",
+			"note": "Telstra starts carrier RCS rollout on compatible devices."
+		}
+	],
+	"carrier_coverage": [
+		{
+			"geography": "Worldwide",
+			"metric": "reported_rcs_operator_launches",
+			"value": 81,
+			"unit": "operator launches",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s snapshot. Counts launches without a Universal Profile version breakdown."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "markets_with_reported_rcs_operator_launches",
+			"value": 55,
+			"unit": "countries",
+			"date": "2019-11",
+			"source_url": "https://www.gsma.com/futurenetworks/wp-content/uploads/2020/03/RCS-Whitepaper-Infobip_Feb20.pdf",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "Infobip’s snapshot."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "reported_rcs_operator_launches",
+			"value": 90,
+			"unit": "operator launches",
+			"date": "2020-06",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "GSMA launch map headline. The operator table was updated July 8."
+		},
+		{
+			"geography": "Worldwide",
+			"metric": "markets_with_reported_rcs_operator_launches",
+			"value": 60,
+			"unit": "countries",
+			"date": "2020-06",
+			"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+			"confidence": "vendor-claim",
+			"kind": "observation",
+			"qualifier": null,
+			"note": "GSMA launch map headline."
+		}
+	]
+}
+</script>
+</body>
+</html>
