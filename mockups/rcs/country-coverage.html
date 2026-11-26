@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>RCS coverage by market</title>
+	<style>
+:root {
+	color-scheme: light dark;
+	--surface: #f7f6f3;
+	--surface-2: #ecebe6;
+	--ink: #1c1917;
+	--ink-2: #57534e;
+	--rule: #dcdad3;
+	--bar: #2a78d6;
+	--bar-soft: #86b6ef;
+	--live: #0ca30c;
+	--partial: #fab219;
+	--gap: #8a857c;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--surface: #1a1a19;
+		--surface-2: #262624;
+		--ink: #f5f5f4;
+		--ink-2: #c3c2b7;
+		--rule: #3a3a37;
+		--bar: #3987e5;
+		--bar-soft: #184f95;
+		--gap: #8f8b82;
+	}
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	background: var(--surface);
+	color: var(--ink);
+	font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+h1, h2, .year {
+	font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, serif;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+}
+h1 { font-size: clamp(30px, 7vw, 48px); margin: 8px 0 16px; text-wrap: balance; }
+h2 { font-size: 24px; margin: 48px 0 12px; }
+.eyebrow { font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); margin: 0; }
+.caption { color: var(--ink-2); max-width: 62ch; margin: 0 0 24px; }
+.muted { color: var(--ink-2); }
+small, .small { font-size: 13px; line-height: 1.45; }
+a { color: inherit; text-underline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--ink-2); margin: 0 0 24px; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.gaps { margin-top: 48px; padding: 16px 20px; border: 1px dashed var(--gap); border-radius: 10px; }
+.gaps h2 { margin-top: 0; font-size: 20px; }
+.gaps ul, .sources ul { padding-left: 18px; margin: 0; }
+.sources li { font-size: 13px; line-height: 1.45; margin: 4px 0; overflow-wrap: anywhere; }
+details { margin-top: 32px; }
+summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; font-size: 13px; width: 100%; }
+table.data th, table.data td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+svg { display: block; overflow: visible; }
+
+table.matrix { border-collapse: collapse; width: 100%; font-size: 14px; }
+.matrix th, .matrix td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.matrix thead th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; vertical-align: bottom; }
+.matrix thead th span { display: block; text-transform: none; letter-spacing: 0; font-weight: 400; }
+.matrix tbody th[colspan] { padding-top: 24px; font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; border-bottom: 1px solid var(--ink-2); }
+.matrix tbody th[colspan] .count { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 400; color: var(--ink-2); }
+.matrix .market { font-weight: 600; }
+.matrix .market small { display: block; font-weight: 400; color: var(--ink-2); }
+.cell { display: flex; gap: 6px; align-items: flex-start; }
+.cell svg { flex: none; margin-top: 2px; }
+.cell small { display: block; color: var(--ink-2); }
+.matrix td { width: 25%; }
+@media (max-width: 480px) { .matrix .market small { display: none; } .matrix { font-size: 13px; } .matrix th, .matrix td { padding: 8px 3px; } .cell { flex-direction: column; gap: 2px; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+	<defs>
+		<pattern id="hatch-bar" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="5" height="5" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="5" style="stroke:var(--bar)" stroke-width="2.4"/>
+		</pattern>
+		<pattern id="hatch-ink" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--ink-2)" stroke-width="1.6"/>
+		</pattern>
+		<pattern id="hatch-live" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--live)" stroke-width="2"/>
+		</pattern>
+		<pattern id="hatch-partial" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<rect width="4" height="4" style="fill:var(--surface)"/>
+			<line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--partial)" stroke-width="2"/>
+		</pattern>
+	</defs>
+</svg>
+<main>
+<p class="eyebrow">RCS by market, local lines, 26 Nov 2026</p>
+<h1>10 of 20 markets have documented RCS on both iPhone and Android.</h1>
+<p class="caption">For a traveler, “documented” means a local line in that country can use RCS: Apple lists iPhone carriers there, or carriers and Google document Android service. It says nothing about roaming on your home number or data-only travel eSIMs.</p>
+<ul class="legend" aria-label="Status key"><li><svg width="18" height="18" role="img" aria-label="Live"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg>Live</li><li><svg width="18" height="18" role="img" aria-label="Partial or dated"><path d="M9 2 A7 7 0 0 0 9 16 Z" style="fill:var(--partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg>Partial or dated</li><li><svg width="18" height="18" role="img" aria-label="None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg>None listed</li><li><svg width="18" height="18" role="img" aria-label="Unverified"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5" stroke-dasharray="2 2"/><text x="9" y="12.5" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--ink-2)">?</text></svg>Unverified</li></ul>
+<ul class="legend" aria-label="Confidence key"><li><svg width="18" height="18" role="img" aria-label="Solid"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg>Solid: counted from Apple’s carrier directory</li><li><svg width="18" height="18" role="img" aria-label="Hatched"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg>Hatched: vendor or carrier claim</li></ul>
+<div class="table-wrap"><table class="matrix">
+<thead><tr><th scope="col">Market</th><th scope="col">iPhone<span>Apple-listed carriers</span></th><th scope="col">Android<span>Carrier or Google evidence</span></th><th scope="col">Encrypted<span>iPhone↔Android beta</span></th></tr></thead>
+<tbody>
+<tr><th colspan="4" scope="rowgroup">RCS documented on both iPhone and Android <span class="count">10 markets</span></th></tr>
+<tr><th scope="row" class="market">Brazil<small>Latin America and Caribbean</small></th><td title="TIM, Vivo"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 2 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>2 carriers</span></div></td><td title="2020-07-08: GSMA listed Claro, Nextel, Oi and Vivo launches. Historical entries reflect the market then. | 2020-11-19: Google’s global Android rollout offers service from Google or a carrier where eligible. | 2025-09: Vivo confirms RCS on Android and on iPhone with iOS 26 since September 2025."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2025</small></span></div></td><td title="TIM, Vivo"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: All 2"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>All 2</span></div></td></tr>
+<tr><th scope="row" class="market">Japan<small>Asia-Pacific</small></th><td title="au, NTT DOCOMO, SoftBank"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 3 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>3 carriers</span></div></td><td title="2020-04-08: Mavenir launched its RCS solution for the separate Rakuten Link app. Native iPhone interoperability is unverified. | 2025-04-01: KDDI began iPhone service for au, UQ mobile and povo1.0 customers. | 2026-08-24: DOCOMO began switching Google Messages Android service from Jibe Mobile to DOCOMO and specifies iOS 27 or later for its iPhone service. | 2026-08: KDDI names itself, DOCOMO and SoftBank as consumer RCS providers."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="au, NTT DOCOMO, SoftBank"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: All 3"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>All 3</span></div></td></tr>
+<tr><th scope="row" class="market">Singapore<small>Asia-Pacific</small></th><td title="Singtel"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 1 carrier"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>1 carrier</span></div></td><td title="2026: Apple lists encrypted RCS messaging beta on Singtel. | 2024: Telkomsel reported the Singtel and Google RCS partnership for compatible devices."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="Singtel"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: All 1"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>All 1</span></div></td></tr>
+<tr><th scope="row" class="market">United States<small>North America</small></th><td title="AT&amp;T, T-Mobile USA, Verizon Wireless"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 3 selected carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>3 selected carriers</span></div></td><td title="2019-11-14: Google Messages rollout began after the UK, France and Mexico. | 2026-07: AT&amp;T announced retirement of legacy Advanced Messaging RCS. RCS remains available via Google Messages."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="AT&amp;T, T-Mobile USA, Verizon Wireless"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: All 3"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>All 3</span></div></td></tr>
+<tr><th scope="row" class="market">Canada<small>North America</small></th><td title="Tbaytel, Bell, Chatr, Fido, Freedom Mobile, Koodo, Lucky Mobile, Public Mobile, Rogers, SaskTel, Telus, Videotron, Virgin Mobile"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 13 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>13 carriers</span></div></td><td title="2020-07-08: GSMA listed Bell, Rogers and Telus launches."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2020</small></span></div></td><td title="Bell, Chatr, Fido, Freedom Mobile, Koodo, Lucky Mobile, Public Mobile, Rogers, SaskTel, Telus, Videotron, Virgin Mobile"><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, measured: 12 of 13"><path d="M9 2 A7 7 0 0 0 9 16 Z" style="fill:var(--partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>12 of 13</span></div></td></tr>
+<tr><th scope="row" class="market">Germany<small>Europe</small></th><td title="Vodafone, 1&amp;1, O2, Telekom"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 4 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>4 carriers</span></div></td><td title="2020-06-23: Mavenir reported Universal Profile 2.0 interconnection for Telefónica, Vodafone and Deutsche Telekom Germany. | 2023-02: Vodafone later announced a move to Jibe Cloud at group level."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2023</small></span></div></td><td title="1&amp;1, O2, Telekom"><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, measured: 3 of 4"><path d="M9 2 A7 7 0 0 0 9 16 Z" style="fill:var(--partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>3 of 4</span></div></td></tr>
+<tr><th scope="row" class="market">United Kingdom<small>Europe</small></th><td title="giffgaff, O2, Tesco Mobile, 3, BT, EE"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 6 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>6 carriers</span></div></td><td title="2019: Google Messages availability announced. | 2023-02: Vodafone announced Google Messages as default on applicable Android phones and a move to Jibe Cloud across its collaboration with Google."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2023</small></span></div></td><td title="3, BT, EE"><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, measured: 3 of 6"><path d="M9 2 A7 7 0 0 0 9 16 Z" style="fill:var(--partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>3 of 6</span></div></td></tr>
+<tr><th scope="row" class="market">France<small>Europe</small></th><td title="Bouygues Telecom, Free Mobile, Orange, SFR"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 4 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>4 carriers</span></div></td><td title="2019: Google Messages availability announced."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2019</small></span></div></td><td title="No carrier in this market is listed for the encryption beta"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td></tr>
+<tr><th scope="row" class="market">India<small>Asia-Pacific</small></th><td title="Reliance Jio"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 1 carrier"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>1 carrier</span></div></td><td title="2026-03-01: Bharti Airtel announced collaboration with Google’s RCS platform. | 2026-11-26: Reliance Jio lists its own Android Messages client for RCS with a Jio SIM. The listing describes exchange with other compatible Jio clients."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="No carrier in this market is listed for the encryption beta"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td></tr>
+<tr><th scope="row" class="market">South Korea<small>Asia-Pacific</small></th><td title="LG U+, KT, SK Telecom"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 3 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>3 carriers</span></div></td><td title="2025-02-19: Regulator described prior Galaxy-to-Galaxy RCS and recommended interoperability work with Apple. | 2025-09: LG U+ confirmed the three carriers’ iPhone rollout via iOS 26 alongside existing Galaxy support."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2025</small></span></div></td><td title="No carrier in this market is listed for the encryption beta"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td></tr>
+<tr><th colspan="4" scope="rowgroup">Documented on one platform only <span class="count">5 markets</span></th></tr>
+<tr><th scope="row" class="market">Spain<small>Europe</small></th><td title="Masmovil, Movistar, Vodafone, O2, Orange, Pepephone, Yoigo"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 7 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>7 carriers</span></div></td><td title="2020-07-08: GSMA listed Movistar, Orange and Vodafone RCS launches. | 2026-11-26: Vodafone lists Spain for RCS Business Messaging via a Jibe API. This evidence concerns business messaging."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Historical only"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Historical only<small>latest 2026</small></span></div></td><td title="O2, Orange, Pepephone, Yoigo"><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, measured: 4 of 7"><path d="M9 2 A7 7 0 0 0 9 16 Z" style="fill:var(--partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>4 of 7</span></div></td></tr>
+<tr><th scope="row" class="market">China mainland<small>Asia-Pacific</small></th><td title="China Mobile, China Telecom, China Unicom"><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, measured: 3 carriers"><circle cx="9" cy="9" r="7" style="fill:var(--live)"/></svg><span>3 carriers</span></div></td><td title="2023-08: China’s government portal documents the operators’ domestic 5G Messaging initiative based on RCS. Global Google Jibe interoperability and use by a visitor’s overseas number were not verified."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Domestic system"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Domestic system<small>latest 2023</small></span></div></td><td title="No carrier in this market is listed for the encryption beta"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td></tr>
+<tr><th scope="row" class="market">Australia<small>Asia-Pacific</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2025-03: Australian regulator confirmed Google-hosted RCS on Android and reported local carriers had yet to add native support at that time. | 2026-11-16: Telstra began carrier RCS rollout for compatible devices. Its support page gives Android setup and says compatibility will expand. General iPhone availability is unverified."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">Indonesia<small>Asia-Pacific</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2026-11-26: Telkomsel provides setup instructions for consumer RCS through Google Messages. | 2023: Indosat reported a Google partnership for RCS Business Messaging in its annual report. This is business messaging evidence."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">Mexico<small>Latin America and Caribbean</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2019: Google announced availability in Google Messages. | 2026-11-26: Telcel documents Android RCS via Google Messages and says initial provisioning on a Telcel line must take place in Mexico. Once active, roaming with internet is covered by Telcel’s terms."><div class="cell"><svg width="18" height="18" role="img" aria-label="Live, vendor claim: Documented"><circle cx="9" cy="9" r="7" fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"/></svg><span>Documented<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th colspan="4" scope="rowgroup">Not currently documented on either <span class="count">5 markets</span></th></tr>
+<tr><th scope="row" class="market">Italy<small>Europe</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2023-02: Vodafone announced Jibe Cloud and Google Messages collaboration in Europe. | 2026-11-26: Vodafone lists Italy for RCS Business Messaging through its Jibe API. Current consumer coverage by Android carrier is unverified."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Historical only"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Historical only<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">South Africa<small>Sub-Saharan Africa</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2020-07-08: GSMA listed a Vodacom launch. | 2026-11-26: Vodafone lists South Africa for RCS Business Messaging via Jibe. This does not establish present consumer support on every local line."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Historical only"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Historical only<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">Thailand<small>Asia-Pacific</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2017-02-16: Google named Thailand in a planned Telenor Jibe Cloud rollout. Current carrier-specific consumer status was not independently verified."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Announced only"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Announced only<small>latest 2017</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">Türkiye<small>Middle East and North Africa</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2020-07-08: GSMA lists a Vodafone Turkey launch. Current carrier or Jibe coverage is unverified."><div class="cell"><svg width="18" height="18" role="img" aria-label="Partial or dated, vendor claim: Historical only"><path d="M9 2 A7 7 0 0 0 9 16 Z" fill="url(#hatch-partial)"/><circle cx="9" cy="9" r="7" style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"/></svg><span>Historical only<small>latest 2020</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+<tr><th scope="row" class="market">United Arab Emirates<small>Middle East and North Africa</small></th><td title="Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: None listed"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>None listed</span></div></td><td title="2026-05-06: Messaging provider BroadNet reports Jibe business messaging on du and e&amp;. Current person-to-person support is unverified on these carriers."><div class="cell"><svg width="18" height="18" role="img" aria-label="Unverified, vendor claim: Unverified"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5" stroke-dasharray="2 2"/><text x="9" y="12.5" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--ink-2)">?</text></svg><span>Unverified<small>latest 2026</small></span></div></td><td title="No iPhone RCS carrier listed"><div class="cell"><svg width="18" height="18" role="img" aria-label="None listed, measured: n/a"><circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/></svg><span>n/a</span></div></td></tr>
+</tbody></table></div>
+<p class="small muted">Hover or long-press a cell for the carrier names or evidence notes. “Historical only” means the newest evidence is an old launch record or a business-messaging listing.</p>
+<section class="gaps"><h2>What this data cannot tell you</h2><ul><li>No market in the data has a count of active RCS users. Every country-level user total is unknown.</li><li>Android evidence is vendor or carrier claims, some of it years old. The year under each Android cell is the newest evidence.</li><li>iPhone counts are carrier brand names in Apple’s directory. Brands can share a network, and no subscriber totals are attached.</li><li>United States: only 3 selected national brands are counted. Apple lists more.</li><li>China mainland: Apple lists the three operators, but whether RCS reaches Google’s network or works for overseas numbers is unverified.</li><li>Australia: Telstra started a rollout on 16 Nov 2026; iPhone availability there is unverified. Apple’s lists and carrier pages can lag.</li></ul></section>
+<section class="sources"><h2>Sources</h2><ul><li><a href="https://support.apple.com/en-us/109526">Apple</a> <span class="muted">support.apple.com/en-us/109526</span></li><li><a href="https://support.apple.com/en-us/108048">Apple</a> <span class="muted">support.apple.com/en-us/108048</span></li><li><a href="https://support.apple.com/it-it/108048">Apple</a> <span class="muted">support.apple.com/it-it/108048</span></li><li><a href="https://support.apple.com/en-ie/118609">Apple</a> <span class="muted">support.apple.com/en-ie/118609</span></li><li><a href="https://support.apple.com/en-us/109520">Apple</a> <span class="muted">support.apple.com/en-us/109520</span></li><li><a href="https://support.apple.com/en-au/109510">Apple</a> <span class="muted">support.apple.com/en-au/109510</span></li><li><a href="https://support.apple.com/en-mide/109518">Apple</a> <span class="muted">support.apple.com/en-mide/109518</span></li><li><a href="https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/">Google</a> <span class="muted">blog.google/products-and-platforms/platforms/rcs/upgrading-mess…</span></li><li><a href="https://www.att.com/features/advanced-messaging/">AT&amp;T</a> <span class="muted">att.com/features/advanced-messaging</span></li><li><a href="https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google">Vodafone</a> <span class="muted">vodafone.com/news/newsroom/services/vodafone-expands-collaborat…</span></li><li><a href="https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/">GSMA</a> <span class="muted">gsma.com/solutions-and-impact/technologies/networks/rcs/global-…</span></li><li><a href="https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs">Vodafone</a> <span class="muted">vodafone.com/business/products/messaging-and-identity/vodafone-…</span></li><li><a href="https://www.mavenir.com/press-releases/mavenirs-rcs-mobile-business-messaging-cloud/">Mavenir</a> <span class="muted">mavenir.com/press-releases/mavenirs-rcs-mobile-business-messagi…</span></li><li><a href="https://www.airtel.in/press-release/03-2026/airtel-and-google-collaborate-to-advance-spam-protection-in-india-with-secure-rcs-messaging/">Bharti Airtel</a> <span class="muted">airtel.in/press-release/03-2026/airtel-and-google-collaborate-t…</span></li><li><a href="https://play.google.com/store/apps/details?id=com.jio.messages">Google Play</a> <span class="muted">play.google.com/store/apps/details</span></li><li><a href="https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/">Google</a> <span class="muted">blog.google/products-and-platforms/products/messages/helping-yo…</span></li><li><a href="https://vivo.com.br/para-voce/ajuda/mais-ajuda/rcs">Vivo</a> <span class="muted">vivo.com.br/para-voce/ajuda/mais-ajuda/rcs</span></li><li><a href="https://www.telcel.com/personas/servicios/llamadas-y-mensajeria/mensajes-android">Telcel</a> <span class="muted">telcel.com/personas/servicios/llamadas-y-mensajeria/mensajes-an…</span></li><li><a href="https://www.mavenir.com/press-releases/mavenir-cloud-native-rcs-solution-rakuten-link/">Mavenir</a> <span class="muted">mavenir.com/press-releases/mavenir-cloud-native-rcs-solution-ra…</span></li><li><a href="https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html">KDDI</a> <span class="muted">newsroom.kddi.com/news/detail/kddi_nr-518_3795.html</span></li><li><a href="https://www.docomo.ne.jp/info/notice/page/260513_00.html">NTT DOCOMO</a> <span class="muted">docomo.ne.jp/info/notice/page/260513_00.html</span></li><li><a href="https://newsroom.kddi.com/news/detail/kddi_nr-1171_4726.html">KDDI</a> <span class="muted">newsroom.kddi.com/news/detail/kddi_nr-1171_4726.html</span></li><li><a href="https://www.kmcc.go.kr/download.do?fileSeq=60436">Korea Media and Communications Commission</a> <span class="muted">kmcc.go.kr/download.do</span></li><li><a href="https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&amp;pageNo=1">LG U+</a> <span class="muted">lguplus.com/about/ko/corporation/promotion/press-kit/detail</span></li><li><a href="https://www.accc.gov.au/system/files/digital-platform-services-inquiry-final-report-march2025.pdf">ACCC</a> <span class="muted">accc.gov.au/system/files/digital-platform-services-inquiry-fina…</span></li><li><a href="https://www.telstra.com.au/support/mobiles-devices/rich-communication-services">Telstra</a> <span class="muted">telstra.com.au/support/mobiles-devices/rich-communication-servi…</span></li><li><a href="https://www.telkomsel.com/en/explore/rcs">Telkomsel</a> <span class="muted">telkomsel.com/en/explore/rcs</span></li><li><a href="https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/From_EREP/202404/2a38db3fa8_be24c599cd.pdf">Indosat (IDX filing)</a> <span class="muted">idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/From…</span></li><li><a href="https://blog.google/products-and-platforms/platforms/rcs/partnering-telenor-launch-rcs-messaging-europe-and-asia/">Google</a> <span class="muted">blog.google/products-and-platforms/platforms/rcs/partnering-tel…</span></li><li><a href="https://www.broadnet.me/blog/rcs-business-messaging-mena-rollout-2026">BroadNet</a> <span class="muted">broadnet.me/blog/rcs-business-messaging-mena-rollout-2026</span></li><li><a href="https://www.digitalchina.gov.cn/2023/xwzx/zcjd/202308/t20230810_4757744.htm">Digital China portal</a> <span class="muted">digitalchina.gov.cn/2023/xwzx/zcjd/202308/t20230810_4757744.htm</span></li><li><a href="https://www.telkomsel.com/en/enterprise/insight/news/Kerja-sama-Telkomsel-Singtel-Google-RCS">Telkomsel</a> <span class="muted">telkomsel.com/en/enterprise/insight/news/Kerja-sama-Telkomsel-S…</span></li></ul></section>
+<p class="small muted">Data as of 2026-11-26.</p>
+</main>
+<script type="application/json" id="chart-data">
+{
+	"as_of": "2026-11-26",
+	"markets": [
+		{
+			"country_code": "US",
+			"country": "United States",
+			"region": "North America",
+			"iphone": {
+				"value": 3,
+				"unit": "selected carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109526",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"AT&T",
+					"T-Mobile USA",
+					"Verizon Wireless"
+				],
+				"encryption_beta_carriers": [
+					"AT&T",
+					"T-Mobile USA",
+					"Verizon Wireless"
+				],
+				"note": "Selected national carrier brands from Apple’s directory. Apple also lists other brands. Value counts this named subset only."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019-11-14",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages rollout began after the UK, France and Mexico."
+				},
+				{
+					"date": "2026-07",
+					"source_url": "https://www.att.com/features/advanced-messaging/",
+					"confidence": "vendor-claim",
+					"note": "AT&T announced retirement of legacy Advanced Messaging RCS. RCS remains available via Google Messages."
+				}
+			]
+		},
+		{
+			"country_code": "GB",
+			"country": "United Kingdom",
+			"region": "Europe",
+			"iphone": {
+				"value": 6,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"giffgaff",
+					"O2",
+					"Tesco Mobile",
+					"3",
+					"BT",
+					"EE"
+				],
+				"encryption_beta_carriers": [
+					"3",
+					"BT",
+					"EE"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages availability announced."
+				},
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone announced Google Messages as default on applicable Android phones and a move to Jibe Cloud across its collaboration with Google."
+				}
+			]
+		},
+		{
+			"country_code": "ES",
+			"country": "Spain",
+			"region": "Europe",
+			"iphone": {
+				"value": 7,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/it-it/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Masmovil",
+					"Movistar",
+					"Vodafone",
+					"O2",
+					"Orange",
+					"Pepephone",
+					"Yoigo"
+				],
+				"encryption_beta_carriers": [
+					"O2",
+					"Orange",
+					"Pepephone",
+					"Yoigo"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Movistar, Orange and Vodafone RCS launches."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists Spain for RCS Business Messaging via a Jibe API. This evidence concerns business messaging."
+				}
+			]
+		},
+		{
+			"country_code": "DE",
+			"country": "Germany",
+			"region": "Europe",
+			"iphone": {
+				"value": 4,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Vodafone",
+					"1&1",
+					"O2",
+					"Telekom"
+				],
+				"encryption_beta_carriers": [
+					"1&1",
+					"O2",
+					"Telekom"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-06-23",
+					"source_url": "https://www.mavenir.com/press-releases/mavenirs-rcs-mobile-business-messaging-cloud/",
+					"confidence": "vendor-claim",
+					"note": "Mavenir reported Universal Profile 2.0 interconnection for Telefónica, Vodafone and Deutsche Telekom Germany."
+				},
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone later announced a move to Jibe Cloud at group level."
+				}
+			]
+		},
+		{
+			"country_code": "FR",
+			"country": "France",
+			"region": "Europe",
+			"iphone": {
+				"value": 4,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Bouygues Telecom",
+					"Free Mobile",
+					"Orange",
+					"SFR"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google Messages availability announced."
+				}
+			]
+		},
+		{
+			"country_code": "IT",
+			"country": "Italy",
+			"region": "Europe",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/it-it/108048",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2023-02",
+					"source_url": "https://www.vodafone.com/news/newsroom/services/vodafone-expands-collaboration-with-google",
+					"confidence": "vendor-claim",
+					"note": "Vodafone announced Jibe Cloud and Google Messages collaboration in Europe."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists Italy for RCS Business Messaging through its Jibe API. Current consumer coverage by Android carrier is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "IN",
+			"country": "India",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 1,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-ie/118609",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Reliance Jio"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026-03-01",
+					"source_url": "https://www.airtel.in/press-release/03-2026/airtel-and-google-collaborate-to-advance-spam-protection-in-india-with-secure-rcs-messaging/",
+					"confidence": "vendor-claim",
+					"note": "Bharti Airtel announced collaboration with Google’s RCS platform."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://play.google.com/store/apps/details?id=com.jio.messages",
+					"confidence": "vendor-claim",
+					"note": "Reliance Jio lists its own Android Messages client for RCS with a Jio SIM. The listing describes exchange with other compatible Jio clients."
+				}
+			]
+		},
+		{
+			"country_code": "BR",
+			"country": "Brazil",
+			"region": "Latin America and Caribbean",
+			"iphone": {
+				"value": 2,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109520",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"TIM",
+					"Vivo"
+				],
+				"encryption_beta_carriers": [
+					"TIM",
+					"Vivo"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Claro, Nextel, Oi and Vivo launches. Historical entries reflect the market then."
+				},
+				{
+					"date": "2020-11-19",
+					"source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/",
+					"confidence": "vendor-claim",
+					"note": "Google’s global Android rollout offers service from Google or a carrier where eligible."
+				},
+				{
+					"date": "2025-09",
+					"source_url": "https://vivo.com.br/para-voce/ajuda/mais-ajuda/rcs",
+					"confidence": "vendor-claim",
+					"note": "Vivo confirms RCS on Android and on iPhone with iOS 26 since September 2025."
+				}
+			]
+		},
+		{
+			"country_code": "MX",
+			"country": "Mexico",
+			"region": "Latin America and Caribbean",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109520",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2019",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/upgrading-messaging-android-us-rcs/",
+					"confidence": "vendor-claim",
+					"note": "Google announced availability in Google Messages."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.telcel.com/personas/servicios/llamadas-y-mensajeria/mensajes-android",
+					"confidence": "vendor-claim",
+					"note": "Telcel documents Android RCS via Google Messages and says initial provisioning on a Telcel line must take place in Mexico. Once active, roaming with internet is covered by Telcel’s terms."
+				}
+			]
+		},
+		{
+			"country_code": "JP",
+			"country": "Japan",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"au",
+					"NTT DOCOMO",
+					"SoftBank"
+				],
+				"encryption_beta_carriers": [
+					"au",
+					"NTT DOCOMO",
+					"SoftBank"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-04-08",
+					"source_url": "https://www.mavenir.com/press-releases/mavenir-cloud-native-rcs-solution-rakuten-link/",
+					"confidence": "vendor-claim",
+					"note": "Mavenir launched its RCS solution for the separate Rakuten Link app. Native iPhone interoperability is unverified."
+				},
+				{
+					"date": "2025-04-01",
+					"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-518_3795.html",
+					"confidence": "vendor-claim",
+					"note": "KDDI began iPhone service for au, UQ mobile and povo1.0 customers."
+				},
+				{
+					"date": "2026-08-24",
+					"source_url": "https://www.docomo.ne.jp/info/notice/page/260513_00.html",
+					"confidence": "vendor-claim",
+					"note": "DOCOMO began switching Google Messages Android service from Jibe Mobile to DOCOMO and specifies iOS 27 or later for its iPhone service."
+				},
+				{
+					"date": "2026-08",
+					"source_url": "https://newsroom.kddi.com/news/detail/kddi_nr-1171_4726.html",
+					"confidence": "vendor-claim",
+					"note": "KDDI names itself, DOCOMO and SoftBank as consumer RCS providers."
+				}
+			]
+		},
+		{
+			"country_code": "KR",
+			"country": "South Korea",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"LG U+",
+					"KT",
+					"SK Telecom"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2025-02-19",
+					"source_url": "https://www.kmcc.go.kr/download.do?fileSeq=60436",
+					"confidence": "vendor-claim",
+					"note": "Regulator described prior Galaxy-to-Galaxy RCS and recommended interoperability work with Apple."
+				},
+				{
+					"date": "2025-09",
+					"source_url": "https://www.lguplus.com/about/ko/corporation/promotion/press-kit/detail?atclNo=2000001310&pageNo=1",
+					"confidence": "vendor-claim",
+					"note": "LG U+ confirmed the three carriers’ iPhone rollout via iOS 26 alongside existing Galaxy support."
+				}
+			]
+		},
+		{
+			"country_code": "AU",
+			"country": "Australia",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2025-03",
+					"source_url": "https://www.accc.gov.au/system/files/digital-platform-services-inquiry-final-report-march2025.pdf",
+					"confidence": "vendor-claim",
+					"note": "Australian regulator confirmed Google-hosted RCS on Android and reported local carriers had yet to add native support at that time."
+				},
+				{
+					"date": "2026-11-16",
+					"source_url": "https://www.telstra.com.au/support/mobiles-devices/rich-communication-services",
+					"confidence": "vendor-claim",
+					"note": "Telstra began carrier RCS rollout for compatible devices. Its support page gives Android setup and says compatibility will expand. General iPhone availability is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "ID",
+			"country": "Indonesia",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.telkomsel.com/en/explore/rcs",
+					"confidence": "vendor-claim",
+					"note": "Telkomsel provides setup instructions for consumer RCS through Google Messages."
+				},
+				{
+					"date": "2023",
+					"source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/From_EREP/202404/2a38db3fa8_be24c599cd.pdf",
+					"confidence": "vendor-claim",
+					"note": "Indosat reported a Google partnership for RCS Business Messaging in its annual report. This is business messaging evidence."
+				}
+			]
+		},
+		{
+			"country_code": "TH",
+			"country": "Thailand",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "announced_historically",
+			"evidence": [
+				{
+					"date": "2017-02-16",
+					"source_url": "https://blog.google/products-and-platforms/platforms/rcs/partnering-telenor-launch-rcs-messaging-europe-and-asia/",
+					"confidence": "vendor-claim",
+					"note": "Google named Thailand in a planned Telenor Jibe Cloud rollout. Current carrier-specific consumer status was not independently verified."
+				}
+			]
+		},
+		{
+			"country_code": "TR",
+			"country": "Türkiye",
+			"region": "Middle East and North Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/108048",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA lists a Vodafone Turkey launch. Current carrier or Jibe coverage is unverified."
+				}
+			]
+		},
+		{
+			"country_code": "AE",
+			"country": "United Arab Emirates",
+			"region": "Middle East and North Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-ie/118609",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "unverified",
+			"evidence": [
+				{
+					"date": "2026-05-06",
+					"source_url": "https://www.broadnet.me/blog/rcs-business-messaging-mena-rollout-2026",
+					"confidence": "vendor-claim",
+					"note": "Messaging provider BroadNet reports Jibe business messaging on du and e&. Current person-to-person support is unverified on these carriers."
+				}
+			]
+		},
+		{
+			"country_code": "ZA",
+			"country": "South Africa",
+			"region": "Sub-Saharan Africa",
+			"iphone": {
+				"value": 0,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-mide/109518",
+				"confidence": "measured",
+				"status": "none_listed",
+				"carriers": [],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "documented_historically",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed a Vodacom launch."
+				},
+				{
+					"date": "2026-11-26",
+					"source_url": "https://www.vodafone.com/business/products/messaging-and-identity/vodafone-messaging-hub-rcs",
+					"confidence": "vendor-claim",
+					"note": "Vodafone lists South Africa for RCS Business Messaging via Jibe. This does not establish present consumer support on every local line."
+				}
+			]
+		},
+		{
+			"country_code": "CN",
+			"country": "China mainland",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 3,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"China Mobile",
+					"China Telecom",
+					"China Unicom"
+				],
+				"encryption_beta_carriers": [],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "carrier_ecosystem",
+			"evidence": [
+				{
+					"date": "2023-08",
+					"source_url": "https://www.digitalchina.gov.cn/2023/xwzx/zcjd/202308/t20230810_4757744.htm",
+					"confidence": "vendor-claim",
+					"note": "China’s government portal documents the operators’ domestic 5G Messaging initiative based on RCS. Global Google Jibe interoperability and use by a visitor’s overseas number were not verified."
+				}
+			]
+		},
+		{
+			"country_code": "SG",
+			"country": "Singapore",
+			"region": "Asia-Pacific",
+			"iphone": {
+				"value": 1,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-au/109510",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Singtel"
+				],
+				"encryption_beta_carriers": [
+					"Singtel"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2026",
+					"source_url": "https://support.apple.com/en-au/109510",
+					"confidence": "vendor-claim",
+					"note": "Apple lists encrypted RCS messaging beta on Singtel."
+				},
+				{
+					"date": "2024",
+					"source_url": "https://www.telkomsel.com/en/enterprise/insight/news/Kerja-sama-Telkomsel-Singtel-Google-RCS",
+					"confidence": "vendor-claim",
+					"note": "Telkomsel reported the Singtel and Google RCS partnership for compatible devices."
+				}
+			]
+		},
+		{
+			"country_code": "CA",
+			"country": "Canada",
+			"region": "North America",
+			"iphone": {
+				"value": 13,
+				"unit": "carrier brands listed with iPhone RCS",
+				"date": "2026-11-26",
+				"source_url": "https://support.apple.com/en-us/109526",
+				"confidence": "measured",
+				"status": "listed",
+				"carriers": [
+					"Tbaytel",
+					"Bell",
+					"Chatr",
+					"Fido",
+					"Freedom Mobile",
+					"Koodo",
+					"Lucky Mobile",
+					"Public Mobile",
+					"Rogers",
+					"SaskTel",
+					"Telus",
+					"Videotron",
+					"Virgin Mobile"
+				],
+				"encryption_beta_carriers": [
+					"Bell",
+					"Chatr",
+					"Fido",
+					"Freedom Mobile",
+					"Koodo",
+					"Lucky Mobile",
+					"Public Mobile",
+					"Rogers",
+					"SaskTel",
+					"Telus",
+					"Videotron",
+					"Virgin Mobile"
+				],
+				"note": "Count of named brands in the cited Apple country section carrying either RCS label. Zero means no matching entry in that directory snapshot. Brands may share a network."
+			},
+			"android_status": "confirmed",
+			"evidence": [
+				{
+					"date": "2020-07-08",
+					"source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/rcs/global-launches/",
+					"confidence": "vendor-claim",
+					"note": "GSMA listed Bell, Rogers and Telus launches."
+				}
+			]
+		}
+	]
+}
+</script>
+</body>
+</html>

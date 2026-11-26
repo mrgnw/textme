@@ -170,10 +170,15 @@ def confidence_legend() -> str:
 	return f'<ul class="legend" aria-label="Confidence key">{items}</ul>'
 
 
+def short_url(url: str) -> str:
+	text = url.split('://', 1)[1].removeprefix('www.').split('?')[0].rstrip('/')
+	return text if len(text) <= 64 else text[:63] + '…'
+
+
 def sources_block(urls: list[str]) -> str:
 	unique = list(dict.fromkeys(urls))
 	items = ''.join(
-		f'<li><a href="{escape(url)}">{escape(publisher(url))}</a> <span class="muted">{escape(url.split("/")[2])}</span></li>'
+		f'<li><a href="{escape(url)}">{escape(publisher(url))}</a> <span class="muted">{escape(short_url(url))}</span></li>'
 		for url in unique
 	)
 	return f'<section class="sources"><h2>Sources</h2><ul>{items}</ul></section>'
@@ -502,5 +507,195 @@ def build_timeline() -> None:
 	)
 
 
+# ---------- 2. country coverage ----------
+
+ANDROID_STATUS = {
+	'confirmed': ('live', 'Documented'),
+	'documented_historically': ('partial', 'Historical only'),
+	'announced_historically': ('partial', 'Announced only'),
+	'carrier_ecosystem': ('partial', 'Domestic system'),
+	'unverified': ('unknown', 'Unverified'),
+}
+STATUS_LABEL = {
+	'live': 'Live',
+	'partial': 'Partial or dated',
+	'none': 'None listed',
+	'unknown': 'Unverified',
+}
+SCORE = {'live': 2, 'partial': 1, 'none': 0, 'unknown': 0}
+GROUPS = (
+	('both', 'RCS documented on both iPhone and Android'),
+	('one', 'Documented on one platform only'),
+	('neither', 'Not currently documented on either'),
+)
+
+COUNTRY_CSS = """
+table.matrix { border-collapse: collapse; width: 100%; font-size: 14px; }
+.matrix th, .matrix td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.matrix thead th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; vertical-align: bottom; }
+.matrix thead th span { display: block; text-transform: none; letter-spacing: 0; font-weight: 400; }
+.matrix tbody th[colspan] { padding-top: 24px; font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Charter, Georgia, serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; border-bottom: 1px solid var(--ink-2); }
+.matrix tbody th[colspan] .count { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 400; color: var(--ink-2); }
+.matrix .market { font-weight: 600; }
+.matrix .market small { display: block; font-weight: 400; color: var(--ink-2); }
+.cell { display: flex; gap: 6px; align-items: flex-start; }
+.cell svg { flex: none; margin-top: 2px; }
+.cell small { display: block; color: var(--ink-2); }
+.matrix td { width: 25%; }
+@media (max-width: 480px) { .matrix .market small { display: none; } .matrix { font-size: 13px; } .matrix th, .matrix td { padding: 8px 3px; } .cell { flex-direction: column; gap: 2px; } }
+"""
+
+
+def status_glyph(status: str, confidence: str, label: str) -> str:
+	solid = confidence == 'measured'
+	ring = 'style="fill:none;stroke:var(--ink-2)" stroke-width="1.5"'
+	if status == 'live':
+		fill = (
+			'style="fill:var(--live)"'
+			if solid
+			else 'fill="url(#hatch-live)" style="stroke:var(--live)" stroke-width="2"'
+		)
+		shape = f'<circle cx="9" cy="9" r="7" {fill}/>'
+	elif status == 'partial':
+		fill = 'style="fill:var(--partial)"' if solid else 'fill="url(#hatch-partial)"'
+		shape = f'<path d="M9 2 A7 7 0 0 0 9 16 Z" {fill}/><circle cx="9" cy="9" r="7" {ring}/>'
+	elif status == 'none':
+		shape = '<circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5"/>'
+	else:
+		assert status == 'unknown', status
+		shape = (
+			'<circle cx="9" cy="9" r="6.5" style="fill:none;stroke:var(--gap)" stroke-width="1.5" stroke-dasharray="2 2"/>'
+			'<text x="9" y="12.5" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--ink-2)">?</text>'
+		)
+	return f'<svg width="18" height="18" role="img" aria-label="{escape(label)}">{shape}</svg>'
+
+
+def market_cells(m: dict) -> dict:
+	iphone = m['iphone']
+	assert iphone['confidence'] == 'measured'
+	listed = iphone['status'] == 'listed'
+	assert listed == (iphone['value'] > 0)
+	n = iphone['value']
+	enc = len(iphone['encryption_beta_carriers'])
+	if m['country_code'] == 'US':
+		iphone_text = f'{n} selected carriers'
+	else:
+		iphone_text = f'{n} carrier{"s" if n != 1 else ""}' if listed else 'None listed'
+	iphone_cell = (
+		'live' if listed else 'none',
+		'measured',
+		iphone_text,
+		', '.join(iphone['carriers']) or iphone['note'],
+	)
+
+	assert all(e['confidence'] == 'vendor-claim' for e in m['evidence'])
+	status, text = ANDROID_STATUS[m['android_status']]
+	latest = max(e['date'] for e in m['evidence'])
+	android_note = ' | '.join(f'{e["date"]}: {e["note"]}' for e in m['evidence'])
+	android_cell = (status, 'vendor-claim', text, android_note, f'latest {latest[:4]}')
+
+	if not listed:
+		enc_cell = ('none', 'measured', 'n/a', 'No iPhone RCS carrier listed')
+	elif enc == n:
+		enc_cell = ('live', 'measured', f'All {n}', ', '.join(iphone['encryption_beta_carriers']))
+	elif enc:
+		enc_cell = ('partial', 'measured', f'{enc} of {n}', ', '.join(iphone['encryption_beta_carriers']))
+	else:
+		enc_cell = (
+			'none',
+			'measured',
+			'None listed',
+			'No carrier in this market is listed for the encryption beta',
+		)
+	return {'iphone': iphone_cell, 'android': android_cell, 'enc': enc_cell}
+
+
+def market_group(cells: dict) -> str:
+	iphone_live = cells['iphone'][0] == 'live'
+	android_live = cells['android'][0] == 'live'
+	if iphone_live and android_live:
+		return 'both'
+	if iphone_live or android_live:
+		return 'one'
+	return 'neither'
+
+
+def cell_html(cell: tuple) -> str:
+	status, confidence, text, note, *extra = cell
+	sub = f'<small>{escape(extra[0])}</small>' if extra else ''
+	label = f'{STATUS_LABEL[status]}, {CONFIDENCE_LABEL[confidence].lower()}: {text}'
+	return (
+		f'<td title="{escape(note)}"><div class="cell">{status_glyph(status, confidence, label)}'
+		f'<span>{escape(text)}{sub}</span></div></td>'
+	)
+
+
+def build_country() -> None:
+	markets = DATA['markets']
+	rows = []
+	for m in markets:
+		cells = market_cells(m)
+		score = sum(SCORE[c[0]] for c in cells.values())
+		rows.append((market_group(cells), -score, m['country'], m, cells))
+	rows.sort()
+	counts = {key: sum(1 for r in rows if r[0] == key) for key, _ in GROUPS}
+
+	body_rows = []
+	for key, title in GROUPS:
+		group_rows = [r for r in rows if r[0] == key]
+		if not group_rows:
+			continue
+		body_rows.append(
+			f'<tr><th colspan="4" scope="rowgroup">{title} <span class="count">{len(group_rows)} markets</span></th></tr>'
+		)
+		for _, _, _, m, cells in group_rows:
+			body_rows.append(
+				f'<tr><th scope="row" class="market">{escape(m["country"])}<small>{escape(m["region"])}</small></th>'
+				f'{cell_html(cells["iphone"])}{cell_html(cells["android"])}{cell_html(cells["enc"])}</tr>'
+			)
+
+	legend_status = ''.join(
+		f'<li>{status_glyph(s, "measured", STATUS_LABEL[s])}{STATUS_LABEL[s]}</li>' for s in STATUS_LABEL
+	)
+	legend_conf = (
+		f'<li>{status_glyph("live", "measured", "Solid")}Solid: counted from Apple’s carrier directory</li>'
+		f'<li>{status_glyph("live", "vendor-claim", "Hatched")}Hatched: vendor or carrier claim</li>'
+	)
+	headline = f'{counts["both"]} of {len(markets)} markets have documented RCS on both iPhone and Android.'
+	urls = [m['iphone']['source_url'] for m in markets] + [
+		e['source_url'] for m in markets for e in m['evidence']
+	]
+	body = f"""<p class="eyebrow">RCS by market, local lines, {month(AS_OF)}</p>
+<h1>{escape(headline)}</h1>
+<p class="caption">For a traveler, “documented” means a local line in that country can use RCS: Apple lists iPhone carriers there, or carriers and Google document Android service. It says nothing about roaming on your home number or data-only travel eSIMs.</p>
+<ul class="legend" aria-label="Status key">{legend_status}</ul>
+<ul class="legend" aria-label="Confidence key">{legend_conf}</ul>
+<div class="table-wrap"><table class="matrix">
+<thead><tr><th scope="col">Market</th><th scope="col">iPhone<span>Apple-listed carriers</span></th><th scope="col">Android<span>Carrier or Google evidence</span></th><th scope="col">Encrypted<span>iPhone↔Android beta</span></th></tr></thead>
+<tbody>
+{chr(10).join(body_rows)}
+</tbody></table></div>
+<p class="small muted">Hover or long-press a cell for the carrier names or evidence notes. “Historical only” means the newest evidence is an old launch record or a business-messaging listing.</p>
+{
+		gaps_block(
+			[
+				'No market in the data has a count of active RCS users. Every country-level user total is unknown.',
+				'Android evidence is vendor or carrier claims, some of it years old. The year under each Android cell is the newest evidence.',
+				'iPhone counts are carrier brand names in Apple’s directory. Brands can share a network, and no subscriber totals are attached.',
+				'United States: only 3 selected national brands are counted. Apple lists more.',
+				'China mainland: Apple lists the three operators, but whether RCS reaches Google’s network or works for overseas numbers is unverified.',
+				'Australia: Telstra started a rollout on 16 Nov 2026; iPhone availability there is unverified. Apple’s lists and carrier pages can lag.',
+			]
+		)
+	}
+{sources_block(urls)}
+<p class="small muted">Data as of {AS_OF}.</p>"""
+	write(
+		'country-coverage.html',
+		page('RCS coverage by market', COUNTRY_CSS, body, {'as_of': AS_OF, 'markets': markets}),
+	)
+
+
 if __name__ == '__main__':
 	build_timeline()
+	build_country()
