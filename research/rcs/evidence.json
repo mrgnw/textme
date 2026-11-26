@@ -82,6 +82,17 @@
 			"notes": "Ofcom's 2025 Online Nation reporting puts WhatsApp reach at 90% of UK adults in its online audience measurement. UK example only; no inference about RCS reach or every destination."
 		},
 		{
+			"id": "whatsapp_brazil_daily_use",
+			"category": "identity",
+			"value": 91,
+			"unit": "percent",
+			"confidence": "measured",
+			"source_url": "https://www.cetic.br/media/docs/publicacoes/2/en-us/20260408150920/ict_panel_information_integrity_2025_book_en.pdf",
+			"date": "2026",
+			"date_basis": "publication_or_documented_release",
+			"notes": "ICT Panel 2025 Chart 4. Self-reported daily access by Brazilian Internet users aged 16 and older. The survey asked about app use broadly, so this is distinct from messaging-only activity and from Ofcom's reach metric."
+		},
+		{
 			"id": "rcs_us_messages_per_day_lower_bound",
 			"category": "identity",
 			"value": 1000000000,
@@ -840,6 +851,11 @@
 				{
 					"source_url": "https://blog.whatsapp.com/now-you-can-invite-anyone-to-a-whatsapp-call-no-account-needed-no-cost-no-time-limit",
 					"date": "2026-10-14",
+					"date_basis": "publication_or_documented_release"
+				},
+				{
+					"source_url": "https://www.cetic.br/media/docs/publicacoes/2/en-us/20260408150920/ict_panel_information_integrity_2025_book_en.pdf",
+					"date": "2026",
 					"date_basis": "publication_or_documented_release"
 				}
 			],
