@@ -1,0 +1,1895 @@
+{
+	"as_of": "2026-11-26",
+	"scope": "Consumer messaging unless the feature specifies business. Apple RCS columns cover the named OS families on eligible carriers. The Universal Profile column covers capabilities specified in editions 3.0 through 4.1; it does not assert client deployment. Video attachments and live calls are distinct.",
+	"rating_guide": {
+		"yes": "Documented feature within the stated scope.",
+		"partial": "Conditional or materially narrower support.",
+		"no": "Feature outside documented transport or explicitly absent.",
+		"unknown": "Available sources do not establish current support."
+	},
+	"source_guide": "Dates refer to publication or the documented release unless marked accessed. Vendor-claim includes first-party product docs and normative trade-body specifications; estimate includes unresolved availability and community-only evidence.",
+	"rows": [
+		{
+			"feature": "Read receipts",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Read and delivery indications defined.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Recipient can turn receipts off.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7189714", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Delivery and read receipts.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "Delivery and read receipts.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Personal read status can be disabled; group rules differ.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/665923838265756/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Global and per-chat toggles.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Read receipt control.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Two ticks mean read; one tick means delivery to Telegram cloud.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Both parties must enable.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007059812-Read-Receipts", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Delivery and read receipts.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Typing indicators",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Composing notifications defined.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Optional setting.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7189714", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "partial",
+				"notes": "Verizon documents limitations for mixed-platform iPhone groups.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Apple lists typing support; Verizon documents limitations for mixed-platform iPhone groups.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Meta documents typing indicators in its messaging experience.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2025/11/messaging-interoperability-whatsapp-enables-third-party-chats-for-users-in-europe/", "date": "2025-11-14", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/09/an-update-on-how-were-building-safe-and-secure-third-party-chats-for-users-in-europe/", "date": "2024-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "Exact availability and controls not established by the cited DM guide.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Typing indicators in encrypted one-to-one and group chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/01/updates-to-end-to-end-encrypted-chats-messenger/", "date": "2022-01-27", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Telegram exposes typing status in chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Both parties must enable.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360020798451-Typing-Indicators", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Typing indicators supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Group chats",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Group chat and membership defined.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "RCS-enabled members; group management supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/13508703", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Mixed iPhone and Android RCS groups; heterogeneous fallback can split threads.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-ie/118236", "date": "2026", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "Same carrier and member eligibility constraints.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-ie/118236", "date": "2026", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Individual and group messaging.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/04/our-vision-for-communities-on-whatsapp/", "date": "2022", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Individual and group DMs.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Shared albums in group chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/04/hd-photos-shared-albums-and-more-on-messenger/", "date": "2024-04-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Cloud groups; Secret Chats are one-to-one.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Private group chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Group iMessage uses Apple devices.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-ie/118236", "date": "2026", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "High-resolution photos",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "File transfer supports images and media quality controls.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "HD optimized and HD+ original quality.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Higher-resolution media than SMS/MMS context.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "High-resolution photos; exact compression behavior varies or is undocumented here.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "HD media option; documents are a separate sending path.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "Photo sharing verified; comparable original-quality mode unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "HD toggle.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/04/hd-photos-shared-albums-and-more-on-messenger/", "date": "2024-04-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Photo mode compresses by default; send as file for original.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Supports high-quality media; original fidelity not established here.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "High-resolution photos.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "File attachments and maximum size",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "File transfer maximum is configurable via FT MAX SIZE; no single profile-wide ceiling established.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Actual ceiling unverified; file sharing documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "partial",
+				"notes": "Media attaches; generic document support and exact limits unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Media attaches; generic document support and exact limits unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Documents up to 2 GB; media limits differ by mode.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "Media documented; general attachments and ceiling unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Files up to 100 MB in mobile chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/04/hd-photos-shared-albums-and-more-on-messenger/", "date": "2024-04-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Free users 2 GB per file, Premium 4 GB.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/blog/700-million-and-premium", "date": "2022", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "General files supported; ceiling unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Documents supported; ceiling unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Emoji reactions",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Reactions defined.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Emoji reactions supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.google/products-and-platforms/products/messages/10-new-messages-features/", "date": "2022", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Verizon documents emoji reactions with compatible clients.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "Emoji reactions documented; interoperability may vary by carrier/client.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Emoji reactions supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/04/our-vision-for-communities-on-whatsapp/", "date": "2022", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Meta documents reactions; DM stickers are a distinct feature.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/09/an-update-on-how-were-building-safe-and-secure-third-party-chats-for-users-in-europe/", "date": "2024-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Message reactions documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/01/updates-to-end-to-end-encrypted-chats-messenger/", "date": "2022-01-27", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Reactions supported; extras can depend on Premium or chat settings.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Emoji reactions on mobile and desktop.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360039929972-Message-Reactions", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Tapbacks supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Inline or quoted replies",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Reply references a selected message.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Individual message replies with RCS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.google/products-and-platforms/products/messages/10-new-messages-features/", "date": "2022", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "No inline RCS reply rollout confirmed for iOS 18 by the cited notes.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "iOS 26 guide documents the gesture without a transport-specific guarantee; iOS 27 explicitly documents RCS inline replies.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Direct replies are documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2025/11/messaging-interoperability-whatsapp-enables-third-party-chats-for-users-in-europe/", "date": "2025-11-14", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/09/an-update-on-how-were-building-safe-and-secure-third-party-chats-for-users-in-europe/", "date": "2024-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Replies can include media, stickers and voice notes.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Swipe to reply and long-press reply options.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/01/updates-to-end-to-end-encrypted-chats-messenger/", "date": "2022-01-27", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Quotes and replies supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Signal supports quoted replies; individual deployment details are client-specific.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007320551-Linked-Devices/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Inline replies supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "Voice messages",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Audio messages defined; v3.1 introduces xHE-AAC support.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/newsroom/article/elevating-the-messaging-experience-with-rcs-universal-profile-3-1/", "date": "2025-07-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Record and send voice notes over RCS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "Voice recording in an iOS 18 RCS chat unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "General Messages audio tools do not establish RCS recording and playback on each iOS 26 build.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Recording and sending documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Voice messages and voice replies.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Voice notes and speed controls.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Voice messages with recording controls.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Voice messages supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Audio messages documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "Recorded video attachments",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Video through file transfer.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Video files and media quality options.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Higher-resolution video documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "High-resolution video documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Videos attach; mode affects quality and limits.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Videos in DMs and replies.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Video sharing documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/04/hd-photos-shared-albums-and-more-on-messenger/", "date": "2024-04-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Video messages and files supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Video attachments supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "High-resolution videos supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Live video calls",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Messaging-Initiated Video Calls arrive in 4.0; inclusion in a profile does not establish deployed availability.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/", "date": "2026-03-26", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "Google offers call launch from the conversation; interoperable native 4.0 RCS calling unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.google/products-and-platforms/products/messages/helping-you-connect-around-world-messages/", "date": "2020-11-19", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/", "date": "2026-03-26", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "no",
+				"notes": "No native interoperable RCS call in this generation; FaceTime is separate.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/", "date": "2026-03-26", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "Native 4.0 RCS calling not verified for iOS 26; FaceTime is separate.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/newsroom/article/from-rich-text-to-video-rcs-universal-profile-4-0-has-arrived/", "date": "2026-03-26", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Live calls on mobile and desktop; supported guest links allow call participation without an account.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.whatsapp.com/improved-calling-this-holiday-season", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://blog.whatsapp.com/now-you-can-invite-anyone-to-a-whatsapp-call-no-account-needed-no-cost-no-time-limit", "date": "2026", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Instagram video calls documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/07/meta-avatar-calls/amp/", "date": "2023-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Messenger group and individual video calls.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/01/updates-to-end-to-end-encrypted-chats-messenger/", "date": "2022-01-27", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Telegram calls supported; protections depend on call type.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Voice and video calls supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "partial",
+				"notes": "FaceTime is an Apple service launched separately from iMessage transport.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/109317", "date": "2026-11-03", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Location sharing",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Geolocation push for a location pin; continuous location streaming is outside this cell.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "unknown",
+				"notes": "Location messages are recognized; dedicated send and live sharing coverage unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/17499346", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "Native pin or live sharing over RCS unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "Apple lists location in Messages but does not confirm RCS-native location sharing in the cited guide.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Location and live location supported.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/3307102709559968/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://faq.whatsapp.com/453914586839706/?cms_platform=web", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "partial",
+				"notes": "Pin and live sharing in select countries.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/11/new-ways-to-connect-through-dms/", "date": "2024-11-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Static and live locations documented by Meta; current regional coverage unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2017/03/introducing-live-location-in-messenger/", "date": "2017-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Static and live sharing documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "unknown",
+				"notes": "Native pin and live-location behavior unverified in the cited documentation.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Share location through Messages.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "End-to-end encryption on default personal chats",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Messaging Layer Security defined for eligible RCS chats in 3.0; 4.1 refines the specification.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rcc-16-rich-communication-suite-end-to-end-encryption-specification/", "date": "2025", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/newsroom/article/rcs-universal-profile-4-1-stronger-foundations-for-secure-messaging/", "date": "2026-07-28", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "Eligible Google Messages chats encrypted; cross-platform rollout depends on eligibility and conversation lock.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/13508703", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "no",
+				"notes": "Cross-platform encrypted RCS began with iOS 26.5; iOS 18 RCS has no such support.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Beta started in 26.5; rolls out with supported carriers; all participants must be eligible. Earlier 26 builds cannot be assumed encrypted.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Personal messages and calls protected by default.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/3398056720476987/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "no",
+				"notes": "Meta announced removal of the opt-in test in 2026; never default in ordinary DMs.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/08/testing-end-to-end-encrypted-backups-and-more-on-messenger/", "date": "2026-03-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Personal chats and calls by default; other surfaces are outside this claim.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "partial",
+				"notes": "Opt-in device-specific Secret Chats only for eligible one-to-one messages; default cloud chats use client-server encryption.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Default for messages and calls.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Default for iMessage; green-bubble transports have separate rules.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Standards-based Android–iPhone RCS encryption",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Universal Profile 3.0 defines interoperable MLS encryption; actual clients must both implement it.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/gsma_resources/rcc-16-rich-communication-suite-end-to-end-encryption-specification/", "date": "2025", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "Latest Google Messages and eligible iPhone conversations with lock indicator.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.google/products-and-platforms/platforms/android/android-ios-end-to-end-encrypted-rcs-messaging/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "no",
+				"notes": "First public beta requires iOS 26.5.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "iOS 26.5 or later with supported carrier, eligible participants and a conversation lock; broad availability unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.apple.com/newsroom/2026/05/end-to-end-encrypted-rcs-messaging-begins-rolling-out-today-in-beta/", "date": "2026-05-11", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "no",
+				"notes": "WhatsApp encrypts between its mobile clients; its European interop program is separate from RCS MLS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/3398056720476987/", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://about.fb.com/news/2025/11/messaging-interoperability-whatsapp-enables-third-party-chats-for-users-in-europe/", "date": "2025-11-14", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "no",
+				"notes": "No RCS MLS federation documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/08/testing-end-to-end-encrypted-backups-and-more-on-messenger/", "date": "2026-03-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "no",
+				"notes": "Signal Protocol and Meta mechanisms; EU third-party plan is separate from RCS MLS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/09/an-update-on-how-were-building-safe-and-secure-third-party-chats-for-users-in-europe/", "date": "2024-09", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "no",
+				"notes": "Telegram Secret Chats are a separate protocol.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "no",
+				"notes": "Signal-to-Signal encryption is separate from RCS MLS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007321171-Can-I-send-SMS-MMS-with-Signal", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "no",
+				"notes": "iMessage is a separate Apple transport.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Edit sent messages",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Editable within client-configured time window; 15 minutes recommended.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "15 minutes; unsupported recipients receive a new message marked with an asterisk.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/14929292", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "no",
+				"notes": "Apple documents editing for iMessage; recipients can still see a separate Google correction.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "no",
+				"notes": "Apple documents iMessage editing; a new correction from Google is possible on an unsupported client.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.google.com/messages/answer/14929292", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "15-minute edit window.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.whatsapp.com/now-you-can-edit-your-whatsapp-messages", "date": "2023-05-22", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "15-minute edit window.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "15-minute edit window.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Editing supported; time limits can vary by context.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Time and edit-count limits documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/6255134251546-Edit-Message", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "15 minutes; older software can receive a separate update.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "Recall or unsend for everyone",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Profile defines recall; unsupported recipient clients retain original.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "Google support-community report documents delete for everyone on compatible clients; current rollout and mixed-client success unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.google.com/messages/thread/365875458/deleting-text-msg-from-sender-and-recipient-phones", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "no",
+				"notes": "Apple documents undo send for iMessage.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "no",
+				"notes": "iMessage-only undo documented; no Apple RCS recall guarantee.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Delete for everyone subject to eligibility and time limits.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/1370476507114859/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "Vendor announcement covers edit but not unsend; current primary help article unverified for this review.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "unknown",
+				"notes": "Vendor encryption announcement covers edit but not removal for everyone.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Delete for both sides in one-to-one chats; group permissions differ.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Recent sends can be deleted for everyone on a best-effort basis.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007320491-Delete-messages-alerts-or-chats", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Two minutes; older recipients may retain original.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/guide/iphone/iphe67195653/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "Stickers",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Image or animated payload transfer is distinct from interoperable sticker packs; universal sticker UI unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "Google client features and multimedia can carry creative assets; sticker semantics across clients unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.google/products-and-platforms/products/messages/10-new-messages-features/", "date": "2022", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.google.com/messages/answer/6159880", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "iMessage sticker Tapbacks documented; standalone RCS sticker behavior unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "iMessage has Live Stickers; RCS sticker fidelity unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/guide/iphone/send-and-reply-to-messages-iph82fb73ba3/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Sticker packs and custom stickers documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://blog.whatsapp.com/new-year-new-ways-to-chat-on-whatsapp", "date": "2025", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Favorite and send stickers.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2024/11/new-ways-to-connect-through-dms/", "date": "2024-11-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Stickers in encrypted chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2022/01/updates-to-end-to-end-encrypted-chats-messenger/", "date": "2022-01-27", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Sticker packs and animated stickers.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Sticker packs and creator tools.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360031836512-Stickers", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Live Stickers.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "In-chat payments",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Business chatbot payment options; no standardized personal wallet documented.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/03/RCC.71-v3.0.pdf", "date": "2025-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "unknown",
+				"notes": "Browser or merchant flows possible via links; built-in personal RCS payment unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7513219", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "Apple Cash in Messages does not establish RCS payment support.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-us/105013", "date": "2026", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "unknown",
+				"notes": "Apple Cash in Messages does not establish RCS payment support.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-us/105013", "date": "2026", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "partial",
+				"notes": "India UPI eligibility; payments depend on market.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2026/04/bringing-prepaid-mobile-recharges-to-whatsapp-users-in-india/", "date": "2026-04", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "Payments inside ordinary DMs unverified; commerce elsewhere in Instagram is separate.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "partial",
+				"notes": "Meta historically documented U.S. Messenger payments; current availability not independently confirmed.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2021/06/more-new-features-coming-to-messenger/", "date": "2021-06", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "partial",
+				"notes": "Bot payments through payment providers; separate from general person-to-person fiat transfers.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://core.telegram.org/bots/payments", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "partial",
+				"notes": "MobileCoin feature; cryptocurrency and availability constraints.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360057625692-In-app-Payments", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "partial",
+				"notes": "Apple Cash in Messages for eligible U.S. users.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/105013", "date": "2026", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Verified business messaging",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "Business chatbots and verified sender mechanisms defined.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Businesses can be verified through Google or another provider; distinct from personal chats.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7513219", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://developers.google.com/business-communications/rcs-business-messaging/guides/launch/brand-verification", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "unknown",
+				"notes": "Apple documents carrier-dependent business toggle in current instructions; earliest iOS 18 availability and coverage unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Carrier-dependent RCS Business Messages; Apple Messages for Business is separate.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-mide/guide/iphone/iph203ab0be4/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "partial",
+				"notes": "Meta Verified on eligible WhatsApp Business accounts; markets and accounts vary.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/06/new-ai-tools-meta-verified-and-more-for-businesses-on-whatsapp/", "date": "2024-06", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "unknown",
+				"notes": "A verified business sender workflow in DMs was not established by these sources.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2026/11/introducing-direct-an-app-just-for-messaging/", "date": "2026-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "unknown",
+				"notes": "Business chat verification coverage unverified.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "partial",
+				"notes": "Eligible public channels, groups and bots can be verified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://core.telegram.org/verify", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "unknown",
+				"notes": "Formal verified business sender program unverified; safety numbers concern contact keys.",
+				"confidence": "estimate",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "partial",
+				"notes": "Apple Messages for Business in the same Apple client is separate from iMessage personal chats and RCS business chat.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-mide/guide/iphone/iph203ab0be4/26/ios/26", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		},
+		{
+			"feature": "Desktop or web access",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Multi-device capabilities do not guarantee a universal web client.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Paired browser with Google Account and phone.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7611075", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "partial",
+				"notes": "Apple Messages via Text Message Forwarding on paired Apple devices.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Apple Messages via Text Message Forwarding on paired Apple devices.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Web and desktop clients.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://web.whatsapp.com/", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://blog.whatsapp.com/improved-calling-this-holiday-season", "date": "2024", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Browser inbox; feature parity unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.instagram.com/direct/inbox/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Facebook Messages browser inbox.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.facebook.com/messages/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Cloud chats on web and desktop; Secret Chats device-specific.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Linked desktop clients; no web client established.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007320551-Linked-Devices/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Apple devices including Mac; general browser access unverified.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Messaging over Wi-Fi",
+			"rcs_universal_profile": {
+				"status": "yes",
+				"notes": "IP connectivity specified; provider and configuration can matter.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Internet messaging over Wi-Fi or mobile data.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/13508703", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "yes",
+				"notes": "Wi-Fi service with eligible carrier plan.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "yes",
+				"notes": "Wi-Fi service with eligible carrier plan.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "yes",
+				"notes": "Existing account can use Wi-Fi.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/5315147411944059/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "yes",
+				"notes": "Browser inbox runs over internet connectivity.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.instagram.com/direct/inbox/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"messenger": {
+				"status": "yes",
+				"notes": "Browser inbox runs over internet connectivity.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.facebook.com/messages/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"telegram": {
+				"status": "yes",
+				"notes": "Internet messaging over Wi-Fi or mobile data.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "yes",
+				"notes": "Uses internet data connections.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://signal.org/?lang=en_gb", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Wi-Fi or cellular data.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "SMS or MMS fallback in the same client",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Seamless interworking defined; bearer, provisioning and feature loss matter.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "yes",
+				"notes": "Configurable resend; SMS/MMS loses RCS encryption and rich features.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/7189714", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.google.com/messages/answer/9592174", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "partial",
+				"notes": "Alternate SMS/MMS in Apple Messages; mixed groups can split or stall.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Alternate SMS/MMS in Apple Messages; mixed groups can split or stall.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.verizon.com/support/verizon-rcs-messaging-faqs/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"whatsapp": {
+				"status": "no",
+				"notes": "SMS can verify account; personal chats use data.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/5315147411944059/", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://faq.whatsapp.com/1199905020946636/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"instagram_dms": {
+				"status": "no",
+				"notes": "Instagram DMs require the service.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "no",
+				"notes": "Messenger personal chats are app service traffic.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"telegram": {
+				"status": "no",
+				"notes": "SMS may verify login; chat delivery uses Telegram.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "no",
+				"notes": "Signal documents no SMS or MMS.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/360007321171-Can-I-send-SMS-MMS-with-Signal", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "yes",
+				"notes": "Apple Messages can use RCS or SMS/MMS when iMessage is unavailable; security differs.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" }
+				]
+			}
+		},
+		{
+			"feature": "Start with a contact's existing phone number and no new app account",
+			"rcs_universal_profile": {
+				"status": "partial",
+				"notes": "Phone-number addressing and capability discovery; both ends need RCS provisioning and compatible clients.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://www.gsma.com/solutions-and-impact/technologies/networks/wp-content/uploads/2025/08/RCC.71-v3.1.pdf", "date": "2025-07", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"google_messages_rcs": {
+				"status": "partial",
+				"notes": "When Google Messages already handles texts, there is no separate chat signup; number verification and eligible contacts still matter.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.google.com/messages/answer/13508703", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://support.google.com/messages/answer/9487020", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"apple_messages_rcs_ios_18": {
+				"status": "partial",
+				"notes": "Built into Messages, with iOS 18 and a supporting carrier plan.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-us/121161", "date": "2024", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"apple_messages_rcs_ios_26": {
+				"status": "partial",
+				"notes": "Built into Messages, with a supporting carrier plan; app can also be changed in iOS 26.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/122195", "date": "2026-05-25", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"whatsapp": {
+				"status": "no",
+				"notes": "Phone-number registration still required for chats; limited European third-party chats do not make ordinary numbers reachable.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://faq.whatsapp.com/1199905020946636/", "date": "2026-11-26", "date_basis": "accessed" },
+					{ "source_url": "https://about.fb.com/news/2025/11/messaging-interoperability-whatsapp-enables-third-party-chats-for-users-in-europe/", "date": "2025-11-14", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"instagram_dms": {
+				"status": "no",
+				"notes": "Instagram DMs require an account; standalone Direct trial accepts a separate email or phone signup.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2024/03/instagram-dm-updates/", "date": "2024-03", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://about.fb.com/news/2026/11/introducing-direct-an-app-just-for-messaging/", "date": "2026-11", "date_basis": "publication_or_documented_release" }
+				]
+			},
+			"messenger": {
+				"status": "no",
+				"notes": "Uses Messenger/Facebook account identity.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://about.fb.com/news/2023/12/default-end-to-end-encryption-on-messenger/amp/", "date": "2023-12", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://www.facebook.com/messages/", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"telegram": {
+				"status": "no",
+				"notes": "Phone-number registration; usernames may be used to connect.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://telegram.org/faq", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"signal": {
+				"status": "no",
+				"notes": "Phone-number registration; optional usernames can avoid disclosing it.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.signal.org/hc/en-us/articles/6829998083994-Phone-Number-Privacy-and-Usernames-Deeper-Dive", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			},
+			"imessage": {
+				"status": "partial",
+				"notes": "Can address phone numbers or Apple Account emails; Apple ecosystem eligibility required.",
+				"confidence": "vendor-claim",
+				"sources": [
+					{ "source_url": "https://support.apple.com/en-gb/104972", "date": "2026-05", "date_basis": "publication_or_documented_release" },
+					{ "source_url": "https://support.apple.com/guide/iphone/imessage-overview-iph4e9799206/27/ios/27", "date": "2026-11-26", "date_basis": "accessed" }
+				]
+			}
+		}
+	]
+}
