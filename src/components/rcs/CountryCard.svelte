@@ -192,7 +192,6 @@
 
 <style>
 	.facts {
-		container-type: inline-size;
 		margin-top: 1rem;
 		border-top: 1px solid hsl(var(--border));
 	}
@@ -223,31 +222,16 @@
 	}
 
 	.fact-text {
-		display: flex;
-		flex-wrap: wrap;
-		column-gap: 0.75rem;
+		display: grid;
 		min-width: 0;
 	}
 
 	.fact-label {
-		flex: none;
-		width: 9.5rem;
 		font-weight: 600;
 	}
 
 	.fact-value {
-		min-width: 0;
-	}
-
-	@container (max-width: 22rem) {
-		.fact-label {
-			width: auto;
-		}
-
-		.fact-value {
-			flex-basis: 100%;
-			color: hsl(var(--muted-foreground));
-		}
+		color: hsl(var(--muted-foreground));
 	}
 
 	.fact :global(.chevron) {
