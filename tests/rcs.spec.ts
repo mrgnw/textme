@@ -126,3 +126,72 @@ test("invalid stored preferences do not break the page", async ({ page }) => {
 	await page.getByRole("button", { name: "Remove Spain" }).click();
 	await expect(page.getByRole("button", { name: "Remove Spain" })).toHaveCount(0);
 });
+
+async function paintedLand(page: Page) {
+	return page.evaluate(() => {
+		const sphereNode = document.querySelector("path.sphere");
+		if (!sphereNode) return 0;
+		const sphere = getComputedStyle(sphereNode).fill;
+		const lands = [...document.querySelectorAll<SVGPathElement>("path.land")].filter((path) => {
+			const box = path.getBBox();
+			const fill = getComputedStyle(path).fill;
+			return box.width > 0 && fill !== "none" && fill !== sphere;
+		});
+		return lands.length;
+	});
+}
+
+async function countryAtCentre(page: Page) {
+	const box = (await page.getByRole("application").boundingBox())!;
+	return page.evaluate(
+		([x, y]) => document.elementFromPoint(x, y)?.closest("[data-iso]")?.getAttribute("data-iso") ?? null,
+		[box.x + box.width / 2, box.y + box.height / 2]
+	);
+}
+
+for (const country of ["US", "ES", "JP"]) {
+	for (const scheme of ["light", "dark"] as const) {
+		for (const viewport of VIEWPORTS) {
+			test(`globe paints land and centres ${country} (${scheme}, ${viewport.name})`, async ({ browser }) => {
+				const context = await browser.newContext({ extraHTTPHeaders: { "cf-ipcountry": country }, colorScheme: scheme, viewport });
+				const page = await context.newPage();
+				const errors = watchErrors(page);
+				await page.goto("/rcs");
+				await expect(page.getByRole("combobox", { name: "Country" })).toHaveValue(country);
+				await expect.poll(() => paintedLand(page)).toBeGreaterThan(60);
+				await expect.poll(() => countryAtCentre(page)).toBe(country);
+				expect(errors).toEqual([]);
+				await context.close();
+			});
+		}
+	}
+}
+
+test("picking a country in the list turns the globe to it", async ({ browser }) => {
+	const context = await browser.newContext({ extraHTTPHeaders: { "cf-ipcountry": "XX" } });
+	const page = await context.newPage();
+	await page.goto("/rcs");
+	await expect.poll(() => paintedLand(page)).toBeGreaterThan(60);
+	await page.getByRole("combobox", { name: "Country" }).selectOption("BR");
+	await expect.poll(() => countryAtCentre(page)).toBe("BR");
+	await context.close();
+});
+
+test("a failed map download shows a message instead of a blank globe", async ({ page }) => {
+	await page.route("**/countries-110m*.json", (route) => route.abort());
+	await page.goto("/rcs");
+	await expect(page.getByText("The map did not load. Use the country list instead.")).toBeVisible();
+});
+
+test("the globe says it is loading until the shapes arrive", async ({ page }) => {
+	let release = () => {};
+	const gate = new Promise<void>((resolve) => (release = resolve));
+	await page.route("**/countries-110m*.json", async (route) => {
+		await gate;
+		await route.continue();
+	});
+	await page.goto("/rcs");
+	await expect(page.getByText("Loading the map.")).toBeVisible();
+	release();
+	await expect.poll(() => paintedLand(page)).toBeGreaterThan(60);
+});
