@@ -4,7 +4,8 @@
 	import Globe from "#components/rcs/Globe.svelte";
 	import CountryCard from "#components/rcs/CountryCard.svelte";
 	import { LEVEL_LABEL, peopleSummary, supportLevel, summaryLine, type Phone } from "#lib/rcs/rcs.js";
-	import { asOf, byIso, hasPerson, people, phone, rows, togglePerson } from "#lib/rcs/state.svelte.js";
+	import { asOf, byIso, hasPerson, loadVersions, minimum, people, phone, rows, togglePerson, versions, versionsOf } from "#lib/rcs/state.svelte.js";
+	import { THRESHOLD_CHOICES, binLabels, shareBin, thresholdShare } from "#lib/rcs/versions.js";
 
 	const ipCountry = ((page.data.ip_country as string | undefined) ?? "").toUpperCase();
 	const isoByNumeric = new Map(rows.map((row) => [row.n, row.iso2]));
@@ -15,10 +16,46 @@
 	let selected = $state(start);
 	let flat = $state(false);
 	let globe = $state<Globe>();
+	let layer = $state<"status" | Phone>("status");
+	let thresholds = $state({ ...minimum });
+
+	const LEVELS = ["yes", "partial", "none", "unknown"] as const;
+	const OS_KEY = { iphone: "ios", android: "android" } as const;
+	const LAYER_NAME = { iphone: "iPhones on iOS", android: "Android phones on Android" } as const;
+
+	loadVersions();
 
 	const selectedRow = $derived(selected ? byIso.get(selected) : undefined);
 	const peopleRows = $derived(people.current.map((iso2) => byIso.get(iso2)).filter((row) => row !== undefined));
 	const summary = $derived(summaryLine(peopleSummary(peopleRows)));
+	const legend = $derived(
+		layer === "status"
+			? LEVELS.map((level) => ({ cls: level, label: LEVEL_LABEL[phone.current][level] }))
+			: [
+					...binLabels().map(({ bin, label }) => ({ cls: bin, label })),
+					{ cls: "unknown", label: versions.status === "loading" ? "Loading" : "No version data yet" }
+				]
+	);
+
+	function shareFor(iso2: string, platform: Phone): number | null {
+		return thresholdShare(versionsOf(iso2)?.[OS_KEY[platform]] ?? null, thresholds[platform]);
+	}
+
+	function classOf(iso2: string): string {
+		const row = byIso.get(iso2);
+		if (!row) return "unknown";
+		if (layer === "status") return supportLevel(row, phone.current);
+		return shareBin(shareFor(iso2, layer));
+	}
+
+	function nameOf(iso2: string): string {
+		const row = byIso.get(iso2);
+		if (!row) return iso2;
+		if (layer === "status") return `${row.name}: ${LEVEL_LABEL[phone.current][supportLevel(row, phone.current)]}`;
+		const share = shareFor(iso2, layer);
+		if (share === null) return `${row.name}: no version data yet`;
+		return `${row.name}: ${Math.round(share)}% of sampled web traffic from ${LAYER_NAME[layer]} ${thresholds[layer]} or newer`;
+	}
 
 	function select(iso2: string) {
 		if (!byIso.has(iso2)) return;
@@ -67,6 +104,24 @@
 					</div>
 				</fieldset>
 				<label class="grid gap-1 text-sm font-medium">
+					Colour by
+					<select class="h-10 rounded-lg border border-input bg-card px-3 text-base" bind:value={layer}>
+						<option value="status">RCS status</option>
+						<option value="iphone">iPhones on iOS {thresholds.iphone} or newer</option>
+						<option value="android">Android on {thresholds.android} or newer</option>
+					</select>
+				</label>
+				{#if layer !== "status"}
+					<label class="grid gap-1 text-sm font-medium">
+						{layer === "iphone" ? "iOS" : "Android"} version
+						<select class="h-10 rounded-lg border border-input bg-card px-3 text-base" bind:value={thresholds[layer]}>
+							{#each THRESHOLD_CHOICES[layer] as choice (choice)}
+								<option value={choice}>{choice} or newer{choice === minimum[layer] ? " (RCS minimum)" : ""}</option>
+							{/each}
+						</select>
+					</label>
+				{/if}
+				<label class="grid gap-1 text-sm font-medium">
 					Country
 					<select
 						class="h-10 rounded-lg border border-input bg-card px-3 text-base"
@@ -87,15 +142,9 @@
 				{selected}
 				people={people.current}
 				{isoByNumeric}
-				levelOf={(iso2) => {
-					const row = byIso.get(iso2);
-					return row ? supportLevel(row, phone.current) : "unknown";
-				}}
-				nameOf={(iso2) => {
-					const row = byIso.get(iso2);
-					return row ? `${row.name}: ${LEVEL_LABEL[phone.current][supportLevel(row, phone.current)]}` : iso2;
-				}}
-				labels={LEVEL_LABEL[phone.current]}
+				{classOf}
+				{nameOf}
+				{legend}
 				onselect={select}
 			/>
 		</div>

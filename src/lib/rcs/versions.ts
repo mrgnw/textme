@@ -32,7 +32,6 @@ export interface VersionBar {
 	phones: number | null;
 }
 
-export const MINIMUM: Record<Phone, number> = { iphone: 18, android: 7 };
 export const THRESHOLD_CHOICES: Record<Phone, number[]> = { iphone: [17, 18, 26], android: [5, 7, 8] };
 const SHARE_BINS = [95, 90, 80] as const;
 const MAX_BARS = 6;

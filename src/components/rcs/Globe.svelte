@@ -6,7 +6,6 @@
 	import { Tween, prefersReducedMotion } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import worldUrl from "world-atlas/countries-110m.json?url";
-	import type { Level } from "#lib/rcs/rcs.js";
 
 	interface Country {
 		key: string;
@@ -20,18 +19,17 @@
 		selected: string | null;
 		people: string[];
 		isoByNumeric: Map<string, string>;
-		levelOf: (iso2: string) => Level;
+		classOf: (iso2: string) => string;
 		nameOf: (iso2: string) => string;
-		labels: Record<Level, string>;
+		legend: { cls: string; label: string }[];
 		onselect: (iso2: string) => void;
 	}
 
-	let { flat, selected, people, isoByNumeric, levelOf, nameOf, labels, onselect }: Props = $props();
+	let { flat, selected, people, isoByNumeric, classOf, nameOf, legend, onselect }: Props = $props();
 
 	const SIZE = 600;
 	const FLAT = { width: 960, height: 500 };
 	const KEY_STEP = 12;
-	const LEVELS: Level[] = ["yes", "partial", "none", "unknown"];
 	const uid = $props.id();
 	const graticule = geoGraticule10();
 	const sphere = { type: "Sphere" } as const;
@@ -189,9 +187,9 @@
 		<path class="sphere" d={path(sphere)} />
 		<path class="graticule" d={path(graticule)} />
 		{#each countries as country (country.key)}
-			{@const level = country.iso2 ? levelOf(country.iso2) : "unknown"}
+			{@const cls = country.iso2 ? classOf(country.iso2) : "unknown"}
 			<path
-				class="land {level}"
+				class="land {cls}"
 				style:--partial="url(#{uid}-partial)"
 				style:--unknown="url(#{uid}-unknown)"
 				d={path(country.shape)}
@@ -225,12 +223,12 @@
 	</p>
 	<figcaption>
 		<ul class="legend">
-			{#each LEVELS as level (level)}
+			{#each legend as item (item.cls)}
 				<li>
 					<svg class="swatch" viewBox="0 0 16 16" aria-hidden="true">
-						<rect class="land {level}" style:--partial="url(#{uid}-partial)" style:--unknown="url(#{uid}-unknown)" width="16" height="16" rx="3" />
+						<rect class="land {item.cls}" style:--partial="url(#{uid}-partial)" style:--unknown="url(#{uid}-unknown)" width="16" height="16" rx="3" />
 					</svg>
-					{labels[level]}
+					{item.label}
 				</li>
 			{/each}
 			<li>
@@ -309,6 +307,22 @@
 
 	.land.unknown {
 		fill: var(--unknown);
+	}
+
+	.land.bin0 {
+		fill: hsl(var(--primary));
+	}
+
+	.land.bin1 {
+		fill: hsl(var(--primary) / 0.7);
+	}
+
+	.land.bin2 {
+		fill: hsl(var(--primary) / 0.45);
+	}
+
+	.land.bin3 {
+		fill: hsl(var(--primary) / 0.2);
 	}
 
 	.partial-bg {

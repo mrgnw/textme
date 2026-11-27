@@ -3,8 +3,9 @@
 	import Contrast from "@lucide/svelte/icons/contrast";
 	import Minus from "@lucide/svelte/icons/minus";
 	import CircleQuestionMark from "@lucide/svelte/icons/circle-question-mark";
-	import { HOW_TO, LEVEL_LABEL, checkYourPhone, osVersionLine, supportLevel, verdict, type CountryCoverage, type Level, type Phone, type Sourced } from "#lib/rcs/rcs.js";
-	import { requirements } from "#lib/rcs/state.svelte.js";
+	import { HOW_TO, LEVEL_LABEL, checkYourPhone, supportLevel, verdict, type CountryCoverage, type Level, type Phone, type Sourced } from "#lib/rcs/rcs.js";
+	import { minimum, requirements, versions, versionsOf } from "#lib/rcs/state.svelte.js";
+	import VersionBars from "./VersionBars.svelte";
 
 	interface Props {
 		row: CountryCoverage;
@@ -25,7 +26,8 @@
 	const iphoneLevel = $derived(supportLevel(row, "iphone"));
 	const howTo = $derived(HOW_TO[phone]);
 	const check = $derived(checkYourPhone(phone, requirements));
-	const osLines = $derived(PLATFORMS.map((platform) => osVersionLine(row, platform, requirements)));
+	const rowVersions = $derived(versionsOf(row.iso2));
+	const excluded = $derived(requirements.iphone_excluded);
 
 	function host(url: string): string {
 		return new URL(url).hostname.replace(/^www\./, "");
@@ -82,6 +84,15 @@
 				{#if row.iphone.carriers.length > 0}Apple lists {row.iphone.carriers.join(", ")}.{/if}
 				{@render source(row.iphone, iphoneLevel !== "unknown")}
 			</dd>
+			<dd class="mt-1 text-muted-foreground">
+				<details>
+					<summary class="cursor-pointer text-foreground">iPhones that cannot use RCS</summary>
+					<p class="mt-1">
+						These models cannot run iOS {excluded.major_version}: {excluded.excluded_models.join(", ")}.
+						{@render source(excluded, true)}
+					</p>
+				</details>
+			</dd>
 		</div>
 		<div>
 			<dt class="font-medium">Phones here</dt>
@@ -93,15 +104,27 @@
 					iPhone and Android share not known.
 				{/if}
 			</dd>
-			{#each osLines as line (line.text)}
-				<dd class="text-muted-foreground">
-					{line.text}
-					{#if line.source}{@render source(line.source, true)}{/if}
-				</dd>
-			{/each}
-			<dd class="text-xs text-muted-foreground">Software versions come from web traffic. They are an OS-version share, not a count of phones that can use RCS.</dd>
 		</div>
 	</dl>
+
+	<section class="mt-5 space-y-4 border-t pt-4 text-sm" aria-labelledby="versions-{row.iso2}">
+		<h3 id="versions-{row.iso2}" class="font-display text-lg font-bold tracking-tight">Phones by OS version</h3>
+		{#if versions.status === "loading"}
+			<p class="text-muted-foreground">Loading version data.</p>
+		{:else if versions.status === "error"}
+			<p class="text-muted-foreground">Version data did not load.</p>
+		{:else}
+			{#each PLATFORMS as platform (platform)}
+				<VersionBars
+					phone={platform}
+					versions={rowVersions?.[platform === "iphone" ? "ios" : "android"] ?? null}
+					estimate={rowVersions?.estimate?.[platform === "iphone" ? "ios" : "android"] ?? null}
+					minimum={minimum[platform]}
+				/>
+			{/each}
+			<p class="text-xs text-muted-foreground">These are shares of web traffic, not counts of phones that can use RCS.</p>
+		{/if}
+	</section>
 
 	{#if row.note}<p class="mt-3 text-sm text-muted-foreground">{row.note}</p>{/if}
 
