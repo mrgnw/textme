@@ -15,3 +15,5 @@ vite.config.ts.timestamp-*
 .wrangler
 captures/
 package.json.tmp
+
+/analysis/cache/
