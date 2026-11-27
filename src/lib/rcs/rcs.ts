@@ -148,6 +148,10 @@ export function summaryLine({ total, known, reach, unknown }: PeopleSummary): st
 	return unknown === 0 ? head : `${head} No data yet for ${countries(unknown)}.`;
 }
 
+function percentOf(value: number): string {
+	return value >= 99.5 && value < 100 ? "Over 99%" : `${Math.round(value)}%`;
+}
+
 function major(version: string | null): string {
 	return (version ?? "").replace(/\.0$/, "");
 }
@@ -157,12 +161,12 @@ export function osVersionLine(row: CountryCoverage, phone: Phone, requirements: 
 		const share = row.os_version.ios_18_plus;
 		const version = `iOS ${major(requirements.ios_min.value)}`;
 		if (!share) return { text: `No data yet on how many iPhones here run ${version} or newer.`, source: null };
-		return { text: `${Math.round(share.value)}% of iPhones here run ${version} or newer.`, source: share };
+		return { text: `${percentOf(share.value)} of iPhones here run ${version} or newer.`, source: share };
 	}
 	const share = row.os_version.android_7_plus;
 	const version = `Android ${major(requirements.android_google_play_services_floor.value)}`;
 	if (!share) return { text: `No data yet on how many Android phones here run ${version} or newer.`, source: null };
-	return { text: `${Math.round(share.value)}% of Android phones here run ${version} or newer.`, source: share };
+	return { text: `${percentOf(share.value)} of Android phones here run ${version} or newer.`, source: share };
 }
 
 export function checkYourPhone(phone: Phone, requirements: Requirements): SourcedLine {

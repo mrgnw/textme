@@ -147,10 +147,7 @@
 	}
 
 	.source {
-		display: inline-flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.25rem 0.5rem;
+		display: block;
 	}
 
 	.source a {
@@ -159,6 +156,7 @@
 	}
 
 	.confidence {
+		margin-left: 0.375rem;
 		border: 1px solid hsl(var(--border));
 		border-radius: 999px;
 		padding: 0 0.5rem;

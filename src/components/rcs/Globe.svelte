@@ -122,7 +122,7 @@
 	}
 
 	function onkeydown(event: KeyboardEvent) {
-		const [lambda, phi] = rotation.current;
+		const [lambda, phi] = rotation.target;
 		const moves: Record<string, [number, number]> = {
 			ArrowLeft: [lambda + KEY_STEP, phi],
 			ArrowRight: [lambda - KEY_STEP, phi],

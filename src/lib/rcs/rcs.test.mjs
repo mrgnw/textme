@@ -101,6 +101,9 @@ test("OS-version line uses the sourced share and never invents one", () => {
 	const android = osVersionLine(es, "android", requirements);
 	assert.equal(android.text, "No data yet on how many Android phones here run Android 7 or newer.");
 	assert.equal(android.source, null);
+	/** @type {import("./rcs.ts").CountryCoverage} */
+	const nearlyAll = { ...es, os_version: { ios_18_plus: null, android_7_plus: { value: 99.62, date: "2026-10", source_url: null, confidence: "measured" } } };
+	assert.equal(osVersionLine(nearlyAll, "android", requirements).text, "Over 99% of Android phones here run Android 7 or newer.");
 });
 
 test("check your phone quotes the minimum versions from the data", () => {
