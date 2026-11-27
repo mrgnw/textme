@@ -47,8 +47,8 @@ test.describe("visitor in Spain", () => {
 		await page.mouse.move(box.x + box.width / 2 + 80, box.y + box.height / 2 + 10, { steps: 6 });
 		await page.mouse.up();
 		expect(await spain.getAttribute("d")).not.toEqual(before);
-		await page.locator('path[data-iso="FR"]').click({ force: true });
-		await expect(page.getByRole("heading", { level: 2, name: "France" })).toBeVisible();
+		await page.locator('path[data-iso="DE"]').click({ force: true });
+		await expect(page.getByRole("heading", { level: 2, name: "Germany" })).toBeVisible();
 	});
 
 	test("keyboard turns the globe and Enter picks the middle country", async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe("visitor in Spain", () => {
 		await expect(page.getByText("Middle: Türkiye")).toBeVisible();
 		await page.keyboard.press("Enter");
 		await expect(page.getByRole("heading", { level: 2, name: "Türkiye" })).toBeVisible();
-		await page.getByLabel("Country").selectOption("JP");
+		await page.getByRole("combobox", { name: "Country" }).selectOption("JP");
 		await expect(page.getByRole("heading", { level: 2, name: "Japan" })).toBeVisible();
 		await page.getByRole("button", { name: "Back to Spain" }).click();
 		await expect(page.getByRole("heading", { level: 2, name: "Spain" })).toBeVisible();
@@ -75,7 +75,7 @@ test.describe("visitor in Spain", () => {
 	test("people list persists and summarises reach", async ({ page }) => {
 		await openGlobe(page);
 		await page.getByRole("button", { name: "I know people here" }).click();
-		await page.getByLabel("Country").selectOption("AQ");
+		await page.getByRole("combobox", { name: "Country" }).selectOption("AQ");
 		await page.getByRole("button", { name: "I know people here" }).click();
 		await expect(page.getByText("RCS can reach people in 1 of 1 country with data. No data yet for 1 country.")).toBeVisible();
 		await page.reload();
@@ -90,11 +90,13 @@ test.describe("visitor in Spain", () => {
 				await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
 				await openGlobe(page);
 				await page.getByRole("button", { name: "I know people here" }).click();
-				await page.getByLabel("Country").selectOption("MX");
+				await page.getByRole("combobox", { name: "Country" }).selectOption("MX");
 				await page.getByRole("button", { name: "I know people here" }).click();
-				await page.getByLabel("Country").selectOption("ES");
+				await page.getByRole("combobox", { name: "Country" }).selectOption("ES");
 				await page.screenshot({ path: `captures/rcs-${viewport.name}-${scheme}.png`, fullPage: true });
 				await page.getByText("Flat map").click();
+				await expect(page.getByRole("application")).toHaveAttribute("aria-roledescription", "map");
+				await page.waitForTimeout(300);
 				await page.screenshot({ path: `captures/rcs-${viewport.name}-${scheme}-flat.png`, fullPage: true });
 				expect(errors).toEqual([]);
 			});
@@ -108,7 +110,7 @@ test.describe("visitor with unknown country", () => {
 	test("shows a neutral globe and asks for a country", async ({ page }) => {
 		await openGlobe(page);
 		await expect(page.getByText("We could not tell where you are.")).toBeVisible();
-		await page.getByLabel("Country").selectOption("BR");
+		await page.getByRole("combobox", { name: "Country" }).selectOption("BR");
 		await expect(page.getByText("You are here")).toBeVisible();
 		await page.screenshot({ path: "captures/rcs-unknown-country.png" });
 	});

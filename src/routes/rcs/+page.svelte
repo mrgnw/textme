@@ -54,13 +54,17 @@
 			<div class="flex flex-wrap items-end gap-x-5 gap-y-3">
 				<fieldset class="segmented">
 					<legend>My phone</legend>
-					<label><input type="radio" name="phone" checked={phone.current === "android"} onchange={() => setPhone("android")} />Android</label>
-					<label><input type="radio" name="phone" checked={phone.current === "iphone"} onchange={() => setPhone("iphone")} />iPhone</label>
+					<div class="options">
+						<label><input type="radio" name="phone" checked={phone.current === "android"} onchange={() => setPhone("android")} />Android</label>
+						<label><input type="radio" name="phone" checked={phone.current === "iphone"} onchange={() => setPhone("iphone")} />iPhone</label>
+					</div>
 				</fieldset>
 				<fieldset class="segmented">
 					<legend>View</legend>
-					<label><input type="radio" name="view" checked={!flat} onchange={() => (flat = false)} />Globe</label>
-					<label><input type="radio" name="view" checked={flat} onchange={() => (flat = true)} />Flat map</label>
+					<div class="options">
+						<label><input type="radio" name="view" checked={!flat} onchange={() => (flat = false)} />Globe</label>
+						<label><input type="radio" name="view" checked={flat} onchange={() => (flat = true)} />Flat map</label>
+					</div>
 				</fieldset>
 				<label class="grid gap-1 text-sm font-medium">
 					Country
@@ -144,18 +148,20 @@
 
 <style>
 	.segmented {
-		display: flex;
 		margin: 0;
 		border: 0;
 		padding: 0;
 	}
 
 	.segmented legend {
-		float: left;
-		width: 100%;
 		margin-bottom: 0.25rem;
+		padding: 0;
 		font-size: 0.875rem;
 		font-weight: 500;
+	}
+
+	.options {
+		display: flex;
 	}
 
 	.segmented label {
@@ -167,6 +173,7 @@
 		background: hsl(var(--card));
 		font-size: 0.9375rem;
 		font-weight: 500;
+		white-space: nowrap;
 		cursor: pointer;
 		transition: background-color 150ms ease, color 150ms ease;
 	}
