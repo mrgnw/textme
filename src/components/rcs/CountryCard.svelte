@@ -3,7 +3,8 @@
 	import Contrast from "@lucide/svelte/icons/contrast";
 	import Minus from "@lucide/svelte/icons/minus";
 	import CircleQuestionMark from "@lucide/svelte/icons/circle-question-mark";
-	import { HOW_TO, LEVEL_LABEL, supportLevel, verdict, type CountryCoverage, type Level, type Phone, type Sourced } from "#lib/rcs/rcs.js";
+	import { HOW_TO, LEVEL_LABEL, checkYourPhone, osVersionLine, supportLevel, verdict, type CountryCoverage, type Level, type Phone, type Sourced } from "#lib/rcs/rcs.js";
+	import { requirements } from "#lib/rcs/state.svelte.js";
 
 	interface Props {
 		row: CountryCoverage;
@@ -16,12 +17,15 @@
 	let { row, phone, isHome, isPerson, ontoggleperson }: Props = $props();
 
 	const ICONS = { yes: Check, partial: Contrast, none: Minus, unknown: CircleQuestionMark };
+	const PLATFORMS: Phone[] = ["iphone", "android"];
 	const CONFIDENCE = { measured: "Measured", "vendor-claim": "Vendor claim", estimate: "Estimate" };
 
 	const lines = $derived(verdict(row));
 	const androidLevel = $derived(supportLevel(row, "android"));
 	const iphoneLevel = $derived(supportLevel(row, "iphone"));
 	const howTo = $derived(HOW_TO[phone]);
+	const check = $derived(checkYourPhone(phone, requirements));
+	const osLines = $derived(PLATFORMS.map((platform) => osVersionLine(row, platform, requirements)));
 
 	function host(url: string): string {
 		return new URL(url).hostname.replace(/^www\./, "");
@@ -89,6 +93,13 @@
 					iPhone and Android share not known.
 				{/if}
 			</dd>
+			{#each osLines as line (line.text)}
+				<dd class="text-muted-foreground">
+					{line.text}
+					{#if line.source}{@render source(line.source, true)}{/if}
+				</dd>
+			{/each}
+			<dd class="text-xs text-muted-foreground">Software versions come from web traffic. They are an OS-version share, not a count of phones that can use RCS.</dd>
 		</div>
 	</dl>
 
@@ -96,6 +107,11 @@
 
 	{#if isHome}
 		<p class="mt-4 rounded-xl bg-muted p-3 text-sm">
+			<strong class="font-semibold">Check your phone.</strong>
+			{check.text}
+			{#if check.source?.source_url}<a class="underline underline-offset-4" href={check.source.source_url} target="_blank" rel="noreferrer">Source</a>{/if}
+		</p>
+		<p class="mt-2 rounded-xl bg-muted p-3 text-sm">
 			<strong class="font-semibold">Turn RCS on.</strong>
 			{howTo.text}
 			<a class="underline underline-offset-4" href={howTo.source_url} target="_blank" rel="noreferrer">{phone === "iphone" ? "Apple" : "Google"} help</a>
