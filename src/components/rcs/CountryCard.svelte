@@ -37,11 +37,11 @@
 	<span class={["mark", level]}><Icon size={14} strokeWidth={2.5} aria-hidden="true" /></span>
 {/snippet}
 
-{#snippet source(entry: Sourced)}
+{#snippet source(entry: Sourced, known: boolean)}
 	{#if entry.source_url}
 		<span class="source">
 			<a href={entry.source_url} target="_blank" rel="noreferrer">{host(entry.source_url)}</a>{#if entry.date}, {entry.date}{/if}
-			{#if entry.confidence}<span class={["confidence", entry.confidence]}>{CONFIDENCE[entry.confidence]}</span>{/if}
+			{#if known && entry.confidence}<span class={["confidence", entry.confidence]}>{CONFIDENCE[entry.confidence]}</span>{/if}
 		</span>
 	{/if}
 {/snippet}
@@ -69,14 +69,14 @@
 			<dt class="font-medium">RCS on Android: {LEVEL_LABEL.android[androidLevel]}</dt>
 			<dd class="text-muted-foreground">
 				{#if row.android.detail}{row.android.detail}{/if}
-				{@render source(row.android)}
+				{@render source(row.android, androidLevel !== "unknown")}
 			</dd>
 		</div>
 		<div>
 			<dt class="font-medium">RCS on iPhone: {LEVEL_LABEL.iphone[iphoneLevel]}</dt>
 			<dd class="text-muted-foreground">
 				{#if row.iphone.carriers.length > 0}Apple lists {row.iphone.carriers.join(", ")}.{/if}
-				{@render source(row.iphone)}
+				{@render source(row.iphone, iphoneLevel !== "unknown")}
 			</dd>
 		</div>
 		<div>
@@ -84,13 +84,15 @@
 			<dd class="text-muted-foreground">
 				{#if row.ios_share && row.android_share}
 					iPhone {percent(row.ios_share.value)}, Android {percent(row.android_share.value)} of mobile web use.
-					{@render source(row.ios_share)}
+					{@render source(row.ios_share, true)}
 				{:else}
 					iPhone and Android share not known.
 				{/if}
 			</dd>
 		</div>
 	</dl>
+
+	{#if row.note}<p class="mt-3 text-sm text-muted-foreground">{row.note}</p>{/if}
 
 	{#if isHome}
 		<p class="mt-4 rounded-xl bg-muted p-3 text-sm">

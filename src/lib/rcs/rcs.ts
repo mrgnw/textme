@@ -24,7 +24,7 @@ export interface Share extends Sourced {
 
 export interface CountryCoverage {
 	iso2: string;
-	n: string | null;
+	n: string;
 	name: string;
 	android: AndroidCoverage;
 	iphone: IphoneCoverage;
@@ -50,8 +50,8 @@ const ANDROID_LEVEL = { live: "yes", partial: "partial", none_listed: "none", un
 const IPHONE_LEVEL = { listed: "yes", none_listed: "none", unknown: "unknown" } as const;
 
 export const LEVEL_LABEL: Record<Phone, Record<Level, string>> = {
-	android: { yes: "RCS live", partial: "Partly live", none: "Not listed", unknown: "No data yet" },
-	iphone: { yes: "Carriers listed", partial: "Some carriers", none: "No carriers listed", unknown: "No data yet" }
+	android: { yes: "Live", partial: "On some providers", none: "Not listed", unknown: "No data yet" },
+	iphone: { yes: "Carriers on Apple's list", partial: "Some carriers", none: "Not on Apple's list", unknown: "No data yet" }
 };
 
 export const HOW_TO: Record<Phone, { text: string; source_url: string }> = {
@@ -86,7 +86,7 @@ export function reachLevel(row: CountryCoverage): Level {
 
 function androidToAndroid(row: CountryCoverage): VerdictLine {
 	const level = supportLevel(row, "android");
-	const text = { yes: "yes.", partial: "in some places.", none: "no service listed.", unknown: "not known yet." }[level];
+	const text = { yes: "yes.", partial: "on some providers.", none: "no provider listed.", unknown: "no data yet." }[level];
 	return { pair: "Android to Android", level, text };
 }
 
@@ -94,11 +94,12 @@ function iphoneToAndroid(row: CountryCoverage): VerdictLine {
 	const pair = "iPhone to Android";
 	const android = supportLevel(row, "android");
 	const { status, carriers } = row.iphone;
-	if (status === "unknown") return { pair, level: "unknown", text: "not known yet." };
-	if (status === "none_listed") return { pair, level: "none", text: "Apple lists no carrier here." };
+	if (status === "unknown") return { pair, level: "unknown", text: "no data yet." };
+	if (status === "none_listed") return { pair, level: "none", text: "no carrier here is on Apple's list yet." };
 	const on = carriers.length > 0 ? ` on ${list.format(carriers)}` : " on listed carriers";
 	if (android === "yes") return { pair, level: "yes", text: `yes${on}.` };
-	return { pair, level: "partial", text: `iPhone RCS is listed${on}. Android service here is not confirmed.` };
+	const androidSide = android === "partial" ? "Android RCS is confirmed on some providers." : "No data yet for Android here.";
+	return { pair, level: "partial", text: `iPhone RCS is listed${on}. ${androidSide}` };
 }
 
 export function verdict(row: CountryCoverage): VerdictLine[] {
