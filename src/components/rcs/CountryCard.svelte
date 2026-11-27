@@ -73,8 +73,7 @@
 {#snippet source(entry: Sourced, known: boolean)}
 	{#if entry.source_url}
 		<p class="source">
-			<a href={entry.source_url} target="_blank" rel="noreferrer">{host(entry.source_url)}</a>{#if entry.date}, {entry.date}{/if}{#if known && entry.confidence}
-				· {CONFIDENCE[entry.confidence]}{/if}
+			<a href={entry.source_url} target="_blank" rel="noreferrer">{host(entry.source_url)}</a>{#if entry.date}, {entry.date}{/if}{#if known && entry.confidence}{` · ${CONFIDENCE[entry.confidence]}`}{/if}
 		</p>
 	{/if}
 {/snippet}
