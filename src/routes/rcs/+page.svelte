@@ -121,10 +121,10 @@
 						</select>
 					</label>
 				{/if}
-				<label class="grid gap-1 text-sm font-medium">
+				<label class="grid w-full gap-1 text-sm font-medium sm:w-80">
 					Country
 					<select
-						class="h-10 rounded-lg border border-input bg-card px-3 text-base"
+						class="h-10 w-full min-w-0 rounded-lg border border-input bg-card px-3 text-base"
 						value={selected ?? ""}
 						onchange={(event) => select(event.currentTarget.value)}
 					>
