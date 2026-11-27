@@ -160,6 +160,7 @@ for (const country of ["US", "ES", "JP"]) {
 				await expect(page.getByRole("combobox", { name: "Country" })).toHaveValue(country);
 				await expect.poll(() => paintedLand(page)).toBeGreaterThan(60);
 				await expect.poll(() => countryAtCentre(page)).toBe(country);
+				expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width);
 				expect(errors).toEqual([]);
 				await context.close();
 			});
