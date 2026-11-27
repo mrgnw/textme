@@ -144,7 +144,7 @@ function countries(count: number): string {
 export function summaryLine({ total, known, reach, unknown }: PeopleSummary): string {
 	if (total === 0) return "";
 	if (known === 0) return `No RCS data yet for your ${countries(total)}.`;
-	const head = `RCS can reach people in ${reach} of ${countries(known)} with data.`;
+	const head = `RCS support is listed in ${reach} of ${countries(known)} with data.`;
 	return unknown === 0 ? head : `${head} No data yet for ${countries(unknown)}.`;
 }
 
@@ -161,12 +161,12 @@ export function osVersionLine(row: CountryCoverage, phone: Phone, requirements: 
 		const share = row.os_version.ios_18_plus;
 		const version = `iOS ${major(requirements.ios_min.value)}`;
 		if (!share) return { text: `No data yet on how many iPhones here run ${version} or newer.`, source: null };
-		return { text: `${percentOf(share.value)} of iPhones here run ${version} or newer.`, source: share };
+		return { text: `${percentOf(share.value)} of sampled iPhone web traffic here comes from ${version} or newer.`, source: share };
 	}
 	const share = row.os_version.android_7_plus;
 	const version = `Android ${major(requirements.android_google_play_services_floor.value)}`;
 	if (!share) return { text: `No data yet on how many Android phones here run ${version} or newer.`, source: null };
-	return { text: `${percentOf(share.value)} of Android phones here run ${version} or newer.`, source: share };
+	return { text: `${percentOf(share.value)} of sampled Android web traffic here comes from ${version} or newer.`, source: share };
 }
 
 export function checkYourPhone(phone: Phone, requirements: Requirements): SourcedLine {
