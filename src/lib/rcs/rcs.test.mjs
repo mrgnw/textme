@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkYourPhone, osVersionLine, peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
+import { checkYourPhone, peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
 
 /** @type {import("./rcs.ts").AndroidCoverage} */
 const unknownAndroid = { status: "unknown", detail: null, date: null, source_url: null, confidence: null };
@@ -22,8 +22,7 @@ function row(iso2, android = {}, iphone = {}) {
 		iphone: { ...unknownIphone, ...iphone },
 		ios_share: null,
 		android_share: null,
-		note: null,
-		os_version: { ios_18_plus: null, android_7_plus: null }
+		note: null
 	};
 }
 
@@ -90,23 +89,11 @@ const requirements = {
 	ios_min: { value: "18", requirement_text: null, note: null, date: "2026-05-11", source_url: "https://support.apple.com/en-us/122195", confidence: "vendor-claim" },
 	iphone_models: { value: null, requirement_text: null, note: "Apple lists iPhone XS, XS Max, XR, and SE (2nd generation or later) among compatible models.", date: null, source_url: null, confidence: "vendor-claim" },
 	android_google_play_services_floor: { value: "7.0", requirement_text: null, note: null, date: null, source_url: "https://support.google.com/googleplay/answer/9037938", confidence: "vendor-claim" },
-	android_google_messages_setup: { value: null, requirement_text: null, note: null, date: null, source_url: null, confidence: "vendor-claim" }
+	android_google_messages_setup: { value: null, requirement_text: null, note: null, date: null, source_url: null, confidence: "vendor-claim" },
+	iphone_excluded: { major_version: 18, excluded_models: ["iPhone 7", "iPhone SE (1st generation)", "iPhone 8", "iPhone 8 Plus", "iPhone X"], date: "2026-05-27", source_url: "https://support.apple.com/en-is/104985", confidence: "vendor-claim" }
 };
 
-test("OS-version line uses the sourced share and never invents one", () => {
-	/** @type {import("./rcs.ts").CountryCoverage} */
-	const es = { ...us, os_version: { ios_18_plus: { value: 95.91, date: "2026-10", source_url: "https://gs.statcounter.com", confidence: "measured" }, android_7_plus: null } };
-	assert.equal(osVersionLine(es, "iphone", requirements).text, "96% of sampled iPhone web traffic here comes from iOS 18 or newer.");
-	assert.equal(osVersionLine(es, "iphone", requirements).source?.date, "2026-10");
-	const android = osVersionLine(es, "android", requirements);
-	assert.equal(android.text, "No data yet on how many Android phones here run Android 7 or newer.");
-	assert.equal(android.source, null);
-	/** @type {import("./rcs.ts").CountryCoverage} */
-	const nearlyAll = { ...es, os_version: { ios_18_plus: null, android_7_plus: { value: 99.62, date: "2026-10", source_url: null, confidence: "measured" } } };
-	assert.equal(osVersionLine(nearlyAll, "android", requirements).text, "Over 99% of sampled Android web traffic here comes from Android 7 or newer.");
-});
-
 test("check your phone quotes the minimum versions from the data", () => {
-	assert.match(checkYourPhone("iphone", requirements).text, /^You need iOS 18 or newer .*XS, XS Max, XR.*cannot run iOS 18\.$/);
+	assert.match(checkYourPhone("iphone", requirements).text, /^You need iOS 18 or newer .*XS, XS Max, XR.* iPhone X, iPhone 8 Plus, and iPhone 8 and older models cannot run iOS 18\.$/);
 	assert.match(checkYourPhone("android", requirements).text, /^You need Android 7 or newer/);
 });
