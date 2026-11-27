@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { geoCentroid, geoContains, geoGraticule10, geoNaturalEarth1, geoOrthographic, geoPath } from "d3-geo";
+	import { geoArea, geoCentroid, geoContains, geoGraticule10, geoNaturalEarth1, geoOrthographic, geoPath } from "d3-geo";
 	import { feature } from "topojson-client";
 	import type { Topology, GeometryCollection } from "topojson-specification";
 	import type { Feature, FeatureCollection, Geometry } from "geojson";
@@ -37,7 +37,7 @@
 	const sphere = { type: "Sphere" } as const;
 
 	let countries = $state.raw<Country[]>([]);
-	let loadError = $state(false);
+	let status = $state<"loading" | "ready" | "error">("loading");
 	let focused = $state(false);
 	let drag: { x: number; y: number; from: [number, number]; target: string | null; moved: boolean } | null = null;
 
@@ -54,7 +54,7 @@
 	const viewBox = $derived(flat ? `0 0 ${FLAT.width} ${FLAT.height}` : `0 0 ${SIZE} ${SIZE}`);
 	const highlighted = $derived(countries.filter((c) => c.iso2 && people.includes(c.iso2)));
 	const selectedShape = $derived(countries.find((c) => c.iso2 === selected));
-	const centre = $derived(focused ? countryAtCentre() : null);
+	const centre = $derived(focused && status === "ready" ? countryAtCentre() : null);
 
 	function toCountry(shape: Feature<Geometry>): Country {
 		const name = (shape.properties as { name: string }).name;
@@ -65,13 +65,17 @@
 
 	function loadWorld() {
 		fetch(worldUrl)
-			.then((response) => response.json())
+			.then((response) => {
+				if (!response.ok) throw new Error(`world shapes: HTTP ${response.status}`);
+				return response.json();
+			})
 			.then((world: Topology<{ countries: GeometryCollection }>) => {
 				const collection = feature(world, world.objects.countries) as FeatureCollection<Geometry>;
 				countries = collection.features.map(toCountry);
+				status = "ready";
 				if (selected) rotateTo(selected, true);
 			})
-			.catch(() => (loadError = true));
+			.catch(() => (status = "error"));
 	}
 
 	function shortestLambda(target: number): number {
@@ -80,15 +84,22 @@
 	}
 
 	function duration(ms: number): number {
-		return prefersReducedMotion.current ? 0 : ms;
+		return prefersReducedMotion.current || document.hidden ? 0 : ms;
 	}
 
 	export function rotateTo(iso2: string, instant = false) {
 		const country = countries.find((c) => c.iso2 === iso2);
 		if (!country) return;
-		const [lon, lat] = geoCentroid(country.shape);
+		const [lon, lat] = geoCentroid(mainland(country.shape));
 		const next: [number, number] = [shortestLambda(-lon), Math.max(-60, Math.min(60, -lat))];
 		rotation.set(next, { duration: instant ? 0 : duration(700) });
+	}
+
+	function mainland(shape: Feature<Geometry>): Feature<Geometry> {
+		if (shape.geometry.type !== "MultiPolygon") return shape;
+		const parts = shape.geometry.coordinates.map((coordinates) => ({ type: "Polygon" as const, coordinates }));
+		const largest = parts.reduce((best, part) => (geoArea(part) > geoArea(best) ? part : best));
+		return { ...shape, geometry: largest };
 	}
 
 	function countryAtCentre(): Country | null {
@@ -146,7 +157,7 @@
 	}
 </script>
 
-<figure class={["globe", { flat }]}>
+<figure class={["globe", { flat }]} aria-busy={status === "loading"}>
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions, a11y_no_noninteractive_tabindex -->
 	<svg
 		class="world"
@@ -204,7 +215,9 @@
 		{/if}
 	</svg>
 	<p id="{uid}-centre" class="centre" aria-live="polite">
-		{#if loadError}
+		{#if status === "loading"}
+			Loading the map.
+		{:else if status === "error"}
 			The map did not load. Use the country list instead.
 		{:else if focused}
 			Middle: {centre ? label(centre) : "ocean"}
