@@ -115,3 +115,14 @@ test.describe("visitor with unknown country", () => {
 		await page.screenshot({ path: "captures/rcs-unknown-country.png" });
 	});
 });
+
+test("invalid stored preferences do not break the page", async ({ page }) => {
+	await page.addInitScript(() => {
+		localStorage.setItem("textme:rcs-phone", '"invalid"');
+		localStorage.setItem("textme:rcs-people", '["ES","ES",null,"invalid"]');
+	});
+	await openGlobe(page);
+	await expect(page.getByRole("button", { name: "Remove Spain" })).toHaveCount(1);
+	await page.getByRole("button", { name: "Remove Spain" }).click();
+	await expect(page.getByRole("button", { name: "Remove Spain" })).toHaveCount(0);
+});

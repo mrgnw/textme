@@ -11,8 +11,33 @@ export const byIso = new Map(rows.map((row) => [row.iso2, row]));
 
 const defaultPhone: Phone = typeof navigator === "undefined" ? "android" : phoneFromUserAgent(navigator.userAgent);
 
-export const phone = new PersistedState<Phone>("textme:rcs-phone", defaultPhone);
-export const people = new PersistedState<string[]>("textme:rcs-people", []);
+function parseStored(value: string): unknown {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return null;
+	}
+}
+
+export const phone = new PersistedState<Phone>("textme:rcs-phone", defaultPhone, {
+	serializer: {
+		serialize: JSON.stringify,
+		deserialize: (value) => {
+			const parsed = parseStored(value);
+			return parsed === "android" || parsed === "iphone" ? parsed : defaultPhone;
+		}
+	}
+});
+export const people = new PersistedState<string[]>("textme:rcs-people", [], {
+	serializer: {
+		serialize: JSON.stringify,
+		deserialize: (value) => {
+			const parsed = parseStored(value);
+			if (!Array.isArray(parsed)) return [];
+			return [...new Set(parsed.filter((code): code is string => typeof code === "string" && byIso.has(code)))].slice(-MAX_PEOPLE);
+		}
+	}
+});
 
 export function hasPerson(iso2: string): boolean {
 	return people.current.includes(iso2);
