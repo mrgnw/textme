@@ -33,11 +33,7 @@ export interface Requirements {
 	iphone_models: Requirement;
 	android_google_play_services_floor: Requirement;
 	android_google_messages_setup: Requirement;
-}
-
-export interface OsVersion {
-	ios_18_plus: Share | null;
-	android_7_plus: Share | null;
+	iphone_excluded: Sourced & { major_version: number; excluded_models: string[] };
 }
 
 export interface SourcedLine {
@@ -54,7 +50,6 @@ export interface CountryCoverage {
 	ios_share: Share | null;
 	android_share: Share | null;
 	note: string | null;
-	os_version: OsVersion;
 }
 
 export interface VerdictLine {
@@ -148,33 +143,17 @@ export function summaryLine({ total, known, reach, unknown }: PeopleSummary): st
 	return unknown === 0 ? head : `${head} No data yet for ${countries(unknown)}.`;
 }
 
-function percentOf(value: number): string {
-	return value >= 99.5 && value < 100 ? "Over 99%" : `${Math.round(value)}%`;
-}
-
 function major(version: string | null): string {
 	return (version ?? "").replace(/\.0$/, "");
 }
 
-export function osVersionLine(row: CountryCoverage, phone: Phone, requirements: Requirements): SourcedLine {
-	if (phone === "iphone") {
-		const share = row.os_version.ios_18_plus;
-		const version = `iOS ${major(requirements.ios_min.value)}`;
-		if (!share) return { text: `No data yet on how many iPhones here run ${version} or newer.`, source: null };
-		return { text: `${percentOf(share.value)} of sampled iPhone web traffic here comes from ${version} or newer.`, source: share };
-	}
-	const share = row.os_version.android_7_plus;
-	const version = `Android ${major(requirements.android_google_play_services_floor.value)}`;
-	if (!share) return { text: `No data yet on how many Android phones here run ${version} or newer.`, source: null };
-	return { text: `${percentOf(share.value)} of sampled Android web traffic here comes from ${version} or newer.`, source: share };
-}
-
 export function checkYourPhone(phone: Phone, requirements: Requirements): SourcedLine {
 	if (phone === "iphone") {
-		const { ios_min, iphone_models } = requirements;
+		const { ios_min, iphone_models, iphone_excluded } = requirements;
 		const version = major(ios_min.value);
+		const newestExcluded = list.format(iphone_excluded.excluded_models.slice(-3).reverse());
 		return {
-			text: `You need iOS ${version} or newer and a carrier on Apple's list. ${iphone_models.note} iPhone X, iPhone 8 and older models cannot run iOS ${version}.`,
+			text: `You need iOS ${version} or newer and a carrier on Apple's list. ${iphone_models.note} ${newestExcluded} and older models cannot run iOS ${version}.`,
 			source: ios_min
 		};
 	}
