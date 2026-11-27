@@ -2,13 +2,21 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
 
+/** @type {import("./rcs.ts").AndroidCoverage} */
 const unknownAndroid = { status: "unknown", detail: null, date: null, source_url: null, confidence: null };
+/** @type {import("./rcs.ts").IphoneCoverage} */
 const unknownIphone = { status: "unknown", carriers: [], date: null, source_url: null, confidence: null };
 
+/**
+ * @param {string} iso2
+ * @param {Partial<import("./rcs.ts").AndroidCoverage>} [android]
+ * @param {Partial<import("./rcs.ts").IphoneCoverage>} [iphone]
+ * @returns {import("./rcs.ts").CountryCoverage}
+ */
 function row(iso2, android = {}, iphone = {}) {
 	return {
 		iso2,
-		n: null,
+		n: "000",
 		name: iso2,
 		android: { ...unknownAndroid, ...android },
 		iphone: { ...unknownIphone, ...iphone },
@@ -40,7 +48,7 @@ test("verdict names the iPhone carriers when both sides are live", () => {
 
 test("verdict keeps unknown as unknown and none_listed as not listed", () => {
 	assert.deepEqual(verdict(zz).map((line) => line.level), ["unknown", "unknown"]);
-	assert.equal(verdict(mx)[1].text, "Apple lists no carrier here.");
+	assert.equal(verdict(mx)[1].text, "no carrier here is on Apple's list yet.");
 	assert.equal(verdict(mx)[1].level, "none");
 });
 

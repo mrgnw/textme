@@ -2,7 +2,7 @@
 	import { geoCentroid, geoContains, geoGraticule10, geoNaturalEarth1, geoOrthographic, geoPath } from "d3-geo";
 	import { feature } from "topojson-client";
 	import type { Topology, GeometryCollection } from "topojson-specification";
-	import type { Feature, Geometry } from "geojson";
+	import type { Feature, FeatureCollection, Geometry } from "geojson";
 	import { Tween, prefersReducedMotion } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import worldUrl from "world-atlas/countries-110m.json?url";
@@ -28,7 +28,6 @@
 
 	let { flat, selected, people, isoByNumeric, levelOf, nameOf, labels, onselect }: Props = $props();
 
-	const NUMERIC_BY_NAME: Record<string, string> = { Kosovo: "XK" };
 	const SIZE = 600;
 	const FLAT = { width: 960, height: 500 };
 	const KEY_STEP = 12;
@@ -59,7 +58,7 @@
 
 	function toCountry(shape: Feature<Geometry>): Country {
 		const name = (shape.properties as { name: string }).name;
-		const numeric = (shape.id as string | undefined) ?? NUMERIC_BY_NAME[name];
+		const numeric = shape.id as string | undefined;
 		const iso2 = numeric ? isoByNumeric.get(numeric) ?? null : null;
 		return { key: numeric ?? name, iso2, name, shape };
 	}
@@ -68,7 +67,8 @@
 		fetch(worldUrl)
 			.then((response) => response.json())
 			.then((world: Topology<{ countries: GeometryCollection }>) => {
-				countries = feature(world, world.objects.countries).features.map(toCountry);
+				const collection = feature(world, world.objects.countries) as FeatureCollection<Geometry>;
+				countries = collection.features.map(toCountry);
 				if (selected) rotateTo(selected, true);
 			})
 			.catch(() => (loadError = true));
@@ -147,6 +147,7 @@
 </script>
 
 <figure class={["globe", { flat }]}>
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions, a11y_no_noninteractive_tabindex -->
 	<svg
 		class="world"
 		{viewBox}

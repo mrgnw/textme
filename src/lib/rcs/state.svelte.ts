@@ -6,7 +6,6 @@ const MAX_PEOPLE = 30;
 
 export const rows = coverage.countries as CountryCoverage[];
 export const asOf = coverage.as_of;
-export const isFixture = coverage.source === "fixture";
 export const byIso = new Map(rows.map((row) => [row.iso2, row]));
 
 const defaultPhone: Phone = typeof navigator === "undefined" ? "android" : phoneFromUserAgent(navigator.userAgent);
