@@ -83,8 +83,7 @@
 	<details class="fact">
 		<summary>
 			{#if level}{@render mark(level)}{:else}<span class="mark-space"></span>{/if}
-			<span class="fact-label">{label}</span>
-			<span class="fact-value">{value}</span>
+			<span class="fact-text"><span class="fact-label">{label}</span> <span class="fact-value">{value}</span></span>
 			<ChevronRight class="chevron" size={16} aria-hidden="true" />
 		</summary>
 		<div class="fact-body">{@render body()}</div>
@@ -193,6 +192,7 @@
 
 <style>
 	.facts {
+		container-type: inline-size;
 		margin-top: 1rem;
 		border-top: 1px solid hsl(var(--border));
 	}
@@ -203,7 +203,7 @@
 
 	.fact > summary {
 		display: grid;
-		grid-template-columns: 1.25rem auto 1fr 1rem;
+		grid-template-columns: 1.25rem 1fr 1rem;
 		align-items: center;
 		gap: 0.625rem;
 		min-height: 2.75rem;
@@ -222,13 +222,32 @@
 		border-radius: 0.375rem;
 	}
 
+	.fact-text {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 0.75rem;
+		min-width: 0;
+	}
+
 	.fact-label {
+		flex: none;
+		width: 9.5rem;
 		font-weight: 600;
-		white-space: nowrap;
 	}
 
 	.fact-value {
 		min-width: 0;
+	}
+
+	@container (max-width: 22rem) {
+		.fact-label {
+			width: auto;
+		}
+
+		.fact-value {
+			flex-basis: 100%;
+			color: hsl(var(--muted-foreground));
+		}
 	}
 
 	.fact :global(.chevron) {
