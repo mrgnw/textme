@@ -2,7 +2,7 @@
 	import Check from "@lucide/svelte/icons/check";
 	import Minus from "@lucide/svelte/icons/minus";
 	import type { Phone } from "#lib/rcs/rcs.js";
-	import { formatPhones, thresholdShare, versionBars, type PhoneEstimate, type PlatformVersions } from "#lib/rcs/versions.js";
+	import { formatPhones, formatShare, thresholdShare, versionBars, type PhoneEstimate, type PlatformVersions } from "#lib/rcs/versions.js";
 
 	interface Props {
 		phone: Phone;
@@ -25,7 +25,7 @@
 		<p class="text-muted-foreground">No {os} version data yet for this country.</p>
 	{:else}
 		<p class="text-muted-foreground">
-			{Math.round(meeting)}% of sampled {name} web traffic here is on {os} {minimum} or newer, the RCS minimum.
+			{formatShare(meeting)} of sampled {name} web traffic here is on {os} {minimum} or newer, the RCS minimum.
 		</p>
 		<ul class="space-y-1">
 			{#each bars as bar (bar.label)}
@@ -36,7 +36,7 @@
 					</span>
 					<span class="label">{bar.label}</span>
 					<span class="track" aria-hidden="true"><span class={["fill", { below: !bar.meets }]} style:inline-size="{Math.min(100, bar.value)}%"></span></span>
-					<span class="value tabular-nums">{bar.value < 1 ? "<1" : Math.round(bar.value)}%</span>
+					<span class="value tabular-nums">{bar.value < 1 ? "<1%" : formatShare(bar.value)}</span>
 					{#if bar.phones !== null}<span class="phones text-muted-foreground">about {formatPhones(bar.phones)} phones</span>{/if}
 				</li>
 			{/each}

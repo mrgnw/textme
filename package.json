@@ -10,7 +10,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "node --test \"src/**/*.test.mjs\"",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"data:rcs": "uv run analysis/build_rcs_coverage.py && node scripts/build-rcs-versions.ts"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.61.1",
