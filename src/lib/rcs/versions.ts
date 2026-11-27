@@ -96,13 +96,19 @@ export function versionBars(versions: PlatformVersions, estimate: PhoneEstimate 
 		if (group.length === 0) continue;
 		const majors = group.map(([major]) => major);
 		bars.push({
-			label: `Other ${name} ${Math.min(...majors)} to ${Math.max(...majors)}`,
+			label: `${name} ${Math.min(...majors)}–${Math.max(...majors)}`,
 			value: round(sumOf(group)),
 			meets,
 			phones: phonesFor(majors)
 		});
 	}
 	return bars;
+}
+
+export function formatShare(value: number): string {
+	if (value >= 99.5 && value < 100) return "Over 99%";
+	if (value > 0 && value < 1) return "Under 1%";
+	return `${Math.round(value)}%`;
 }
 
 export function formatPhones(count: number): string {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { binLabels, collapseMajors, formatPhones, shareBin, thresholdShare, versionBars } from "./versions.ts";
+import { binLabels, collapseMajors, formatPhones, formatShare, shareBin, thresholdShare, versionBars } from "./versions.ts";
 
 /** @type {import("./versions.ts").PlatformVersions} */
 const za = {
@@ -52,7 +52,7 @@ test("bars show the top majors and group the rest by whether they meet the minim
 		["iOS 17", 1.54, false],
 		["iOS 16", 3.53, false],
 		["iOS 15", 1.91, false],
-		["Other iOS 12 to 14", 0.1, false]
+		["iOS 12–14", 0.1, false]
 	]);
 	assert.ok(bars.every((bar) => bar.phones === null));
 });
@@ -64,6 +64,13 @@ test("bars carry phone estimates only when the market has them", () => {
 	assert.equal(bars[0].phones, 1000);
 	assert.equal(bars[2].phones, null);
 	assert.equal(bars.at(-1)?.phones, 12);
+});
+
+test("shares never round up to 100% or down to 0%", () => {
+	assert.equal(formatShare(99.62), "Over 99%");
+	assert.equal(formatShare(100), "100%");
+	assert.equal(formatShare(0.4), "Under 1%");
+	assert.equal(formatShare(92.83), "93%");
 });
 
 test("phone counts read in words", () => {

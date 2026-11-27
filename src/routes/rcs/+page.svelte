@@ -5,7 +5,7 @@
 	import CountryCard from "#components/rcs/CountryCard.svelte";
 	import { LEVEL_LABEL, peopleSummary, supportLevel, summaryLine, type Phone } from "#lib/rcs/rcs.js";
 	import { asOf, byIso, hasPerson, loadVersions, minimum, people, phone, rows, togglePerson, versions, versionsOf } from "#lib/rcs/state.svelte.js";
-	import { THRESHOLD_CHOICES, binLabels, shareBin, thresholdShare } from "#lib/rcs/versions.js";
+	import { THRESHOLD_CHOICES, binLabels, formatShare, shareBin, thresholdShare } from "#lib/rcs/versions.js";
 
 	const ipCountry = ((page.data.ip_country as string | undefined) ?? "").toUpperCase();
 	const isoByNumeric = new Map(rows.map((row) => [row.n, row.iso2]));
@@ -54,7 +54,7 @@
 		if (layer === "status") return `${row.name}: ${LEVEL_LABEL[phone.current][supportLevel(row, phone.current)]}`;
 		const share = shareFor(iso2, layer);
 		if (share === null) return `${row.name}: no version data yet`;
-		return `${row.name}: ${Math.round(share)}% of sampled web traffic from ${LAYER_NAME[layer]} ${thresholds[layer]} or newer`;
+		return `${row.name}: ${formatShare(share)} of sampled web traffic from ${LAYER_NAME[layer]} ${thresholds[layer]} or newer`;
 	}
 
 	function select(iso2: string) {
