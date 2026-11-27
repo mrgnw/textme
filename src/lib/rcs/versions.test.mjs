@@ -67,9 +67,9 @@ test("bars carry phone estimates only when the market has them", () => {
 });
 
 test("shares never round up to 100% or down to 0%", () => {
-	assert.equal(formatShare(99.62), "Over 99%");
+	assert.equal(formatShare(99.62), "over 99%");
 	assert.equal(formatShare(100), "100%");
-	assert.equal(formatShare(0.4), "Under 1%");
+	assert.equal(formatShare(0.4), "under 1%");
 	assert.equal(formatShare(92.83), "93%");
 });
 

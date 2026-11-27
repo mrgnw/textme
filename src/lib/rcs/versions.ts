@@ -106,8 +106,8 @@ export function versionBars(versions: PlatformVersions, estimate: PhoneEstimate 
 }
 
 export function formatShare(value: number): string {
-	if (value >= 99.5 && value < 100) return "Over 99%";
-	if (value > 0 && value < 1) return "Under 1%";
+	if (value >= 99.5 && value < 100) return "over 99%";
+	if (value > 0 && value < 1) return "under 1%";
 	return `${Math.round(value)}%`;
 }
 
