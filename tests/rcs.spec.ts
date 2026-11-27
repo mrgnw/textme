@@ -68,7 +68,7 @@ test.describe("visitor in Spain", () => {
 		await openGlobe(page);
 		await page.getByText("Flat map").click();
 		await expect(page.getByRole("application")).toHaveAttribute("aria-roledescription", "map");
-		await page.getByText("iPhone", { exact: true }).click();
+		await page.locator("fieldset label").filter({ hasText: /^iPhone$/ }).click();
 		await expect(page.getByText("Settings, Apps, Messages")).toBeVisible();
 	});
 
@@ -175,6 +175,42 @@ test("picking a country in the list turns the globe to it", async ({ browser }) 
 	await page.getByRole("combobox", { name: "Country" }).selectOption("BR");
 	await expect.poll(() => countryAtCentre(page)).toBe("BR");
 	await context.close();
+});
+
+test.describe("OS versions", () => {
+	test.use({ extraHTTPHeaders: { "cf-ipcountry": "BR" } });
+
+	test("card lists versions with the RCS minimum and estimates only where sourced", async ({ page }) => {
+		await page.goto("/rcs");
+		const card = page.locator("article");
+		await expect(card.getByRole("heading", { name: "Phones by OS version" })).toBeVisible();
+		await expect(card.getByText(/of sampled iPhone web traffic here is on iOS 18 or newer/)).toBeVisible();
+		await expect(card.getByText(/of sampled Android web traffic here is on Android 7 or newer/)).toBeVisible();
+		await expect(card.getByText("below the RCS minimum").first()).toBeAttached();
+		await expect(card.getByText(/Phone counts are estimates/).first()).toBeVisible();
+		await page.getByRole("combobox", { name: "Country" }).selectOption("ES");
+		await expect(card.getByText(/of sampled iPhone web traffic here is on iOS 18/)).toBeVisible();
+		await expect(card.getByText(/Phone counts are estimates/)).toHaveCount(0);
+		await page.getByRole("combobox", { name: "Country" }).selectOption("EH");
+		await expect(card.getByText("No iOS version data yet for this country.")).toBeVisible();
+		await card.getByText("iPhones that cannot use RCS").click();
+		await expect(card.getByText(/iPhone X/)).toBeVisible();
+	});
+
+	test("colour by OS version switches the globe to a choropleth", async ({ page }) => {
+		await page.goto("/rcs");
+		await expect.poll(() => paintedLand(page)).toBeGreaterThan(60);
+		await page.getByRole("combobox", { name: "Colour by" }).selectOption("iphone");
+		await expect(page.getByText("95% or more")).toBeVisible();
+		await expect.poll(() => page.locator("path.land.bin0, path.land.bin1, path.land.bin2, path.land.bin3").count()).toBeGreaterThan(100);
+		await expect(page.locator('path.land[data-iso="EH"]')).toHaveClass(/unknown/);
+		const before = await page.locator("path.land.bin0").count();
+		await page.getByRole("combobox", { name: "iOS version" }).selectOption("26");
+		await expect.poll(() => page.locator("path.land.bin0").count()).toBeLessThan(before);
+		await page.getByRole("combobox", { name: "Colour by" }).selectOption("android");
+		await expect(page.getByRole("combobox", { name: "Android version" })).toHaveValue("7");
+		await page.screenshot({ path: "captures/rcs-layer-android.png" });
+	});
 });
 
 test("a failed map download shows a message instead of a blank globe", async ({ page }) => {
