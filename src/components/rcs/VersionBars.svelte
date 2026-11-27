@@ -20,13 +20,11 @@
 </script>
 
 <section class="space-y-2">
-	<h4 class="font-medium">{name}</h4>
 	{#if !versions || meeting === null}
-		<p class="text-muted-foreground">No {os} version data yet for this country.</p>
+		<h4 class="font-medium text-foreground">{name}</h4>
+		<p>No {os} version data yet for this country.</p>
 	{:else}
-		<p class="text-muted-foreground">
-			{formatShare(meeting)} of sampled {name} web traffic here is on {os} {minimum} or newer, the RCS minimum.
-		</p>
+		<h4 class="font-medium text-foreground">{name} <span class="font-normal text-muted-foreground">· {formatShare(meeting)} on {os} {minimum} or newer</span></h4>
 		<ul class="space-y-1">
 			{#each bars as bar (bar.label)}
 				<li class="bar-row">
@@ -41,14 +39,12 @@
 				</li>
 			{/each}
 		</ul>
-		<p class="text-xs text-muted-foreground">
-			Share of sampled mobile web traffic, <a class="underline underline-offset-2" href={versions.source_url} target="_blank" rel="noreferrer">StatCounter</a>, {versions.date}.
-			<span class="confidence">Measured</span>
+		<p class="text-xs">
+			<a class="underline underline-offset-2" href={versions.source_url} target="_blank" rel="noreferrer">StatCounter</a>, {versions.date} · Measured
 		</p>
 		{#if estimate}
 			<p class="text-xs text-muted-foreground">
-				Phone counts are estimates: <a class="underline underline-offset-2" href={estimate.base.source_url} target="_blank" rel="noreferrer">a smartphone base of {formatPhones(estimate.base.value)}</a> ({estimate.base.date}), split by the web traffic shares above as a stand-in for the phones in use.
-				<span class="confidence estimate">Estimate</span>
+				Phone counts · Estimate: <a class="underline underline-offset-2" href={estimate.base.source_url} target="_blank" rel="noreferrer">{formatPhones(estimate.base.value)} smartphones</a> ({estimate.base.date}) split by web traffic share.
 			</p>
 		{/if}
 	{/if}
@@ -108,17 +104,5 @@
 
 	.value {
 		text-align: end;
-	}
-
-	.confidence {
-		margin-left: 0.25rem;
-		border: 1px solid hsl(var(--border));
-		border-radius: 999px;
-		padding: 0 0.5rem;
-		color: hsl(var(--foreground));
-	}
-
-	.confidence.estimate {
-		border-style: dashed;
 	}
 </style>

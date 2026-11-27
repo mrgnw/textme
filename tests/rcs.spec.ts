@@ -27,7 +27,7 @@ test.describe("visitor in Spain", () => {
 		await openGlobe(page);
 		await expect(page.getByRole("heading", { level: 2, name: "Spain" })).toBeVisible();
 		await expect(page.getByText("You are here")).toBeVisible();
-		await expect(page.getByText("Turn RCS on.")).toBeVisible();
+		await expect(page.getByText("Turn on", { exact: true })).toBeVisible();
 		const globe = await page.getByRole("application").boundingBox();
 		const spain = await page.locator('path[data-iso="ES"]').boundingBox();
 		expect(globe && spain).toBeTruthy();
@@ -69,7 +69,7 @@ test.describe("visitor in Spain", () => {
 		await page.getByText("Flat map").click();
 		await expect(page.getByRole("application")).toHaveAttribute("aria-roledescription", "map");
 		await page.locator("fieldset label").filter({ hasText: /^iPhone$/ }).click();
-		await expect(page.getByText("Settings, Apps, Messages")).toBeVisible();
+		await expect(page.getByText("Settings › Apps › Messages")).toBeVisible();
 	});
 
 	test("people list persists and summarises reach", async ({ page }) => {
@@ -184,18 +184,21 @@ test.describe("OS versions", () => {
 	test("card lists versions with the RCS minimum and estimates only where sourced", async ({ page }) => {
 		await page.goto("/rcs");
 		const card = page.locator("article");
-		await expect(card.getByRole("heading", { name: "Phones by OS version" })).toBeVisible();
-		await expect(card.getByText(/of sampled iPhone web traffic here is on iOS 18 or newer/)).toBeVisible();
-		await expect(card.getByText(/of sampled Android web traffic here is on Android 7 or newer/)).toBeVisible();
+		const recent = card.locator("summary", { hasText: "Recent OS" });
+		await expect(recent).toContainText(/iOS 18\+ \d+% · Android 7\+/);
+		await recent.click();
+		await expect(card.getByRole("heading", { name: /iPhone · \d+% on iOS 18 or newer/ })).toBeVisible();
+		await expect(card.getByRole("heading", { name: /Android · .* on Android 7 or newer/ })).toBeVisible();
 		await expect(card.getByText("below the RCS minimum").first()).toBeAttached();
-		await expect(card.getByText(/Phone counts are estimates/).first()).toBeVisible();
+		await expect(card.getByText(/Phone counts · Estimate/).first()).toBeVisible();
 		await page.getByRole("combobox", { name: "Country" }).selectOption("ES");
-		await expect(card.getByText(/of sampled iPhone web traffic here is on iOS 18/)).toBeVisible();
-		await expect(card.getByText(/Phone counts are estimates/)).toHaveCount(0);
+		await expect(card.getByRole("heading", { name: /iPhone · \d+% on iOS 18/ })).toBeVisible();
+		await expect(card.getByText(/Phone counts · Estimate/)).toHaveCount(0);
 		await page.getByRole("combobox", { name: "Country" }).selectOption("EH");
-		await expect(card.getByText("No iOS version data yet for this country.")).toBeVisible();
+		await expect(card.locator("summary", { hasText: "Recent OS" })).toContainText("No data yet");
+		await card.locator("summary", { hasText: "iPhone to Android" }).click();
 		await card.getByText("iPhones that cannot use RCS").click();
-		await expect(card.getByText(/iPhone X/)).toBeVisible();
+		await expect(card.getByText("iPhone X", { exact: true })).toBeVisible();
 	});
 
 	test("colour by OS version switches the globe to a choropleth", async ({ page }) => {
@@ -211,6 +214,59 @@ test.describe("OS versions", () => {
 		await page.getByRole("combobox", { name: "Colour by" }).selectOption("android");
 		await expect(page.getByRole("combobox", { name: "Android version" })).toHaveValue("7");
 		await page.screenshot({ path: "captures/rcs-layer-android.png" });
+	});
+});
+
+test.describe("iPhone carrier", () => {
+	test.use({ extraHTTPHeaders: { "cf-ipcountry": "US" } });
+
+	async function asIphone(page: Page, stored: Record<string, unknown> = {}) {
+		await page.addInitScript((carrier) => {
+			if (sessionStorage.getItem("seeded")) return;
+			sessionStorage.setItem("seeded", "1");
+			localStorage.setItem("textme:rcs-phone", '"iphone"');
+			localStorage.setItem("textme:rcs-carrier", JSON.stringify(carrier));
+		}, stored);
+		await page.goto("/rcs");
+		return page.locator("article");
+	}
+
+	test("the default view gives a short verdict and no carrier list", async ({ page }) => {
+		const card = await asIphone(page);
+		await expect(card.locator("summary", { hasText: "iPhone to Android" })).toContainText("Works on listed carriers");
+		await expect(card.locator(".chips").getByText("Verizon Wireless", { exact: true })).toBeHidden();
+		const summaries = await card.locator(".fact > summary").allInnerTexts();
+		expect(summaries.join(" ").length).toBeLessThan(400);
+		await card.locator("summary", { hasText: "iPhone to Android" }).click();
+		await expect(card.getByText(/^\d+ listed carriers$/)).toBeVisible();
+	});
+
+	test("choosing a carrier answers for it and is remembered", async ({ page }) => {
+		const card = await asIphone(page);
+		const select = card.getByRole("combobox", { name: "Your carrier" });
+		await expect(select).toHaveValue("");
+		await select.selectOption("Verizon Wireless");
+		await expect(card.locator("summary", { hasText: "iPhone to Android" })).toContainText("Verizon Wireless: listed by Apple");
+		await page.reload();
+		await expect(card.getByRole("combobox", { name: "Your carrier" })).toHaveValue("Verizon Wireless");
+		await card.getByRole("combobox", { name: "Your carrier" }).selectOption("other");
+		await expect(card.locator("summary", { hasText: "iPhone to Android" })).toContainText("Your carrier is not on Apple's list here");
+	});
+
+	test("stale stored carriers are ignored", async ({ page }) => {
+		const card = await asIphone(page, { US: "Bogus Mobile", MX: "Telcel", ZZ: "AT&T" });
+		await expect(card.getByRole("combobox", { name: "Your carrier" })).toHaveValue("");
+	});
+
+	test("the carrier control appears only when carriers matter", async ({ page }) => {
+		const card = await asIphone(page);
+		await page.getByRole("combobox", { name: "Country" }).selectOption("MX");
+		await expect(card.getByRole("combobox", { name: /carrier/i })).toHaveCount(0);
+		await expect(card.locator("summary", { hasText: "iPhone to Android" })).toContainText("Not on Apple's list");
+		await page.getByRole("combobox", { name: "Country" }).selectOption("ES");
+		await expect(card.getByRole("combobox", { name: "Carrier in Spain" })).toBeVisible();
+		await page.locator("fieldset label").filter({ hasText: /^Android$/ }).click();
+		await expect(card.getByRole("combobox", { name: /carrier/i })).toHaveCount(0);
 	});
 });
 

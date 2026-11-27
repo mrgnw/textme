@@ -1,5 +1,5 @@
 import { PersistedState } from "runed";
-import { phoneFromUserAgent, type CountryCoverage, type Phone, type Requirements } from "./rcs.js";
+import { parseCarrierChoices, phoneFromUserAgent, type CountryCoverage, type Phone, type Requirements } from "./rcs.js";
 import type { CountryVersions } from "./versions.js";
 import coverage from "./coverage.json";
 import versionsUrl from "./versions.json?url";
@@ -77,6 +77,22 @@ export const people = new PersistedState<string[]>("textme:rcs-people", [], {
 		}
 	}
 });
+
+export const carriers = new PersistedState<Record<string, string>>("textme:rcs-carrier", {}, {
+	serializer: {
+		serialize: JSON.stringify,
+		deserialize: (value) => parseCarrierChoices(parseStored(value), byIso)
+	}
+});
+
+export function carrierFor(iso2: string): string {
+	return carriers.current[iso2] ?? "";
+}
+
+export function setCarrier(iso2: string, choice: string): void {
+	const { [iso2]: _, ...rest } = carriers.current;
+	carriers.current = parseCarrierChoices(choice ? { ...rest, [iso2]: choice } : rest, byIso);
+}
 
 export function hasPerson(iso2: string): boolean {
 	return people.current.includes(iso2);
