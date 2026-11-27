@@ -37,6 +37,7 @@ export interface Requirements {
 }
 
 export interface SourcedLine {
+	summary: string;
 	text: string;
 	source: Sourced | null;
 }
@@ -103,26 +104,47 @@ export function reachLevel(row: CountryCoverage): Level {
 	return "unknown";
 }
 
+export const OTHER_CARRIER = "other";
+
+const ANDROID_SHORT: Record<Level, string> = {
+	yes: "Works",
+	partial: "On some providers",
+	none: "No provider listed",
+	unknown: "No data yet"
+};
+
 function androidToAndroid(row: CountryCoverage): VerdictLine {
 	const level = supportLevel(row, "android");
-	const text = { yes: "yes.", partial: "on some providers.", none: "no provider listed.", unknown: "no data yet." }[level];
-	return { pair: "Android to Android", level, text };
+	return { pair: "Android to Android", level, text: ANDROID_SHORT[level] };
 }
 
-function iphoneToAndroid(row: CountryCoverage): VerdictLine {
+export function hasCarrierList(row: CountryCoverage): boolean {
+	return row.iphone.status === "listed" && row.iphone.carriers.length > 0;
+}
+
+export function isValidCarrier(row: CountryCoverage | undefined, choice: unknown): choice is string {
+	if (!row || typeof choice !== "string" || !hasCarrierList(row)) return false;
+	return choice === OTHER_CARRIER || row.iphone.carriers.includes(choice);
+}
+
+export function parseCarrierChoices(stored: unknown, rows: Map<string, CountryCoverage>): Record<string, string> {
+	if (typeof stored !== "object" || stored === null || Array.isArray(stored)) return {};
+	return Object.fromEntries(Object.entries(stored).filter(([iso2, choice]) => isValidCarrier(rows.get(iso2), choice)));
+}
+
+function iphoneToAndroid(row: CountryCoverage, carrier: string): VerdictLine {
 	const pair = "iPhone to Android";
-	const android = supportLevel(row, "android");
-	const { status, carriers } = row.iphone;
-	if (status === "unknown") return { pair, level: "unknown", text: "no data yet." };
-	if (status === "none_listed") return { pair, level: "none", text: "no carrier here is on Apple's list yet." };
-	const on = carriers.length > 0 ? ` on ${list.format(carriers)}` : " on listed carriers";
-	if (android === "yes") return { pair, level: "yes", text: `yes${on}.` };
-	const androidSide = android === "partial" ? "Android RCS is confirmed on some providers." : "No data yet for Android here.";
-	return { pair, level: "partial", text: `iPhone RCS is listed${on}. ${androidSide}` };
+	const { status } = row.iphone;
+	if (status === "unknown") return { pair, level: "unknown", text: "No data yet" };
+	if (status === "none_listed") return { pair, level: "none", text: "Not on Apple's list" };
+	if (carrier === OTHER_CARRIER) return { pair, level: "none", text: "Your carrier is not on Apple's list here" };
+	const level: Level = supportLevel(row, "android") === "yes" ? "yes" : "partial";
+	if (isValidCarrier(row, carrier)) return { pair, level, text: `${carrier}: listed by Apple` };
+	return { pair, level, text: "Works on listed carriers" };
 }
 
-export function verdict(row: CountryCoverage): VerdictLine[] {
-	return [androidToAndroid(row), iphoneToAndroid(row)];
+export function verdict(row: CountryCoverage, carrier = ""): VerdictLine[] {
+	return [androidToAndroid(row), iphoneToAndroid(row, carrier)];
 }
 
 export function peopleSummary(rows: CountryCoverage[]): PeopleSummary {
@@ -153,12 +175,14 @@ export function checkYourPhone(phone: Phone, requirements: Requirements): Source
 		const version = major(ios_min.value);
 		const newestExcluded = list.format(iphone_excluded.excluded_models.slice(-3).reverse());
 		return {
+			summary: `iOS ${version} or newer`,
 			text: `You need iOS ${version} or newer and a carrier on Apple's list. ${iphone_models.note} ${newestExcluded} and older models cannot run iOS ${version}.`,
 			source: ios_min
 		};
 	}
 	const floor = requirements.android_google_play_services_floor;
 	return {
+		summary: `Android ${major(floor.value)} or newer`,
 		text: `You need Android ${major(floor.value)} or newer with Google Play services, and Google Messages as your default texting app.`,
 		source: floor
 	};

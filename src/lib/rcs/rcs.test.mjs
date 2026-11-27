@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkYourPhone, peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
+import { OTHER_CARRIER, checkYourPhone, hasCarrierList, isValidCarrier, parseCarrierChoices, peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
 
 /** @type {import("./rcs.ts").AndroidCoverage} */
 const unknownAndroid = { status: "unknown", detail: null, date: null, source_url: null, confidence: null };
@@ -39,23 +39,55 @@ test("support level follows the phone type", () => {
 	assert.equal(supportLevel(row("PL", { status: "partial" }), "android"), "partial");
 });
 
-test("verdict names the iPhone carriers when both sides are live", () => {
+test("verdict stays short and never lists carriers", () => {
 	assert.deepEqual(verdict(us).map((line) => `${line.pair}: ${line.text}`), [
-		"Android to Android: yes.",
-		"iPhone to Android: yes on AT&T, T-Mobile USA, and Verizon Wireless."
+		"Android to Android: Works",
+		"iPhone to Android: Works on listed carriers"
 	]);
+	assert.ok(verdict(us).every((line) => !line.text.includes("Verizon")));
 });
 
-test("verdict keeps unknown as unknown and none_listed as not listed", () => {
+test("a chosen carrier answers for that carrier only", () => {
+	const listed = verdict(us, "Verizon Wireless")[1];
+	assert.equal(listed.text, "Verizon Wireless: listed by Apple");
+	assert.equal(listed.level, "yes");
+	const other = verdict(us, OTHER_CARRIER)[1];
+	assert.equal(other.text, "Your carrier is not on Apple's list here");
+	assert.equal(other.level, "none");
+	assert.equal(verdict(us, "Not A Carrier")[1].text, "Works on listed carriers");
+});
+
+test("verdict keeps unknown as unknown and none_listed as not on Apple's list", () => {
 	assert.deepEqual(verdict(zz).map((line) => line.level), ["unknown", "unknown"]);
-	assert.equal(verdict(mx)[1].text, "no carrier here is on Apple's list yet.");
+	assert.equal(verdict(zz)[1].text, "No data yet");
+	assert.equal(verdict(mx)[1].text, "Not on Apple's list");
 	assert.equal(verdict(mx)[1].level, "none");
+	assert.equal(verdict(mx, OTHER_CARRIER)[1].text, "Not on Apple's list");
 });
 
 test("iPhone listed with unconfirmed Android is partial, not yes", () => {
-	const line = verdict(cn)[1];
-	assert.equal(line.level, "partial");
-	assert.match(line.text, /China Mobile/);
+	assert.equal(verdict(cn)[1].level, "partial");
+	assert.equal(verdict(cn, "China Mobile")[1].text, "China Mobile: listed by Apple");
+	assert.equal(verdict(cn, "China Mobile")[1].level, "partial");
+});
+
+test("carrier choices are only valid for countries with a carrier list", () => {
+	assert.equal(hasCarrierList(us), true);
+	assert.equal(hasCarrierList(mx), false);
+	assert.equal(isValidCarrier(us, "AT&T"), true);
+	assert.equal(isValidCarrier(us, OTHER_CARRIER), true);
+	assert.equal(isValidCarrier(us, "Telcel"), false);
+	assert.equal(isValidCarrier(mx, OTHER_CARRIER), false);
+	assert.equal(isValidCarrier(undefined, "AT&T"), false);
+	assert.equal(isValidCarrier(us, 3), false);
+});
+
+test("stored carrier choices drop anything that no longer matches the data", () => {
+	const rows = new Map([us, mx, cn].map((r) => [r.iso2, r]));
+	assert.deepEqual(parseCarrierChoices({ US: "AT&T", MX: "Telcel", CN: "Nope", XX: "AT&T", ES: 4 }, rows), { US: "AT&T" });
+	assert.deepEqual(parseCarrierChoices(null, rows), {});
+	assert.deepEqual(parseCarrierChoices(["US"], rows), {});
+	assert.deepEqual(parseCarrierChoices("AT&T", rows), {});
 });
 
 test("reach is yes when either phone type has RCS", () => {
@@ -96,4 +128,6 @@ const requirements = {
 test("check your phone quotes the minimum versions from the data", () => {
 	assert.match(checkYourPhone("iphone", requirements).text, /^You need iOS 18 or newer .*XS, XS Max, XR.* iPhone X, iPhone 8 Plus, and iPhone 8 and older models cannot run iOS 18\.$/);
 	assert.match(checkYourPhone("android", requirements).text, /^You need Android 7 or newer/);
+	assert.equal(checkYourPhone("iphone", requirements).summary, "iOS 18 or newer");
+	assert.equal(checkYourPhone("android", requirements).summary, "Android 7 or newer");
 });
