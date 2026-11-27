@@ -22,6 +22,29 @@ export interface Share extends Sourced {
 	value: number;
 }
 
+export interface Requirement extends Sourced {
+	value: string | null;
+	requirement_text: string | null;
+	note: string | null;
+}
+
+export interface Requirements {
+	ios_min: Requirement;
+	iphone_models: Requirement;
+	android_google_play_services_floor: Requirement;
+	android_google_messages_setup: Requirement;
+}
+
+export interface OsVersion {
+	ios_18_plus: Share | null;
+	android_7_plus: Share | null;
+}
+
+export interface SourcedLine {
+	text: string;
+	source: Sourced | null;
+}
+
 export interface CountryCoverage {
 	iso2: string;
 	n: string;
@@ -31,6 +54,7 @@ export interface CountryCoverage {
 	ios_share: Share | null;
 	android_share: Share | null;
 	note: string | null;
+	os_version: OsVersion;
 }
 
 export interface VerdictLine {
@@ -122,4 +146,37 @@ export function summaryLine({ total, known, reach, unknown }: PeopleSummary): st
 	if (known === 0) return `No RCS data yet for your ${countries(total)}.`;
 	const head = `RCS can reach people in ${reach} of ${countries(known)} with data.`;
 	return unknown === 0 ? head : `${head} No data yet for ${countries(unknown)}.`;
+}
+
+function major(version: string | null): string {
+	return (version ?? "").replace(/\.0$/, "");
+}
+
+export function osVersionLine(row: CountryCoverage, phone: Phone, requirements: Requirements): SourcedLine {
+	if (phone === "iphone") {
+		const share = row.os_version.ios_18_plus;
+		const version = `iOS ${major(requirements.ios_min.value)}`;
+		if (!share) return { text: `No data yet on how many iPhones here run ${version} or newer.`, source: null };
+		return { text: `${Math.round(share.value)}% of iPhones here run ${version} or newer.`, source: share };
+	}
+	const share = row.os_version.android_7_plus;
+	const version = `Android ${major(requirements.android_google_play_services_floor.value)}`;
+	if (!share) return { text: `No data yet on how many Android phones here run ${version} or newer.`, source: null };
+	return { text: `${Math.round(share.value)}% of Android phones here run ${version} or newer.`, source: share };
+}
+
+export function checkYourPhone(phone: Phone, requirements: Requirements): SourcedLine {
+	if (phone === "iphone") {
+		const { ios_min, iphone_models } = requirements;
+		const version = major(ios_min.value);
+		return {
+			text: `You need iOS ${version} or newer and a carrier on Apple's list. ${iphone_models.note} iPhone X, iPhone 8 and older models cannot run iOS ${version}.`,
+			source: ios_min
+		};
+	}
+	const floor = requirements.android_google_play_services_floor;
+	return {
+		text: `You need Android ${major(floor.value)} or newer with Google Play services, and Google Messages as your default texting app.`,
+		source: floor
+	};
 }

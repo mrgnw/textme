@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
+import { checkYourPhone, osVersionLine, peopleSummary, phoneFromUserAgent, reachLevel, summaryLine, supportLevel, verdict } from "./rcs.ts";
 
 /** @type {import("./rcs.ts").AndroidCoverage} */
 const unknownAndroid = { status: "unknown", detail: null, date: null, source_url: null, confidence: null };
@@ -22,7 +22,8 @@ function row(iso2, android = {}, iphone = {}) {
 		iphone: { ...unknownIphone, ...iphone },
 		ios_share: null,
 		android_share: null,
-		note: null
+		note: null,
+		os_version: { ios_18_plus: null, android_7_plus: null }
 	};
 }
 
@@ -82,4 +83,27 @@ test("user agent picks iPhone only for iOS devices", () => {
 	assert.equal(phoneFromUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 26_1 like Mac OS X)"), "iphone");
 	assert.equal(phoneFromUserAgent("Mozilla/5.0 (Linux; Android 16; Pixel 10)"), "android");
 	assert.equal(phoneFromUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0)"), "android");
+});
+
+/** @type {import("./rcs.ts").Requirements} */
+const requirements = {
+	ios_min: { value: "18", requirement_text: null, note: null, date: "2026-05-11", source_url: "https://support.apple.com/en-us/122195", confidence: "vendor-claim" },
+	iphone_models: { value: null, requirement_text: null, note: "Apple lists iPhone XS, XS Max, XR, and SE (2nd generation or later) among compatible models.", date: null, source_url: null, confidence: "vendor-claim" },
+	android_google_play_services_floor: { value: "7.0", requirement_text: null, note: null, date: null, source_url: "https://support.google.com/googleplay/answer/9037938", confidence: "vendor-claim" },
+	android_google_messages_setup: { value: null, requirement_text: null, note: null, date: null, source_url: null, confidence: "vendor-claim" }
+};
+
+test("OS-version line uses the sourced share and never invents one", () => {
+	/** @type {import("./rcs.ts").CountryCoverage} */
+	const es = { ...us, os_version: { ios_18_plus: { value: 95.91, date: "2026-10", source_url: "https://gs.statcounter.com", confidence: "measured" }, android_7_plus: null } };
+	assert.equal(osVersionLine(es, "iphone", requirements).text, "96% of iPhones here run iOS 18 or newer.");
+	assert.equal(osVersionLine(es, "iphone", requirements).source?.date, "2026-10");
+	const android = osVersionLine(es, "android", requirements);
+	assert.equal(android.text, "No data yet on how many Android phones here run Android 7 or newer.");
+	assert.equal(android.source, null);
+});
+
+test("check your phone quotes the minimum versions from the data", () => {
+	assert.match(checkYourPhone("iphone", requirements).text, /^You need iOS 18 or newer .*XS, XS Max, XR.*cannot run iOS 18\.$/);
+	assert.match(checkYourPhone("android", requirements).text, /^You need Android 7 or newer/);
 });

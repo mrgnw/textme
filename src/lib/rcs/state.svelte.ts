@@ -1,11 +1,12 @@
 import { PersistedState } from "runed";
-import { phoneFromUserAgent, type CountryCoverage, type Phone } from "./rcs.js";
+import { phoneFromUserAgent, type CountryCoverage, type Phone, type Requirements } from "./rcs.js";
 import coverage from "./coverage.json";
 
 const MAX_PEOPLE = 30;
 
 export const rows = coverage.countries as CountryCoverage[];
 export const asOf = coverage.as_of;
+export const requirements = coverage.requirements as Requirements;
 export const byIso = new Map(rows.map((row) => [row.iso2, row]));
 
 const defaultPhone: Phone = typeof navigator === "undefined" ? "android" : phoneFromUserAgent(navigator.userAgent);

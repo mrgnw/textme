@@ -2,8 +2,9 @@
 # requires-python = '>=3.14'
 # dependencies = ['pycountry']
 # ///
-"""Writes src/lib/rcs/coverage.json from research/rcs/coverage-by-country.json, adding ISO numeric codes
-so rows join the world-atlas map shapes."""
+"""Writes src/lib/rcs/coverage.json from research/rcs/coverage-by-country.json and devices-by-region.json.
+Adds ISO numeric codes so rows join the world-atlas map shapes, per-country OS-version shares and the
+minimum phone requirements."""
 
 import json
 from pathlib import Path
@@ -11,17 +12,39 @@ from pathlib import Path
 import pycountry
 
 source = Path('research/rcs/coverage-by-country.json')
+devices = Path('research/rcs/devices-by-region.json')
 out = Path('src/lib/rcs/coverage.json')
+
+OS_METRICS = ('ios_18_plus', 'android_7_plus')
+REQUIREMENTS = ('ios_min', 'iphone_models', 'android_google_play_services_floor', 'android_google_messages_setup')
+SOURCED = ('value', 'date', 'source_url', 'confidence')
+
+
+def os_versions(device_data: dict) -> dict[str, dict]:
+	by_country: dict[str, dict] = {}
+	for entry in device_data['os_thresholds']:
+		if entry['geo_type'] == 'country' and entry['metric'] in OS_METRICS:
+			by_country.setdefault(entry['geo_id'], {})[entry['metric']] = {k: entry[k] for k in SOURCED}
+	return by_country
+
+
+def requirements(device_data: dict) -> dict[str, dict]:
+	keep = ('value', 'requirement_text', 'note', 'date', 'source_url', 'confidence')
+	return {r['id']: {k: r.get(k) for k in keep} for r in device_data['requirements'] if r['id'] in REQUIREMENTS}
 
 
 def main():
 	rows = json.loads(source.read_text())
+	device_data = json.loads(devices.read_text())
+	versions = os_versions(device_data)
 	for row in rows:
 		row['n'] = pycountry.countries.get(alpha_2=row['iso2']).numeric
+		found = versions.get(row['iso2'], {})
+		row['os_version'] = {metric: found.get(metric) for metric in OS_METRICS}
 	rows.sort(key=lambda r: r['name'])
 	as_of = max(row[platform]['date'] for row in rows for platform in ('android', 'iphone'))
 	out.write_text(
-		json.dumps({'as_of': as_of, 'countries': rows}, ensure_ascii=False, separators=(',', ':')) + '\n'
+		json.dumps({'as_of': as_of, 'requirements': requirements(device_data), 'countries': rows}, ensure_ascii=False, separators=(',', ':')) + '\n'
 	)
 	print(len(rows), 'rows ->', out, out.stat().st_size, 'bytes')
 
