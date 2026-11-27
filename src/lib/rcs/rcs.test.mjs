@@ -70,13 +70,13 @@ test("reach is yes when either phone type has RCS", () => {
 test("people summary counts only known statuses", () => {
 	const summary = peopleSummary([us, mx, it, zz, zz]);
 	assert.deepEqual(summary, { total: 5, known: 3, reach: 2, unknown: 2 });
-	assert.equal(summaryLine(summary), "RCS can reach people in 2 of 3 countries with data. No data yet for 2 countries.");
+	assert.equal(summaryLine(summary), "RCS support is listed in 2 of 3 countries with data. No data yet for 2 countries.");
 });
 
 test("summary line handles empty, all unknown and singular cases", () => {
 	assert.equal(summaryLine(peopleSummary([])), "");
 	assert.equal(summaryLine(peopleSummary([zz])), "No RCS data yet for your 1 country.");
-	assert.equal(summaryLine(peopleSummary([us])), "RCS can reach people in 1 of 1 country with data.");
+	assert.equal(summaryLine(peopleSummary([us])), "RCS support is listed in 1 of 1 country with data.");
 });
 
 test("user agent picks iPhone only for iOS devices", () => {
@@ -96,14 +96,14 @@ const requirements = {
 test("OS-version line uses the sourced share and never invents one", () => {
 	/** @type {import("./rcs.ts").CountryCoverage} */
 	const es = { ...us, os_version: { ios_18_plus: { value: 95.91, date: "2026-10", source_url: "https://gs.statcounter.com", confidence: "measured" }, android_7_plus: null } };
-	assert.equal(osVersionLine(es, "iphone", requirements).text, "96% of iPhones here run iOS 18 or newer.");
+	assert.equal(osVersionLine(es, "iphone", requirements).text, "96% of sampled iPhone web traffic here comes from iOS 18 or newer.");
 	assert.equal(osVersionLine(es, "iphone", requirements).source?.date, "2026-10");
 	const android = osVersionLine(es, "android", requirements);
 	assert.equal(android.text, "No data yet on how many Android phones here run Android 7 or newer.");
 	assert.equal(android.source, null);
 	/** @type {import("./rcs.ts").CountryCoverage} */
 	const nearlyAll = { ...es, os_version: { ios_18_plus: null, android_7_plus: { value: 99.62, date: "2026-10", source_url: null, confidence: "measured" } } };
-	assert.equal(osVersionLine(nearlyAll, "android", requirements).text, "Over 99% of Android phones here run Android 7 or newer.");
+	assert.equal(osVersionLine(nearlyAll, "android", requirements).text, "Over 99% of sampled Android web traffic here comes from Android 7 or newer.");
 });
 
 test("check your phone quotes the minimum versions from the data", () => {

@@ -77,7 +77,7 @@ test.describe("visitor in Spain", () => {
 		await page.getByRole("button", { name: "I know people here" }).click();
 		await page.getByRole("combobox", { name: "Country" }).selectOption("AQ");
 		await page.getByRole("button", { name: "I know people here" }).click();
-		await expect(page.getByText("RCS can reach people in 1 of 1 country with data. No data yet for 1 country.")).toBeVisible();
+		await expect(page.getByText("RCS support is listed in 1 of 1 country with data. No data yet for 1 country.")).toBeVisible();
 		await page.reload();
 		await expect(page.getByRole("button", { name: "Remove Antarctica" })).toBeVisible();
 	});
