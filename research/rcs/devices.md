@@ -13,7 +13,22 @@ Research cutoff November 27, 2026. [Chart-ready dataset](devices-by-region.json)
 
 ## Operating systems in use
 
-October 2026 values below are measured shares of sampled mobile web page views **within each operating system**. The dataset preserves the provider’s release labels for both platforms and covers the 20 largest smartphone markets in the World Bank’s surveyed economies, plus six comparison markets. The ranking multiplies the 2024 adult population by the share whose main phone was a smartphone. Thresholds sum recognized releases. Rounded shares and unclassified labels can leave small discrepancies. [StatCounter Global Stats methodology and CC BY-SA 3.0 terms](https://gs.statcounter.com/faq) · [World Bank Global Findex](https://www.worldbank.org/en/publication/globalfindex/download-data)
+October 2026 is the latest complete month at the research cutoff. The dataset contains **14,206 country and territory version rows** from StatCounter’s mobile CSV exports. Each share uses page views **within the named operating system**. The seven original world and regional charts and the 26-market threshold series use their original snapshots. The separate World Bank ranking multiplies the 2024 adult population by the share whose main phone was a smartphone. [StatCounter Global Stats methodology and CC BY-SA 3.0 terms](https://gs.statcounter.com/faq) · [World Bank Global Findex](https://www.worldbank.org/en/publication/globalfindex/download-data)
+
+|October 2026 coverage|ISO countries and territories|
+|-|-|
+|Checked|249|
+|Published iOS version data|242|
+|Published Android version data|243|
+|Verified national smartphone base|9|
+
+Both exports were empty for Bouvet Island, Cocos (Keeling) Islands, Christmas Island, Western Sahara, Heard Island and McDonald Islands, and the French Southern Territories. Norfolk Island published Android data only. All 485 populated country and territory exports summed within two percentage points of 100%. The script preserves the source labels and rounded values, including `Other`, and flags any totals outside that range. StatCounter’s country codes are uppercase. Its lowercase codes can identify regions, such as `NA` for Namibia and `na` for North America. [iOS version exports](https://gs.statcounter.com/ios-version-market-share/mobile/worldwide) · [Android version exports](https://gs.statcounter.com/android-version-market-share/mobile/worldwide)
+
+From the repository root, the refresh script uses Python 3.14, waits at least 600 milliseconds between requests, and caches raw exports under `analysis/cache/`. It defaults to the previous complete calendar month. `--offline --check` validates a snapshot against the cached exports.
+
+```sh
+uv run analysis/refresh_rcs_devices.py --month 2026-10
+```
 
 |Geography|iOS 18+|iOS 26+|iOS below 18|Android 8+|
 |-|-|-|-|-|
@@ -26,6 +41,18 @@ October 2026 values below are measured shares of sampled mobile web page views *
 |Oceania|95.82%|79.80%|4.13%|99.34%|
 
 Apple’s June 7, 2026, App Store sample had 79% on iOS 26, 14% on iOS 18 and 7% on earlier versions. Google’s global Android Studio file, updated October 1, 2026, reports 25.4% on Android 16, 0.9% on Android 17 and a combined 99.0% on listed Android 8+ releases. These samples cover different device populations from the web traffic data. [Apple App Store distribution](https://developer.apple.com/support/app-store/) · [Google Android Studio distribution](https://dl.google.com/android/studio/metadata/distributions.json)
+
+## Device compatibility and version names
+
+The model table covers iOS 16, 17, 18, 26 and 27. Apple moved directly from iOS 18 to iOS 26 for major releases, so versions 19 through 25 have null compatibility entries. The table lists which older iPhones each release excludes and the newest version those devices support. Basic iPhone RCS requires iOS 18 or later and a compatible carrier plan. [Apple compatibility for iOS 16](https://support.apple.com/en-au/103267) · [iOS 17 availability](https://www.apple.com/newsroom/2023/09/ios-17-is-available-today/) · [iOS 18 compatibility](https://support.apple.com/en-is/104985) · [iOS 26 compatibility](https://support.apple.com/en-us/123705) · [iOS 27 compatibility](https://support.apple.com/guide/iphone/iphone-models-compatible-with-ios-27-iphe3fa5df43/27/ios/27) · [Apple RCS requirements](https://support.apple.com/en-us/122195)
+
+The Android table maps platform names to application programming interface (API) levels. Android 7.0 Nougat is API level 24, Google’s support floor for Play services. Google Messages lists Android 5.0, API level 21, as its RCS troubleshooting floor. Google’s public help and Play listing give no universal current app install minimum. [Android version mapping](https://developer.android.com/guide/topics/manifest/uses-sdk-element#ApiLevels) · [Play services minimum](https://support.google.com/googleplay/answer/9037938) · [Google Messages troubleshooting](https://support.google.com/messages/answer/9363493) · [Google Play listing](https://play.google.com/store/apps/details?id=com.google.android.apps.messaging)
+
+## Smartphone base estimates
+
+The nine verified bases cover Brazil, China, India, Kenya, South Korea, Tanzania, Uganda, Vietnam and South Africa. The dataset includes 609 version estimates for these markets and omits estimates for the remaining 240 geographies. The base rows keep the source date and unit. Where a source counts smartphone subscriptions, the estimate has the same subscription denominator.
+
+For each published version, multiply the sourced smartphone base by StatCounter’s share for that platform across sampled mobile page views, then by the version’s share within that platform. The platform share prevents applying the full national base separately to iOS and to Android. The result uses October web traffic as a proxy for the device mix and keeps the base at its published vintage. The formula skips unclassified versions and leaves other operating systems outside the estimate. [StatCounter data methodology](https://gs.statcounter.com/faq)
 
 ## Handset mix and age
 

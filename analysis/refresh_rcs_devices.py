@@ -8,6 +8,7 @@ import re
 import time
 from calendar import month_abbr
 from datetime import date, timedelta
+from decimal import Decimal
 from html import unescape
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -307,7 +308,9 @@ def estimate_phones(rows, bases, month, offline):
 		if platform is None:
 			continue
 		base = base_by_code[code]
-		value = round(base['value'] * (platform['value'] / 100) * (row['value'] / 100))
+		platform_percent = Decimal(str(platform['value']))
+		version_percent = Decimal(str(row['value']))
+		value = round(base['value'] * platform_percent * version_percent / 10_000)
 		share_ref = {key: row[key] for key in ('geo_type', 'geo_id', 'os', 'series', 'version', 'date')}
 		estimates.append(
 			{
